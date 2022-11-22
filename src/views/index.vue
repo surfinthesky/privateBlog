@@ -51,7 +51,7 @@
       </el-header>
       <el-main>
         <div class="container-lg">
-          main 2 2 2 ---- {{ scrollValue }}
+          main 2 2 2 ---- {{ scrollValue }}qq
           <router-view></router-view>
         </div>
       </el-main>
