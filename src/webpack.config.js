@@ -21,7 +21,7 @@ module.exports = {
     ],
   },
   plugins:[
-      new webpack.HotModuleReplacementPlugin(), // hot: true 会自动引入这个 plugin
+    new webpack.HotModuleReplacementPlugin(), // hot: true 会自动引入这个 plugin
   ],
   devServer: {
     // 配置devServer

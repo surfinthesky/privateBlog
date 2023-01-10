@@ -6,8 +6,8 @@ const service = axios.create({
     process.env.NODE_ENV === "production"
       ? ""
       : process.env.NODE_ENV === "pre"
-      ? ""
-      : "http://127.0.0.1:8888",
+        ? ""
+        : "http://127.0.0.1:8888",
   timeout: 15000, // 请求超时时间
 });
 // request拦截器

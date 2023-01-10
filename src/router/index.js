@@ -1,14 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
-import index from "@/views/index";
-// import homePage from "@/views/homePage/homePage";
-// import About from "@/views/about/index";
-// import Archive from "@/views/Archive/index";
-// import Music from "@/views/Music/index";
-// import Others from "@/views/others/index";
-// import Roast from "@/views/Roast/index";
-// import Notes from "@/views/Notes/index";
+import Login from "@/views/Login/loginIndex";
 import MainPage from "../components/MainPage.vue";
+import index from "@/views/index";
 import testDemo from "../components/testDemo.vue";
 export const loadView = (view) => {
   // 路由懒加载
@@ -20,6 +14,16 @@ export default new Router({
   routes: [
     {
       path: "/",
+      name: "login",
+      component: Login,
+    },
+    {
+      path: "/main",
+      name: "MainPage",
+      component: MainPage,
+    },
+    {
+      path: "/index",
       name: "index",
       component: index,
       children: [
@@ -59,11 +63,6 @@ export default new Router({
           component: loadView("Notes"),
         },
       ],
-    },
-    {
-      path: "/main",
-      name: "MainPage",
-      component: MainPage,
     },
     {
       path: "/testDemo",

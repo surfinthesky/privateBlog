@@ -1,0 +1,12 @@
+//元素居中
+@mixin displayEle(){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+//元素两边等距分开居中
+@mixin displayEleBetween(){
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

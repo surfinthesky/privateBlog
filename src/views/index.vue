@@ -6,11 +6,12 @@
         <el-row :gutter="0" class="headerRow">
           <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12"
             ><div class="grid-content bg-purple">
-              <img
-                src="https://blog.ibireme.com/wp-content/uploads/2015/05/logo1.png"
+              <!-- <img
+                src=""
                 alt=""
                 srcset=""
-              /></div
+              /> -->
+              </div
           ></el-col>
           <el-col :xs="4" :sm="12" :md="12" :lg="12" :xl="12"
             ><div class="grid-content bg-purple-light">
@@ -49,13 +50,49 @@
           >
         </el-row>
       </el-header>
+      <!-- 内容区 -->
       <el-main>
         <div class="container-lg">
-          main 2 2 2 ---- {{ scrollValue }}qq
-          <router-view></router-view>
+          <router-view> </router-view>
         </div>
       </el-main>
+      <!-- 底部 -->
+      <el-footer>
+        <el-row :gutter="0">
+          <el-col :xs="12" :sm="24" :md="24" :lg="24" :xl="24">
+            <ul>
+              <li>
+                <a target="_blank" href="https://weibo.com/u/5944123856"
+                  ><img src="../assets/weibo.png" alt=""
+                /></a>
+              </li>
+              <li class="hover_li" @click="dialogVisible = true">
+                <img src="../assets/weixin.png" alt="" />
+              </li>
+              <li>
+                <a target="_blank" href="https://github.com/surfinthesky"
+                  ><img src="../assets/github.png" alt=""
+                /></a>
+              </li>
+            </ul>
+            <p class="copyright">Copyright © WangCong's Blog 2023</p>
+          </el-col>
+        </el-row>
+      </el-footer>
+    <testFile @childByValue="childByValue"></testFile>
+
+      <!-- 微信图片弹窗 -->
+      <el-dialog :visible.sync="dialogVisible" :modal-append-to-body="true">
+        <img
+          src="../assets/weixinPersonal.svg"
+          alt=""
+          style="width: 376px; height: 481px"
+        />
+      </el-dialog>
+
+      <!-- 顶部进度条 -->
       <div class="progress-indicator" :style="{ width: progressValue }"></div>
+      <!-- 右侧返回顶部按钮 -->
       <transition name="el-fade-in-linear">
         <div v-show="show" @click="backTotop()" class="backTotop">
           <img src="@/assets/backTotop.png" alt="" />
@@ -67,8 +104,11 @@
 <script>
 import $ from "jquery";
 import { mapState, mapMutations } from "vuex";
+import { preventOverHidden, preventOverauto, _debounce } from "@/utils/utils";
+import  testFile from "./testFile/testFile.vue"
 export default {
   name: "homePage",
+  components:{testFile},
   data() {
     return {
       clientHeightValue: 0,
@@ -76,7 +116,7 @@ export default {
       topTabList: [
         {
           name: "首页",
-          path: "/",
+          path: "/homepage",
         },
         {
           name: "About",
@@ -103,26 +143,45 @@ export default {
           path: "/notes",
         },
       ],
-      activeIndex: 0, //默认选中索引
-      activeName: "/",
+      activeIndex: "", //默认选中索引
+      activeName: "/homepage", //默认页面路径
       show: false,
+      dialogVisible: false,
     };
   },
+  // beforeRouteEnter(to, from, next) {
+  //   console.log(to)
+  //   if (to.name === "homePage") {
+  //     next((vm) => {
+  //       vm.activeName = "/" + to.name.toLowerCase();
+  //     });
+  //   } else {
+  //     next((vm) => {
+  //       vm.activeName = "/" + to.name.toLowerCase();
+  //       console.log("------");
+  //       console.log("------");
+  //       console.log("------");
+  //       console.log(vm.activeName);
+  //     });
+  //   }
+  // },
   mounted() {
     this.successValue();
+    console.log(this.$route);
+    // this.activeName = this.$route.path;
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    function Product(name, price) {
-      this.name = name;
-      this.price = price;
-    }
-    function Food(name, price) {
-      Product.call(this, name, price);
-      this.category = "food";
-    }
-    var fun = new Food("robot", 40);
-    console.log(fun);
+    // function Product(name, price) {
+    //   this.name = name;
+    //   this.price = price;
+    // }
+    // function Food(name, price) {
+    //   Product.call(this, name, price);
+    //   this.category = "food";
+    // }
+    // var fun = new Food("robot", 40);
+    // console.log(fun);
   },
   computed: {
     ...mapState(["scrollValue"]),
@@ -135,8 +194,18 @@ export default {
         this.show = false;
       }
     },
+    dialogVisible(newVal) {
+      if (newVal == true) {
+        preventOverHidden();
+      } else {
+        preventOverauto();
+      }
+    },
   },
   methods: {
+    childByValue(payload){
+      console.log('接受子组件value:'+payload)
+    },
     ...mapMutations({
       set_i18n: "SET_i18n",
       setScrollValue: "SET_scrollValue",
@@ -174,16 +243,47 @@ export default {
       this.setScrollValue(scrollTop);
     },
     //回到顶部
-    backTotop() {
+    backTotop: _debounce(function () {
       if (this.scrollValue == 0) {
         return;
       }
       window.scrollTo({ top: 0, right: 0, behavior: "smooth" });
-    },
+    }, 150),
   },
 };
 </script>
 <style lang="scss" scoped>
+@import "@/styles/minxin.scss";
+::v-deep .el-dialog__body {
+  @include displayEle;
+}
+#Boxindex {
+  position: relative;
+}
+.el-footer {
+  margin: 45px 0;
+  // position: absolute;
+  // bottom: 0px;
+  .el-row {
+    .el-col {
+      .copyright {
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 0;
+        color: #777;
+        margin: 15px 0;
+      }
+      ul {
+        @include displayEle;
+        img {
+          margin: 0px 10px;
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
 .el-header,
 .el-main {
   padding: 0px;
@@ -192,16 +292,25 @@ export default {
   box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 1033;
+  background-color: #fff;
 }
-.el-header,
-.el-footer {
+
+.el-header {
   color: #666;
   line-height: 60px;
 }
 
 .el-main {
+  margin-top: 70px;
   //   background-color: #e9eef3;
   color: #333;
+  min-height: 700px;
+  margin-bottom: 20px;
 }
 
 body > .el-container {
@@ -229,9 +338,7 @@ body > .el-container {
 }
 .topTabList {
   min-width: 410px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include displayEleBetween;
   font-size: 14px;
   -moz-user-select: none;
   -khtml-user-select: none;
@@ -261,7 +368,7 @@ body > .el-container {
   max-width: 1112px;
   margin-right: auto;
   margin-left: auto;
-  height: 2000px;
+  // height: 2000px;
 }
 .headerRow {
   max-width: 1280px;
@@ -289,6 +396,7 @@ a:active {
   left: 0;
   height: 2px;
   background-color: #409eff;
+  z-index: 9999;
   // width: 10%;
 }
 @-webkit-keyframes fadeIn {
@@ -312,5 +420,9 @@ a:active {
   position: fixed;
   bottom: 45px;
   right: 45px;
+}
+
+::v-deep .el-tabs__nav-wrap::after {
+  display: none;
 }
 </style>
