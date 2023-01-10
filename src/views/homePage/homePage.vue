@@ -59,6 +59,10 @@
       <div class="content_right">
         <div class="aside">
           <div class="introduction">
+            <img class="introduction_img"
+              src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
+              alt=""
+            />
             <h3>博客简介</h3>
             <p>
               关注Web前端开发，坚持分享实践教程的个人博客。梦想一旦付诸行动就会变得神圣，再小的努力乘以365天都会变得伟大，每多学点知识就可少写一行代码。
@@ -93,6 +97,8 @@
             <el-tag type="warning">v-else</el-tag>
             <el-tag type="warning">v-bind</el-tag>
             <el-tag type="danger">v-show</el-tag>
+            <el-tag type="success">babel</el-tag>
+            <el-tag type="info">v-model</el-tag>
           </div>
         </div>
       </div>
@@ -351,6 +357,8 @@ $background_color: #fff;
   .aside {
     padding: 5px;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
     // background-color: $background_color;
     h3 {
       // display: inline-block;
@@ -365,23 +373,32 @@ $background_color: #fff;
     }
     p {
       color: #666666;
-      margin: 10px 0 0;
+      // margin: 10px 0 0;
       line-height: 24px;
       text-align: justify;
       text-align-last: left;
       text-indent: 2rem;
       letter-spacing: 2px;
-      padding-bottom: 5px;
-      padding: 0 5px;
+      padding: 10px 10px;
+      background-color: $background_color;
     }
     .introduction {
-      background-color: $background_color;
-      margin-bottom: 15px;
+      // background-color: $background_color;
+      margin-bottom: 25px;
       border-radius: 5px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      &_img {
+        flex: 1;
+        width: 100%;
+        height: 100px;
+        margin-bottom: 25px;
+      }
     }
     .categories {
       border-radius: 5px;
-      margin-bottom: 15px;
+      margin-bottom: 25px;
       ul > li > span:nth-child(even) {
         background-color: #ccc;
         border-radius: 50%;
