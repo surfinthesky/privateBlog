@@ -38,9 +38,9 @@ export default new Router({
           component: loadView("about"),
         },
         {
-          path: "/archive",
-          name: "Archive",
-          component: loadView("Archive"),
+          path: "/timeline",
+          name: "timeLIne",
+          component: loadView("timeLIne"),
         },
         {
           path: "/music",

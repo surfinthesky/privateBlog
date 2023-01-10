@@ -119,12 +119,12 @@ export default {
           path: "/homepage",
         },
         {
-          name: "About",
+          name: "关于",
           path: "/about",
         },
         {
-          name: "Archive",
-          path: "/archive",
+          name: "时间线",
+          path: "/timeline",
         },
         {
           name: "Music",
