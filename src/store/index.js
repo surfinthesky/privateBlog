@@ -3,12 +3,14 @@ import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import notes from "./modules/notes";
 import about from "./modules/about";
+import editor from "./modules/editor";
 Vue.use(Vuex);
 export default new Vuex.Store({
   //数据
   state: {
     i18nValue: "", //是否国际化
     scrollValue: 0, //滚动条滚动距离
+    activeName: "/homepage", //默认页面路径
   },
   //类似于组件中的计算属性
   getters: {
@@ -22,6 +24,11 @@ export default new Vuex.Store({
     SET_scrollValue(state, payload) {
       state.scrollValue = payload;
     },
+    SET_activeName(state, payload) {
+      state.activeName = payload;
+      console.log(state.activeName,'state.activeName');
+
+    },
   },
   //异步
   actions: {},
@@ -29,6 +36,7 @@ export default new Vuex.Store({
   modules: {
     notes,
     about,
+    editor
   },
   //持久化
   plugins: [createPersistedState()],

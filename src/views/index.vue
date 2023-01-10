@@ -54,15 +54,6 @@
       <el-main>
         <div class="container-lg">
           <router-view> </router-view>
-          <div v-html="value" class="markdown-body"></div>
-          <div class="main_maven">
-            <mavon-editor
-              :ishljs="true"
-              @change="$change"
-              @save="$save"
-              v-model="value"
-            />
-          </div>
         </div>
       </el-main>
       <!-- 底部 -->
@@ -112,22 +103,14 @@
 </template>
 <script>
 import $ from "jquery";
-import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto, _debounce } from "@/utils/utils";
 import testFile from "./testFile/testFile.vue";
-import Marked from "marked";
-import highlight from "highlight.js";
-import "highlight.js/styles/github.css";
-import mavonEditor from "mavon-editor";
-import "mavon-editor/dist/css/index.css";
-Vue.use(mavonEditor);
 export default {
   name: "homePage",
   components: { testFile },
   data() {
     return {
-      value: "",
       clientHeightValue: 0,
       progressValue: 0, //顶部进度宽度百分比
       topTabList: [
@@ -161,31 +144,12 @@ export default {
         },
       ],
       activeIndex: "", //默认选中索引
-      activeName: "/homepage", //默认页面路径
       show: false,
       dialogVisible: false,
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   console.log(to)
-  //   if (to.name === "homePage") {
-  //     next((vm) => {
-  //       vm.activeName = "/" + to.name.toLowerCase();
-  //     });
-  //   } else {
-  //     next((vm) => {
-  //       vm.activeName = "/" + to.name.toLowerCase();
-  //       console.log("------");
-  //       console.log("------");
-  //       console.log("------");
-  //       console.log(vm.activeName);
-  //     });
-  //   }
-  // },
   mounted() {
     this.successValue();
-    console.log(this.$route);
-    // this.activeName = this.$route.path;
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
@@ -201,7 +165,13 @@ export default {
     // console.log(fun);
   },
   computed: {
-    ...mapState(["scrollValue"]),
+    ...mapState(["scrollValue", "activeName"]),
+    // activeName: {
+    //   get() {
+    //     return this.activeName;
+    //   },
+    //   set() {},
+    // },
   },
   watch: {
     scrollValue(newVal) {
@@ -223,45 +193,10 @@ export default {
     childByValue(payload) {
       console.log("接受子组件value:" + payload);
     },
-    $change(pos, $file) {
-      console.log(pos);
-      console.log($file);
-    },
-    $save(pos, $file) {
-      console.log(pos);
-      console.log($file);
-      this.initMaven($file);
-    },
-    initMaven(content) {
-      const rendererMD = new Marked.Renderer();
-      rendererMD.image = function (href, title, text) {
-        return `<img onclick="showMarkedImage(event, '${href}')" src="${href}" alt="${text}" title="${
-          title ? title : ""
-        }">`;
-      };
-      Marked.setOptions({
-        renderer: rendererMD,
-        gfm: true,
-        tables: true,
-        breaks: false,
-        pedantic: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        highlight: function (code) {
-          return highlight.highlightAuto(code).value;
-        },
-      });
-
-      this.value = Marked(content).replace(
-        /<pre>/g,
-        "<pre class='language-html'>"
-      );
-      console.log(this.value);
-    },
     ...mapMutations({
       set_i18n: "SET_i18n",
       setScrollValue: "SET_scrollValue",
+      setActiveName: "SET_activeName",
     }),
     //计算步骤条宽度根据滚动条滚动距离
     successValue() {
@@ -278,9 +213,11 @@ export default {
       });
     },
     handleClick(tab) {
+      console.log(tab);
       this.$router.push({
         path: tab.name,
       });
+      this.setActiveName(tab.name);
     },
     //tab的切换
     activeClick(index) {
