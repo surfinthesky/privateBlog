@@ -11,8 +11,8 @@
                 alt=""
                 srcset=""
               /> -->
-              </div
-          ></el-col>
+            </div></el-col
+          >
           <el-col :xs="4" :sm="12" :md="12" :lg="12" :xl="12"
             ><div class="grid-content bg-purple-light">
               <ul class="topTabList">
@@ -53,9 +53,7 @@
       <!-- 内容区 -->
       <el-main>
         <div class="container-lg">
-<<<<<<< HEAD
           <router-view> </router-view>
-=======
           <div v-html="value" class="markdown-body"></div>
           <div class="main_maven">
             <mavon-editor
@@ -65,8 +63,6 @@
               v-model="value"
             />
           </div>
-          <router-view></router-view>
->>>>>>> 26ac9ce (“editor”)
         </div>
       </el-main>
       <!-- 底部 -->
@@ -92,7 +88,7 @@
           </el-col>
         </el-row>
       </el-footer>
-    <testFile @childByValue="childByValue"></testFile>
+      <testFile @childByValue="childByValue"></testFile>
 
       <!-- 微信图片弹窗 -->
       <el-dialog :visible.sync="dialogVisible" :modal-append-to-body="true">
@@ -118,20 +114,17 @@
 import $ from "jquery";
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-<<<<<<< HEAD
 import { preventOverHidden, preventOverauto, _debounce } from "@/utils/utils";
-import  testFile from "./testFile/testFile.vue"
-=======
+import testFile from "./testFile/testFile.vue";
 import Marked from "marked";
 import highlight from "highlight.js";
 import "highlight.js/styles/github.css";
 import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 Vue.use(mavonEditor);
->>>>>>> 26ac9ce (“editor”)
 export default {
   name: "homePage",
-  components:{testFile},
+  components: { testFile },
   data() {
     return {
       value: "",
@@ -227,10 +220,9 @@ export default {
     },
   },
   methods: {
-<<<<<<< HEAD
-    childByValue(payload){
-      console.log('接受子组件value:'+payload)
-=======
+    childByValue(payload) {
+      console.log("接受子组件value:" + payload);
+    },
     $change(pos, $file) {
       console.log(pos);
       console.log($file);
@@ -238,7 +230,7 @@ export default {
     $save(pos, $file) {
       console.log(pos);
       console.log($file);
-      this.initMaven($file)
+      this.initMaven($file);
     },
     initMaven(content) {
       const rendererMD = new Marked.Renderer();
@@ -264,9 +256,8 @@ export default {
       this.value = Marked(content).replace(
         /<pre>/g,
         "<pre class='language-html'>"
-      ); 
-      console.log(this.value)
->>>>>>> 26ac9ce (“editor”)
+      );
+      console.log(this.value);
     },
     ...mapMutations({
       set_i18n: "SET_i18n",
