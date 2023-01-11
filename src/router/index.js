@@ -23,6 +23,23 @@ export default new Router({
       component: MainPage,
     },
     {
+      path: "/editor",
+      name: "editor",
+      component: loadView("sysEditor/editorIndex"),
+      children: [
+        {
+          path: "/editor/num",
+          name: "num",
+          component: loadView("sysEditor/num"),
+        },
+        {
+          path: "/editor/authorpage",
+          name: "authorpage",
+          component: loadView("sysEditor/authorPage"),
+        },
+      ],
+    },
+    {
       path: "/index",
       name: "index",
       component: index,

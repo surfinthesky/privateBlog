@@ -11,8 +11,8 @@
                 alt=""
                 srcset=""
               /> -->
-              </div
-          ></el-col>
+            </div></el-col
+          >
           <el-col :xs="4" :sm="12" :md="12" :lg="12" :xl="12"
             ><div class="grid-content bg-purple-light">
               <ul class="topTabList">
@@ -79,7 +79,7 @@
           </el-col>
         </el-row>
       </el-footer>
-    <testFile @childByValue="childByValue"></testFile>
+      <testFile @childByValue="childByValue"></testFile>
 
       <!-- 微信图片弹窗 -->
       <el-dialog :visible.sync="dialogVisible" :modal-append-to-body="true">
@@ -105,10 +105,10 @@
 import $ from "jquery";
 import { mapState, mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto, _debounce } from "@/utils/utils";
-import  testFile from "./testFile/testFile.vue"
+import testFile from "./testFile/testFile.vue";
 export default {
   name: "homePage",
-  components:{testFile},
+  components: { testFile },
   data() {
     return {
       clientHeightValue: 0,
@@ -144,31 +144,12 @@ export default {
         },
       ],
       activeIndex: "", //默认选中索引
-      activeName: "/homepage", //默认页面路径
       show: false,
       dialogVisible: false,
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   console.log(to)
-  //   if (to.name === "homePage") {
-  //     next((vm) => {
-  //       vm.activeName = "/" + to.name.toLowerCase();
-  //     });
-  //   } else {
-  //     next((vm) => {
-  //       vm.activeName = "/" + to.name.toLowerCase();
-  //       console.log("------");
-  //       console.log("------");
-  //       console.log("------");
-  //       console.log(vm.activeName);
-  //     });
-  //   }
-  // },
   mounted() {
     this.successValue();
-    console.log(this.$route);
-    // this.activeName = this.$route.path;
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
@@ -184,7 +165,13 @@ export default {
     // console.log(fun);
   },
   computed: {
-    ...mapState(["scrollValue"]),
+    ...mapState(["scrollValue", "activeName"]),
+    // activeName: {
+    //   get() {
+    //     return this.activeName;
+    //   },
+    //   set() {},
+    // },
   },
   watch: {
     scrollValue(newVal) {
@@ -203,12 +190,13 @@ export default {
     },
   },
   methods: {
-    childByValue(payload){
-      console.log('接受子组件value:'+payload)
+    childByValue(payload) {
+      console.log("接受子组件value:" + payload);
     },
     ...mapMutations({
       set_i18n: "SET_i18n",
       setScrollValue: "SET_scrollValue",
+      setActiveName: "SET_activeName",
     }),
     //计算步骤条宽度根据滚动条滚动距离
     successValue() {
@@ -225,9 +213,11 @@ export default {
       });
     },
     handleClick(tab) {
+      console.log(tab);
       this.$router.push({
         path: tab.name,
       });
+      this.setActiveName(tab.name);
     },
     //tab的切换
     activeClick(index) {
