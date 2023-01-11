@@ -18,6 +18,7 @@
               <h2>
                 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋
               </h2>
+              <div class="acticle_dscibe">组件使用后时出现报错，解决方案</div>
               <div class="article_info">
                 <span class="p_author" title="作者"
                   ><i class="el-icon-user">&nbsp;Author</i></span
@@ -38,7 +39,7 @@
               </div>
               <span class="p_read"
                 ><el-button type="text" @click="drawerMe"
-                  >阅读全部</el-button
+                  >阅读全文</el-button
                 ></span
               >
             </div>
@@ -48,7 +49,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
+          :page-sizes="[10]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
           :total="400"
@@ -59,14 +60,16 @@
       <div class="content_right">
         <div class="aside">
           <div class="introduction">
-            <img class="introduction_img"
+            <img
+              class="introduction_img"
               src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
               alt=""
             />
             <h3>博客简介</h3>
             <p>
               关注于自身代码提升，坚持分享实践教程的个人博客。在日常开发中遇到的问题总结出来，分享大家，相互借鉴。
-              也希望大家多多指出不足之处，相互提升。每天进步一点点，终会厚积薄发。借用一句话：冰冻三尺 非一日之寒。
+              也希望大家多多指出不足之处，相互提升。每天进步一点点，终会厚积薄发。借用一句话：冰冻三尺
+              非一日之寒。
             </p>
           </div>
           <div class="categories">
@@ -79,6 +82,17 @@
               <li><span>Javascript</span><span>0</span></li>
               <li><span>Little knowledge</span><span>3</span></li>
               <li><span>更多...</span></li>
+            </ul>
+          </div>
+          <div class="hot_acticle">
+            <h3>热门文章</h3>
+            <ul>
+              <li><span>No1</span><span> 第一个前端博客</span></li>
+              <li><span>No2</span><span> 第一个前端博客</span></li>
+              <li><span>No3</span><span> 第一个前端博客</span></li>
+              <li><span>No4</span><span> 第一个前端博客</span></li>
+              <li><span>No5</span><span> 第一个前端博客</span></li>
+
             </ul>
           </div>
           <div class="alllabels">
@@ -281,7 +295,7 @@ $background_color: #fff;
     width: 71%;
     .el-pagination {
       position: absolute;
-      bottom: 0px;
+      bottom: 20px;
       display: flex;
       // flex: 1;
       width: 100%;
@@ -306,7 +320,7 @@ $background_color: #fff;
     background-color: $background_color;
     margin-bottom: 15px;
     padding: 10px 15px;
-    min-height: 85px;
+    min-height: 90px;
     border-radius: 5px;
   }
   .content_left_ul > li:hover {
@@ -331,6 +345,12 @@ $background_color: #fff;
       box-orient: vertical;
       -webkit-line-clamp: 2;
     }
+  }
+  .acticle_dscibe {
+    margin-top: 10px;
+    min-height: 30px;
+    color: rgba(0, 0, 0, 0.43);
+    font-size: 12px;
   }
   .article_info {
     position: absolute;
@@ -395,6 +415,36 @@ $background_color: #fff;
         width: 100%;
         height: 100px;
         margin-bottom: 25px;
+      }
+    }
+    .hot_acticle{
+      margin-bottom: 25px;
+      ul{
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      }
+      ul>li{
+        background-color: $background_color;
+        padding:10px 8px;
+        cursor: pointer;
+      }
+      ul > li >span:nth-child(odd){
+        font-size: 16px;
+      }
+      ul > li:nth-child(1) >span:nth-child(1){
+        color: rgb(244, 78, 3);
+      }
+      ul > li:nth-child(2) >span:nth-child(1){
+        color: rgb(212, 24, 0);
+      }
+      ul > li:nth-child(3) >span:nth-child(1){
+        color: rgb(243, 126, 33);
+      }
+      ul > li:nth-child(4) >span:nth-child(1){
+        color: rgb(243, 33, 45);
+      }
+      ul > li:nth-child(5) >span:nth-child(1){
+        color: rgb(33, 45, 243);
       }
     }
     .categories {

@@ -1,103 +1,109 @@
 <template>
-    <div class="loginBox">
-      <el-form
-        ref="ruleForm"
-        :model="ruleForm"
-        label-width="150px"
-        :rules="rules"
-      >
-        <el-form-item label="账号" prop="name">
-          <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="pass">
-          <el-input
-            type="password"
-            v-model="ruleForm.pass"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-  
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')"
-            >登录</el-button
-          >
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-  </template>
+  <div class="loginBox">
+    <el-form
+      ref="ruleForm"
+      :model="ruleForm"
+      label-width="150px"
+      :rules="rules"
+    >
+      <el-form-item label="账号" prop="name">
+        <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="pass">
+        <el-input
+          type="password"
+          v-model="ruleForm.pass"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="submitForm('ruleForm')"
+          >登录</el-button
+        >
+        <el-button @click="resetForm('ruleForm')">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
   <script>
-  // import {loading} from "@/utils/utils"
-  export default {
-    data() {
-      var validateName = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error("请输入账号"));
-        } else {
-          this.$nextTick(() => {
-            if (this.ruleForm.checkPass !== "") {
-              this.$refs.ruleForm.validateField("name");
-            }
-          });
-          callback();
-        }
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === "") {
-          callback(new Error("请输入密码"));
-        } else {
-          this.$nextTick(() => {
-            if (this.ruleForm.checkPass !== "") {
-              this.$refs.ruleForm.validateField("pass");
-            }
-          });
-          callback();
-        }
-      };
-      return {
-        ruleForm: {
-          name: "admin",
-          pass: "123",
-        },
-        rules: {
-          name: [{ validator: validateName, trigger: "blur" }],
-          pass: [{ validator: validatePass, trigger: "blur" }],
-        },
-      };
-    },
-    mounted() {
-      // this.$router.push({ name: "homePage" });
-    },
-    methods: {
-      submitForm(formName) {
-        console.log(formName);
-        console.log(this.$refs.ruleForm);
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            console.log('???')
-            this.$router.push({ path: "/homePage" });
-          } else {
-            console.log("error submit!!");
-            return false;
+// import {loading} from "@/utils/utils"
+export default {
+  data() {
+    var validateName = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入账号"));
+      } else {
+        setTimeout(() => {
+          if (!this.$refs.ruleForm) {
+            return;
           }
-        });
+          if (this.ruleForm.checkPass !== "") {
+            this.$refs.ruleForm.validateField("name");
+          }
+        }, 10);
+        callback();
+      }
+    };
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        //Vue用elementui表单校验报错: Error in v-on handlerError in v-on handler: "RangeError: Maximum call stack size exceeded"
+        setTimeout(() => {
+          if (!this.$refs.ruleForm) {
+            return;
+          }
+          if (this.ruleForm.checkPass !== "") {
+            this.$refs.ruleForm.validateField("pass");
+          }
+        }, 10);
+        callback();
+      }
+    };
+    return {
+      ruleForm: {
+        name: "admin",
+        pass: "123",
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
+      rules: {
+        name: [{ validator: validateName, trigger: "blur" }],
+        pass: [{ validator: validatePass, trigger: "blur" }],
       },
+    };
+  },
+  mounted() {},
+  methods: {
+    submitForm() {
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          if (this.ruleForm.name == "sysmaner") {
+            this.$router.replace({ path: "/editor/num" });
+          } else {
+            this.$router.replace({ path: "/homePage" });
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
-  };
-  </script>
+    resetForm() {
+      this.$refs.ruleForm.resetFields();
+    },
+  },
+};
+</script>
   <style lang="scss" scoped>
-  .loginBox {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .el-form {
-      min-width: 500px;
-    }
+.loginBox {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .el-form {
+    min-width: 500px;
   }
-  </style>
+}
+</style>
   

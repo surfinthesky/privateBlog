@@ -29,7 +29,7 @@
           <el-header class="editor_sys_main_head">
             <div class="editor_sys_main_head_lft">
               <ul>
-                <li><i class="el-icon-house">&nbsp;用户端入口</i></li>
+                <li @click="goLogin" class="editor_sys_main_head_lft_login"><i class="el-icon-house" >&nbsp;用户端入口</i></li>
                 <li></li>
                 <li></li>
               </ul>
@@ -119,6 +119,9 @@ export default {
         this.loginOutSow = false;
       }
     },
+    goLogin(){
+      this.$router.push({path:"/"})
+    },
     ...mapMutations("editor", ["SET_activePath"]),
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -161,6 +164,9 @@ $background_color: #fff;
       @include displayEleBetween;
       color: #666666;
       &_lft {
+        &_login{
+          cursor:pointer
+        }
       }
       &_rht {
         ul > li {
@@ -193,7 +199,7 @@ $background_color: #fff;
   text-align: center;
 }
 .el-header {
-  margin: 0px 0 10px 210px;
+  margin: 0px 0 0px 210px;
 }
 .el-aside {
   text-align: center;
@@ -205,5 +211,8 @@ $background_color: #fff;
 .el-main {
   margin: 10px;
   padding: 10px 0 10px 200px;
+}
+.el-menu{
+  border-right: 0px;
 }
 </style>
