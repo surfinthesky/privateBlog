@@ -73,7 +73,6 @@ export default {
         /<pre>/g,
         "<pre class='language-html'>"
       );
-      console.log(this.value);
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）

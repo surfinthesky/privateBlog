@@ -4,7 +4,7 @@
     <div class="editor_sys_main">
       <el-container>
         <el-aside width="200px">
-          <div>Conf's Blog Admin{{activePath}}</div>
+          <div>Conf's Blog sysmaner</div>
           <el-menu
             :default-active="activePath"
             class="el-menu-vertical-demo"
@@ -102,15 +102,9 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    console.log(this.$store)
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
-    console.log(this.activePath)
-  },
-  beforeUnloadEvent(payload,event){
-    console.log(payload)
-    console.log(event)
   },
   beforeCreate() {
     this.$router.push({
