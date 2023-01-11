@@ -66,7 +66,7 @@
       };
     },
     mounted() {
-      this.$router.push({ name: "homePage" });
+      // this.$router.push({ name: "homePage" });
     },
     methods: {
       submitForm(formName) {
@@ -75,7 +75,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log('???')
-            this.$router.push({ name: "homePage" });
+            this.$router.push({ path: "/homePage" });
           } else {
             console.log("error submit!!");
             return false;
