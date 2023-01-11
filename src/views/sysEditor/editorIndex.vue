@@ -4,7 +4,7 @@
     <div class="editor_sys_main">
       <el-container>
         <el-aside width="200px">
-          <div>Conf's Blog sysmaner</div>
+          <div class="editor_sys_main_top">CongTou's Blog sysmaner</div>
           <el-menu
             :default-active="activePath"
             class="el-menu-vertical-demo"
@@ -26,11 +26,27 @@
           </el-menu>
         </el-aside>
         <el-container>
-          <el-header>Header</el-header>
+          <el-header class="editor_sys_main_head">
+            <div class="editor_sys_main_head_lft">
+              <ul>
+                <li><i class="el-icon-house">&nbsp;用户端入口</i></li>
+                <li></li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="editor_sys_main_head_rht">
+              <ul>
+                <li @click="loginOut">
+                  <i :class="activeChange">&nbsp;管理员</i>
+                  <span v-show="loginOutSow">退出</span>
+                </li>
+              </ul>
+            </div>
+          </el-header>
           <el-main>
             <router-view></router-view>
           </el-main>
-          <el-footer>Footer</el-footer>
+          <!-- <el-footer>Footer</el-footer> -->
         </el-container>
       </el-container>
     </div>
@@ -40,7 +56,7 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-import {mapState,mapMutations} from 'vuex';
+import { mapState, mapMutations } from "vuex";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
@@ -82,17 +98,28 @@ export default {
           sortNum: 6,
         },
       ],
+      activeChange: "el-icon-caret-bottom",
+      loginOutSow: false,
     };
   },
   //监听属性 类似于data概念
   computed: {
-    ...mapState('editor',['activePath'])//映射子module下state中属性，需要开启命名空间 namespaced: true,
+    ...mapState("editor", ["activePath"]), //映射子module下state中属性，需要开启命名空间 namespaced: true,
   },
   //监控data中的数据变化
   watch: {},
   //方法集合
   methods: {
-    ...mapMutations('editor',['SET_activePath']),
+    loginOut() {
+      if (this.activeChange == "el-icon-caret-bottom") {
+        this.activeChange = "el-icon-caret-top";
+        this.loginOutSow = true;
+      } else {
+        this.activeChange = "el-icon-caret-bottom";
+        this.loginOutSow = false;
+      }
+    },
+    ...mapMutations("editor", ["SET_activePath"]),
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -101,11 +128,9 @@ export default {
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {
-  },
+  created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-  },
+  mounted() {},
   beforeCreate() {
     this.$router.push({
       path: "/editor/num",
@@ -119,31 +144,66 @@ export default {
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 /*@import url(); 引入公共css类*/
+@import "@/styles/minxin.scss";
+$background_color: #fff;
 .editor_sys {
   &_main {
+    &_top {
+      height: 120px;
+      text-align: center;
+      line-height: 120px;
+      background-color: $background_color;
+    }
+    &_head {
+      padding: 0 20px;
+      @include displayEleBetween;
+      color: #666666;
+      &_lft {
+      }
+      &_rht {
+        ul > li {
+          position: relative;
+        }
+        ul > li > span {
+          position: absolute;
+          bottom: -60px;
+          left: -50px;
+          display: inline-block;
+          width: 120px;
+          height: 50px;
+          line-height: 50px;
+          border: 1px solid #e9e9e9;
+          background-color: #fff;
+          box-shadow: 0 2px 12px 0 #0000001a;
+          cursor: pointer;
+          z-index: 99;
+        }
+        ul > li > span:hover {
+          color: #409eff;
+        }
+      }
+    }
   }
 }
 .el-header,
 .el-footer {
-  background-color: #b3c0d1;
-  color: #333;
+  background-color: $background_color;
   text-align: center;
-  line-height: 60px;
 }
-
+.el-header {
+  margin: 0px 0 10px 210px;
+}
 .el-aside {
-  background-color: #d3dce6;
-  color: #333;
   text-align: center;
-  line-height: 200px;
+  position: fixed;
+  height: 100%;
+  background-color: $background_color;
 }
 
 .el-main {
-  background-color: #e9eef3;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
+  margin: 10px;
+  padding: 10px 0 10px 200px;
 }
 </style>

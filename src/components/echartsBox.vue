@@ -9,7 +9,7 @@ export default {
   name: "echarts",
   data() {
     return {
-      timeArr:[]
+      timeArr: [],
     };
   },
   mounted() {
@@ -22,8 +22,21 @@ export default {
       let myChart = echarts.init(chartDom);
       let option;
       option = {
+        title: {
+          top:"10px",
+          text: "本周博客访问量趋势图",
+          textStyle:{
+            fontSize:"14px",
+            color:"#333333",
+            fontWeight:"normal",
+          }
+        },
         legend: {
+          top: "2%",
           data: ["访问人数量（人/天）", "博客访问ip数（人/天）"],
+        },
+        tooltip: {
+          trigger: "axis",
         },
         xAxis: {
           type: "category",
@@ -61,6 +74,8 @@ export default {
 <style lang="scss" scoped>
 #echarts_box {
   height: 500px;
+  margin-bottom: 10px;
+  background-color: #fff;
 }
 </style>
 >
