@@ -47,9 +47,9 @@ export default {
           color: "#0bbd87",
         },
         {
-          content: "支持使用图标3",
+          content: "个人博客开始时间",
           timestamp: "2018-04-12 20:46",
-          completTime: getDateFormatComplete(new Date()),
+          completTime: "2012-12-16",
           size: "large",
           color: "#0bbd87",
         },

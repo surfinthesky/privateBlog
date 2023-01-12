@@ -37,6 +37,26 @@ export default new Router({
           name: "authorpage",
           component: loadView("sysEditor/authorPage"),
         },
+        {
+          path: "/editor/messagepage",
+          name: "messagepage",
+          component: loadView("sysEditor/messagePage"),
+        },
+        {
+          path: "/editor/commentpage",
+          name: "commentpage",
+          component: loadView("sysEditor/commentPage"),
+        },
+        {
+          path: "/editor/classification",
+          name: "classification",
+          component: loadView("sysEditor/classifiCation"),
+        },
+        {
+          path: "/editor/timeline",
+          name: "timeline",
+          component: loadView("sysEditor/timeLine"),
+        },
       ],
     },
     {

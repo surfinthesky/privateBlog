@@ -131,7 +131,7 @@ export default {
           path: "/music",
         },
         {
-          name: "其他",
+          name: "日常案列",
           path: "/others",
         },
         {
@@ -208,6 +208,7 @@ export default {
       $w.on("scroll", function () {
         window.requestAnimationFrame(function () {
           let perc = Math.max(0, Math.min(1, $w.scrollTop() / sHeight));
+          // console.log(perc)
           _that.progressValue = perc * 100 + "%";
         });
       });
@@ -299,7 +300,7 @@ export default {
   margin-top: 70px;
   //   background-color: #e9eef3;
   color: #333;
-  min-height: 700px;
+  min-height: 650px;
   margin-bottom: 20px;
 }
 
