@@ -75,7 +75,7 @@
           <div class="categories">
             <h3>文章分类</h3>
             <ul>
-              <li><span>Vue</span><span>121</span></li>
+              <li><span>Vue</span><span>1212</span></li>
               <li><span>React</span><span>3</span></li>
               <li><span>Java</span><span>44</span></li>
               <li><span>Mysql</span><span>11</span></li>
