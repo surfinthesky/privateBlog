@@ -243,7 +243,7 @@ export default {
       this.drawer = true;
     },
     handleClose(done) {
-      this.$confirm("确认关闭？1")
+      this.$confirm("确认关闭？2")
         .then(() => {
           done();
         })
