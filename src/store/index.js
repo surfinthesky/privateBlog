@@ -26,8 +26,6 @@ export default new Vuex.Store({
     },
     SET_activeName(state, payload) {
       state.activeName = payload;
-      console.log(state.activeName,'state.activeName');
-
     },
   },
   //异步

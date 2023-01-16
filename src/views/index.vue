@@ -166,12 +166,14 @@ export default {
   },
   computed: {
     ...mapState(["scrollValue", "activeName"]),
-    // activeName: {
-    //   get() {
-    //     return this.activeName;
-    //   },
-    //   set() {},
-    // },
+    activeName: {
+      get(value) {
+        return value.$route.path;
+      },
+      set(newVal) {
+        return newVal
+      },
+    },
   },
   watch: {
     scrollValue(newVal) {
@@ -214,7 +216,6 @@ export default {
       });
     },
     handleClick(tab) {
-      console.log(tab);
       this.$router.push({
         path: tab.name,
       });

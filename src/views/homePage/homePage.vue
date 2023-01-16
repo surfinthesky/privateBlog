@@ -75,7 +75,7 @@
           <div class="categories">
             <h3>文章分类</h3>
             <ul>
-              <li><span>Vue</span><span>1212</span></li>
+              <li><span>Vue</span><span>121</span></li>
               <li><span>React</span><span>3</span></li>
               <li><span>Java</span><span>44</span></li>
               <li><span>Mysql</span><span>11</span></li>
@@ -137,6 +137,7 @@
         ></el-table-column>
         <el-table-column property="address" label="地址"></el-table-column>
       </el-table> -->
+      <messagebox></messagebox>
     </el-dialog>
   </div>
 </template>
@@ -148,8 +149,12 @@ import highlight from "highlight.js";
 import { mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto } from "@/utils/utils";
 import { getDateFormatComplete } from "@/utils/formDate";
+import messagebox from '@/components/messageCom.vue'
 export default {
   name: "vueInternationalI18n",
+  components:{
+    messagebox
+  },
   data() {
     return {
       value: "",
@@ -208,7 +213,6 @@ export default {
           title ? title : ""
         }">`;
       };
-      console.log(highlight);
       Marked.setOptions({
         renderer: rendererMD,
         gfm: true,
