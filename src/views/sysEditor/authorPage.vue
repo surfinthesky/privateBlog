@@ -64,8 +64,10 @@
                 placeholder="活动区域"
                 style="width: 100%"
               >
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+                <el-option label="react" value="react"></el-option>
+                <el-option label="vue" value="vue"></el-option>
+                <el-option label="echarts" value="echarts"></el-option>
+                <el-option label="javascript" value="javascript"></el-option>
               </el-select>
             </el-col>
           </el-form-item>
@@ -113,6 +115,8 @@ import "highlight.js/styles/github.css";
 import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 Vue.use(mavonEditor);
+import axios from "axios"; // 引入axios
+import { getDateFormat } from "@/utils/formDate";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 
@@ -132,31 +136,31 @@ export default {
         articleDate: "",
         articleHtmlText: "",
       },
-      labelData:[
+      labelData: [
         {
-          labelName:"访客ip",
-          propName:"date"
+          labelName: "访客ip",
+          propName: "date",
         },
         {
-          labelName:"操作类型",
-          propName:"name"
+          labelName: "操作类型",
+          propName: "name",
         },
         {
-          labelName:"操作内容",
+          labelName: "操作内容",
         },
         {
-          labelName:"访客定位",
+          labelName: "访客定位",
         },
         {
-          labelName:"访客来源",
-          propName:"address"
+          labelName: "访客来源",
+          propName: "address",
         },
         {
-          labelName:"浏览器",
+          labelName: "浏览器",
         },
         {
-          labelName:"访问时间",
-        }
+          labelName: "访问时间",
+        },
       ],
       rules: {
         articleTitle: [
@@ -200,10 +204,29 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    set_article(data) {
+      axios({
+        url: `http://localhost:3000/addarticle`,
+        method: "post",
+        data: data || {},
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          // alert("submit!");
+          let obj = {
+            articleDate: getDateFormat(this.ruleForm.articleDate),
+            articleCreatTime: getDateFormat(new Date()),
+          };
+          // console.log({ ...this.ruleForm, ...obj });
+          this.set_article({ ...this.ruleForm, ...obj });
         } else {
           console.log("error submit!!");
           return false;
@@ -266,7 +289,7 @@ export default {
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 /*@import url(); 引入公共css类*/
 @import "@/styles/minxin.scss";
 .upload-demo {

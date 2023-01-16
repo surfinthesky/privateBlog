@@ -7,7 +7,7 @@ const service = axios.create({
       ? ""
       : process.env.NODE_ENV === "pre"
         ? ""
-        : "http://127.0.0.1:8888",
+        : "localhost:3000",
   timeout: 15000, // 请求超时时间
 });
 // request拦截器
@@ -21,6 +21,7 @@ service.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log(error);
     this.$message({
       type: "warning",
       message: "请求异常，请稍后再试～",
@@ -28,7 +29,7 @@ service.interceptors.request.use(
   }
 );
 
-// respone拦截器，实现鉴权刷新
+// response拦截器，实现鉴权刷新
 service.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -50,7 +51,7 @@ service.interceptors.response.use(
     if (error.response.status === 401) {
       if (config.url != config.baseURL + "/refresh") {
         // 判断上一次请求是否是刷新请求。不判断的话，容易出现一直刷新的bug
-        const retryreq = new Promise((resolve, reject) => {
+        const retryreq = new Promise((resolve) => {
           // 必须使用promise，否则不会被返回执行上一布操作
           // 使用refresh接口
           refresh({ refresh_token: sessionStorage.getItem("refresh_token") })
@@ -75,7 +76,7 @@ service.interceptors.response.use(
           type: "warning",
           message: "登录失效，请重新登录",
         });
-        removeToken();
+        // removeToken();
         sessionStorage.clear();
         location.reload();
       }
