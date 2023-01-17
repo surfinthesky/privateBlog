@@ -86,10 +86,10 @@
           </div>
         </el-upload>
         <el-form-item style="text-align: right">
-          <el-button type="primary" @click="submitForm('ruleForm')"
+          <el-button type="primary" :loading="btnloading" @click="submitForm"
             >立即创建</el-button
           >
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
       <div class="main_maven">
@@ -115,8 +115,9 @@ import "highlight.js/styles/github.css";
 import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 Vue.use(mavonEditor);
-import axios from "axios"; // 引入axios
 import { getDateFormat } from "@/utils/formDate";
+import { addarticle } from "@/api/user";
+// import { _debounce } from "@/utils/utils";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 
@@ -127,6 +128,7 @@ export default {
     //这里存放数据
     return {
       article_show: false,
+      btnloading: false,
       titleText: "文章管理",
       ruleForm: {
         articleTitle: "",
@@ -204,37 +206,39 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    set_article(data) {
-      axios({
-        url: `http://localhost:3000/addarticle`,
-        method: "post",
-        data: data || {},
-      })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitForm() {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          // alert("submit!");
           let obj = {
             articleDate: getDateFormat(this.ruleForm.articleDate),
             articleCreatTime: getDateFormat(new Date()),
           };
-          // console.log({ ...this.ruleForm, ...obj });
-          this.set_article({ ...this.ruleForm, ...obj });
+          this.btnloading = true;
+          addarticle({ ...this.ruleForm, ...obj }).then((res) => {
+            if (res.data.message == "success") {
+              this.$message({
+                type: "success",
+                message: "已添加成功～",
+              });
+              this.btnloading = false;
+              this.resetForm();
+              this.article_show = false;
+            } else {
+              this.$message({
+                type: "success",
+                message: "请求异常，请稍后再试～",
+              });
+              this.btnloading = false;
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$refs.ruleForm.resetFields();
     },
     $change(pos, $file) {
       console.log(pos);

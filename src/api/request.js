@@ -1,5 +1,5 @@
 import axios from "axios"; // 引入axios
-import { refresh } from "@/api/user"; // 封装好的refresh(鉴权需要刷新)接口
+// import { refresh } from "@/api/user"; // 封装好的refresh(鉴权需要刷新)接口
 // 创建axios实例
 const service = axios.create({
   baseURL:
@@ -7,7 +7,7 @@ const service = axios.create({
       ? ""
       : process.env.NODE_ENV === "pre"
         ? ""
-        : "localhost:3000",
+        : "http://172.20.10.12:3333",
   timeout: 15000, // 请求超时时间
 });
 // request拦截器
@@ -15,6 +15,7 @@ service.interceptors.request.use(
   (config) => {
     // Do something before request is sent
     let token = sessionStorage.getItem("access_token"); // 我的用户权限token存储再sessionStorage中，可根据业务需要修改代码
+    console.log(token,'token')
     if (token) {
       config.headers["Authorization"] = "Bearer " + token; // 让请求header携带access_token。可根据业务需要修改代码
     }
@@ -34,6 +35,7 @@ service.interceptors.response.use(
   (response) => response,
   (error) => {
     const config = error.config; // 可以试着打印config看看具体是些什么
+    console.log(error)
     // 这里我对多数的状态码进行了一个统一整理。
     if (error.response.status === 400) {
       this.$message({
@@ -54,20 +56,21 @@ service.interceptors.response.use(
         const retryreq = new Promise((resolve) => {
           // 必须使用promise，否则不会被返回执行上一布操作
           // 使用refresh接口
-          refresh({ refresh_token: sessionStorage.getItem("refresh_token") })
-            .then((res) => {
-              let data = res.data.data;
-              // 更新token
-              sessionStorage.setItem("refresh_token", data.refresh_token);
-              sessionStorage.setItem("access_token", data.access_token);
-              config.headers["Authorization"] =
-                "Bearer " + sessionStorage.getItem("access_token");
-              config.baseURL = "";
-              resolve(service(config)); // 必须resolve
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          resolve(service(config));
+          // refresh({ refresh_token: sessionStorage.getItem("refresh_token") })
+          //   .then((res) => {
+          //     let data = res.data.data;
+          //     // 更新token
+          //     sessionStorage.setItem("refresh_token", data.refresh_token);
+          //     sessionStorage.setItem("access_token", data.access_token);
+          //     config.headers["Authorization"] =
+          //       "Bearer " + sessionStorage.getItem("access_token");
+          //     config.baseURL = "";
+          //     resolve(service(config)); // 必须resolve
+          //   })
+          //   .catch((error) => {
+          //     console.log(error);
+          //   });
         });
         return retryreq;
       } else {

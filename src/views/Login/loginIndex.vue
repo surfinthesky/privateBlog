@@ -26,7 +26,8 @@
     </el-form>
   </div>
 </template>
-  <script>
+<script>
+import { login } from "@/api/user";
 // import {loading} from "@/utils/utils"
 export default {
   data() {
@@ -63,8 +64,8 @@ export default {
     };
     return {
       ruleForm: {
-        name: "admin",
-        pass: "123",
+        name: "admin123",
+        pass: "admin123",
       },
       rules: {
         name: [{ validator: validateName, trigger: "blur" }],
@@ -80,6 +81,14 @@ export default {
           if (this.ruleForm.name == "sysmaner") {
             this.$router.replace({ path: "/editor/num" });
           } else {
+            login({
+              username: this.ruleForm.name,
+              password: this.ruleForm.pass,
+            }).then((res) => {
+              if (res.data.message == "success") {
+                sessionStorage.setItem("access_token", res.data.token);
+              }
+            });
             this.$router.replace({ path: "/homePage" });
           }
         } else {
@@ -94,7 +103,7 @@ export default {
   },
 };
 </script>
-  <style lang="scss" scoped>
+<style lang="scss" scoped>
 .loginBox {
   width: 100%;
   height: 100vh;
@@ -106,4 +115,3 @@ export default {
   }
 }
 </style>
-  
