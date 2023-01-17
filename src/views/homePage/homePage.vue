@@ -148,7 +148,7 @@ export default {
     };
   },
    mounted() {
-    console.log(getUserlist)
+    console.log(getUserlist,'')
     let arr = getUserlist().then((res) => {
       console.log(res);
     });
