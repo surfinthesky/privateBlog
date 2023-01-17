@@ -1,22 +1,24 @@
 <!--  -->
 <template>
   <div class="message_box">
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="" prop="desc">
-        <el-input type="textarea" v-model="ruleForm.desc" placeholder="请填写评论"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >提交</el-button
-        >
-      </el-form-item>
-    </el-form>
+    <div class="message_box_top">
+      <div class="message_box_top_imgbox">
+        <img
+          data-v-da920a76=""
+          src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
+          alt=""
+          class="message_img"
+        />
+      </div>
+
+      <el-input
+        type="textarea"
+        v-model="ruleForm.desc"
+        placeholder="请填写评论"
+      ></el-input>
+    </div>
+
+    <el-button type="primary" size="small" @click="submitForm">提交</el-button>
   </div>
 </template>
 
@@ -26,7 +28,7 @@
 
 export default {
   //import引入的组件需要注入到对象中才能使用
-  name:"messagebox",
+  name: "messagebox",
   components: {},
   data() {
     //这里存放数据
@@ -35,8 +37,6 @@ export default {
         desc: "",
       },
       rules: {
-  
-
         desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
       },
     };
@@ -47,19 +47,10 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    submitForm() {
+
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
+
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
@@ -76,4 +67,34 @@ export default {
 </script>
 <style scoped lang='scss'>
 /*@import url(); 引入公共css类*/
+@import "@/styles/minxin.scss";
+.message_box {
+  margin-top: 30px;
+  .message_img {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px
+  }
+  ::v-deep .el-form-item__content {
+    @include displayflex;
+  }
+  ::v-deep  .el-button--small{
+      float: right;
+      margin-top: 15px;
+    }
+  ::v-deep .el-textarea__inner {
+    resize: none;
+    height: 62px;
+    width: 500px
+  }
+  &_top {
+    @include displayflex;
+    &_imgbox {
+      max-width: 50px;
+      max-height: 50px;
+      margin-right: 15px;
+      margin-top: 2px;
+    }
+  }
+}
 </style>

@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 管理端首页 -->
 <template>
   <div class="editor_sys">
     <div class="editor_sys_main">
@@ -8,8 +8,7 @@
           <el-menu
             :default-active="activePath"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
+            @select="activeSelect"
             :collapse="isCollapse"
             :router="true"
           >
@@ -127,21 +126,18 @@ export default {
       this.$router.push({path:"/"})
     },
     ...mapMutations("editor", ["SET_activePath"]),
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    activeSelect(key) {
+      // console.log(key, keyPath);
+      this.SET_activePath(key)
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+  },
   beforeCreate() {
-    this.$router.push({
-      path: "/editor/num",
-    });
+
   }, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前

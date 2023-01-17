@@ -87,9 +87,9 @@ export default {
             }).then((res) => {
               if (res.data.message == "success") {
                 sessionStorage.setItem("access_token", res.data.token);
+                this.$router.replace({ path: "/homePage" });
               }
             });
-            this.$router.replace({ path: "/homePage" });
           }
         } else {
           console.log("error submit!!");

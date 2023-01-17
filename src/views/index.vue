@@ -248,6 +248,7 @@ export default {
 @import "@/styles/minxin.scss";
 ::v-deep .el-dialog__body {
   @include displayEle;
+  flex-direction: column;
 }
 #Boxindex {
   position: relative;
