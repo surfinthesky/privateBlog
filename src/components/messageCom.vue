@@ -17,8 +17,11 @@
         placeholder="请填写评论"
       ></el-input>
     </div>
-
-    <el-button type="primary" size="small" @click="submitForm">提交</el-button>
+    <div class="message_box_num">
+      <div><span style="color: #6190e8">4</span>&nbsp;条评论</div>
+      <div><span>surfinthesky</span></div>
+    </div>
+    <el-button type="primary" size="small" @click="submitForm">评论</el-button>
   </div>
 </template>
 
@@ -69,7 +72,11 @@ export default {
 /*@import url(); 引入公共css类*/
 @import "@/styles/minxin.scss";
 .message_box {
-  margin-top: 30px;
+  margin-top: 40px;
+  width: 100%;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  @include postionRelaele;
   .message_img {
     width: 100%;
     height: 100%;
@@ -85,7 +92,7 @@ export default {
   ::v-deep .el-textarea__inner {
     resize: none;
     height: 62px;
-    width: 500px
+    // width: 500px
   }
   &_top {
     @include displayflex;
@@ -95,6 +102,12 @@ export default {
       margin-right: 15px;
       margin-top: 2px;
     }
+  }
+  &_num{
+    @include displayEleBetween;
+    @include postionele;
+    width: 100%;
+    padding: 0px 2px;
   }
 }
 </style>

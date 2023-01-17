@@ -16,7 +16,16 @@
     flex-direction: column;
     align-items: center;
 }
-//元素轴向排列
+//元素
 @mixin displayflex(){
     display: flex;
+}
+//元素定位
+@mixin postionele(){
+    position: absolute;
+    top: -22px;
+}
+//元素定位
+@mixin postionRelaele(){
+    position: relative;
 }
