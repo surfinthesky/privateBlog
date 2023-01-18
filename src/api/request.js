@@ -7,7 +7,7 @@ const service = axios.create({
       ? ""
       : process.env.NODE_ENV === "pre"
         ? ""
-        : "http://172.20.10.12:3333",
+        : "http://localhost:3333",
   timeout: 15000, // 请求超时时间
 });
 // request拦截器
@@ -15,7 +15,7 @@ service.interceptors.request.use(
   (config) => {
     // Do something before request is sent
     let token = sessionStorage.getItem("access_token"); // 我的用户权限token存储再sessionStorage中，可根据业务需要修改代码
-    console.log(token,'token')
+    // console.log(token,'token')
     if (token) {
       config.headers["Authorization"] = "Bearer " + token; // 让请求header携带access_token。可根据业务需要修改代码
     }

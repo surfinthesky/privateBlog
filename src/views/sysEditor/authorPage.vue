@@ -64,10 +64,11 @@
                 placeholder="活动区域"
                 style="width: 100%"
               >
-                <el-option label="react" value="react"></el-option>
-                <el-option label="vue" value="vue"></el-option>
-                <el-option label="echarts" value="echarts"></el-option>
-                <el-option label="javascript" value="javascript"></el-option>
+                <el-option label="react" value="React"></el-option>
+                <el-option label="vue" value="Vue"></el-option>
+                <el-option label="echarts" value="Echarts"></el-option>
+                <el-option label="javascript" value="Javascript"></el-option>
+                <el-option label="java" value="Java"></el-option>
               </el-select>
             </el-col>
           </el-form-item>
@@ -213,6 +214,7 @@ export default {
             articleDate: getDateFormat(this.ruleForm.articleDate),
             articleCreatTime: getDateFormat(new Date()),
           };
+          console.log(this.ruleForm);
           this.btnloading = true;
           addarticle({ ...this.ruleForm, ...obj }).then((res) => {
             if (res.data.message == "success") {
@@ -239,15 +241,16 @@ export default {
     },
     resetForm() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm.articleHtmlText = "";
     },
     $change(pos, $file) {
-      console.log(pos);
-      console.log($file);
+      // console.log(pos);
+      // console.log($file);
+      this.initMaven($file);
     },
-    $save(pos, $file) {
-      console.log(pos);
-      console.log($file);
-      //   this.initMaven($file);
+    $save() {
+      // console.log(pos);
+      // console.log($file);
     },
     initMaven(content) {
       const rendererMD = new Marked.Renderer();
@@ -269,7 +272,6 @@ export default {
           return highlight.highlightAuto(code).value;
         },
       });
-
       this.ruleForm.articleHtmlText = Marked(content).replace(
         /<pre>/g,
         "<pre class='language-html'>"
@@ -279,11 +281,7 @@ export default {
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    this.initMaven(
-      '## 二：修改elementUI样式？修改第三方组件的某个样式，很多样式往往被嵌在很多层样式里。我们才不想关注那么多，只想修改当前class这时可以使用/deep/样式穿透，无论要修改的样式藏得有多深，只需要使用/deep/.classname就可以搞定。需要注意，/deep/必须写在设置了scoped属性的style里，才能生效```<style lang="scss" scoped>.myStyle{/deep/ .content{background:red}}</style>```'
-    );
-  },
+  mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
