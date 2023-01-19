@@ -12,7 +12,55 @@
     <div class="homePageBox">
       <!-- 内容左侧 -->
       <div class="content_left">
-        <ul class="content_left_ul">
+        <div class="infinite-list" style="overflow: auto">
+          <ul
+            class="content_left_ul"
+            v-infinite-scroll="load"
+            infinite-scroll-disabled="disabled"
+          >
+            <li v-for="(item, index) in tableList" :key="index">
+              <div class="text_left">
+                <h2>
+                  <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
+                  {{ item.articleTitle }}
+                </h2>
+                <div class="acticle_dscibe">
+                  <!-- 组件使用后时出现报错，解决方案 -->
+                  {{ item.articleDscibe }}
+                </div>
+                <div class="article_info">
+                  <span class="p_author" title="作者"
+                    ><i class="el-icon-user">&nbsp;Author</i></span
+                  >
+                  <span
+                    ><i class="el-icon-folder" title="分类"
+                      >&nbsp;{{ item.articleDiff }}</i
+                    ></span
+                  >
+                  <span class="p_time"
+                    ><i class="el-icon-date" title="时间"
+                      >&nbsp;{{ item.articleDate }}</i
+                    ></span
+                  >
+                  <span class="p_time"
+                    ><i class="el-icon-collection-tag" title="时间"
+                      >&nbsp;v-for</i
+                    ></span
+                  >
+                </div>
+                <span class="p_read"
+                  ><el-button type="text" @click="drawerMe(item)"
+                    >阅读全文</el-button
+                  ></span
+                >
+              </div>
+            </li>
+          </ul>
+          <p v-if="loading">加载中...</p>
+          <p v-if="noMore">没有更多了</p>
+        </div>
+
+        <ul class="content_left_ul" style="display: none">
           <li v-for="(item, index) in tableList" :key="index">
             <div class="text_left">
               <h2>
@@ -52,6 +100,7 @@
           </li>
         </ul>
         <el-pagination
+          style="display: none"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -137,6 +186,8 @@
 </template>
 
 <script>
+import infiniteScroll from "vue-infinite-scroll";
+import Vue from "vue";
 import Marked from "marked";
 import highlight from "highlight.js";
 // import "highlight.js/styles/github.css";
@@ -145,6 +196,7 @@ import { preventOverHidden, preventOverauto } from "@/utils/utils";
 import { getDateFormatComplete } from "@/utils/formDate";
 import messagebox from "@/components/messageCom.vue";
 import { getarticlelist } from "@/api/user";
+Vue.use(infiniteScroll);
 export default {
   name: "vueInternationalI18n",
   components: {
@@ -156,19 +208,24 @@ export default {
       date: new Date().toDateString(),
       drawer: false,
       direction: "rtl",
-      currentPage: 1,
+      currentPage: 0,
       currentPagesize: 10,
-      currentPagetotal: 0,
+      currentPagetotal: 1,
       tableList: [],
       drawerarticleTitle: "",
+      loading: false,
+      noMore: false,
     };
   },
   mounted() {
-    this.getPagelist();
     this.date = getDateFormatComplete(new Date());
-    // this.initMaven();
   },
   created() {},
+  computed: {
+    disabled() {
+      return this.loading || this.noMore;
+    },
+  },
   watch: {
     drawer(newval) {
       if (newval == true) {
@@ -179,8 +236,31 @@ export default {
     },
   },
   methods: {
+    returnLoading() {
+      return this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.1)",
+      });
+    },
+    load() {
+      this.returnLoading();
+      preventOverHidden();
+      this.getPagelist();
+    },
     //获取首页文章
     getPagelist() {
+      if (this.tableList.length !== this.currentPagetotal) {
+        this.currentPage += 1;
+      } else {
+        setTimeout(() => {
+          this.returnLoading().close();
+          preventOverauto();
+        }, 600);
+        this.noMore = true;
+        return;
+      }
       getarticlelist({
         pagenum: this.currentPage,
         pagesize: this.currentPagesize,
@@ -188,7 +268,12 @@ export default {
         res.data.result.map((item) => {
           item.articleDate = getDateFormatComplete(item.articleDate);
         });
-        this.tableList = res.data.result;
+        this.tableList = [...this.tableList, ...res.data.result];
+        console.log(this.tableList);
+        setTimeout(() => {
+          this.returnLoading().close();
+          preventOverauto();
+        }, 600);
         this.currentPagetotal = res.data.count;
       });
     },
@@ -260,7 +345,22 @@ export default {
 @import "@/styles/minxin.scss";
 @import "@/styles/github-markdown.css";
 $background_color: #fff;
-
+.infinite-list {
+  height: 1250px;
+  width: 100%;
+}
+.infinite-list::-webkit-scrollbar {
+  width: 0 !important;
+}
+.infinite-list .infinite-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  background: #e8f3fe;
+  margin: 10px;
+  color: #7dbcfc;
+}
 .international {
   margin-bottom: 25px;
 }
@@ -327,7 +427,7 @@ $background_color: #fff;
     background-color: $background_color;
     margin-bottom: 15px;
     padding: 10px 15px;
-    min-height: 90px;
+    min-height: 110px;
     border-radius: 5px;
   }
 

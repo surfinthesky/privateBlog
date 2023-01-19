@@ -6597,6 +6597,11 @@ vue-i18n@8.2.1:
   resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.2.1.tgz#7e21fed5f18dec6025992522500e9bd62cbe6668"
   integrity sha512-eiqkUBP9uoADmHa1vz0jLS/JNvR+dODjn2nz14/ZD14hTaWpbOXoUZ0C5Nd2vbP6vOaxXjmkvkzJn/VISvX1BQ==
 
+vue-infinite-scroll@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/vue-infinite-scroll/-/vue-infinite-scroll-2.0.2.tgz#ca37a91fe92ee0ad3b74acf8682c00917144b711"
+  integrity sha512-n+YghR059YmciANGJh9SsNWRi1YZEBVlODtmnb/12zI+4R72QZSWd+EuZ5mW6auEo/yaJXgxzwsuhvALVnm73A==
+
 vue-loader@^17.0.0:
   version "17.0.0"
   resolved "https://registry.npmmirror.com/vue-loader/-/vue-loader-17.0.0.tgz#2eaa80aab125b19f00faa794b5bd867b17f85acb"
