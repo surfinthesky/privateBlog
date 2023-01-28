@@ -28,6 +28,7 @@
 </template>
 <script>
 import { login } from "@/api/user";
+import {mapMutations} from "vuex"
 // import {loading} from "@/utils/utils"
 export default {
   data() {
@@ -75,6 +76,7 @@ export default {
   },
   mounted() {},
   methods: {
+    ...mapMutations({setActiveName: "SET_activeName"}),
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -87,7 +89,9 @@ export default {
             }).then((res) => {
               if (res.data.message == "success") {
                 sessionStorage.setItem("access_token", res.data.token);
-                this.$router.replace({ path: "/homePage" });
+                sessionStorage.setItem("refreshToken", res.data.refreshToken);
+                // this.setActiveName("/homepage")
+                this.$router.replace({ path: "/homepage" });
               }
             });
           }

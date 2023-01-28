@@ -32,18 +32,3 @@ export function getarticlelist(data) {
 }
 
 
-const pro1 = new Promise((resolve) => {
-  resolve(1);
-})
-const pro2 = new Promise((resolve) => {
-  resolve(2);
-})
-
-export function getUserlist() {
- return Promise.all([pro1, pro2]).then((values) => {
-    return new Promise((resolve) => {
-      console.log(values)
-      resolve(values)
-    })
-  });
-}

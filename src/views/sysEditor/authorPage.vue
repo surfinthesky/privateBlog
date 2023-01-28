@@ -64,10 +64,11 @@
                 placeholder="活动区域"
                 style="width: 100%"
               >
-                <el-option label="react" value="react"></el-option>
-                <el-option label="vue" value="vue"></el-option>
-                <el-option label="echarts" value="echarts"></el-option>
-                <el-option label="javascript" value="javascript"></el-option>
+                <el-option label="react" value="React"></el-option>
+                <el-option label="vue" value="Vue"></el-option>
+                <el-option label="echarts" value="Echarts"></el-option>
+                <el-option label="javascript" value="Javascript"></el-option>
+                <el-option label="java" value="Java"></el-option>
               </el-select>
             </el-col>
           </el-form-item>
@@ -107,20 +108,22 @@
 </template>
 
 <script>
-import tableCom from "../../components/tableCom.vue";
 import Vue from "vue";
+import { Base64 } from 'js-base64';
 import Marked from "marked";
 import highlight from "highlight.js";
 import "highlight.js/styles/github.css";
 import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 Vue.use(mavonEditor);
+Vue.use(Base64);
+
 import { getDateFormat } from "@/utils/formDate";
 import { addarticle } from "@/api/user";
 // import { _debounce } from "@/utils/utils";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import tableCom from "../../components/tableCom.vue";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
@@ -133,11 +136,12 @@ export default {
       ruleForm: {
         articleTitle: "",
         articleDscibe: "",
-        articlePic: "",
+        articlePic: "https://gd-hbimg.huaban.com/66fab9c48fe58cd01c9cef2a4e056d10e7a15fc512b7c5-Ovfo5P_fw658",
         articleDiff: "",
         articleDate: "",
         articleHtmlText: "",
       },
+      baseText: "",
       labelData: [
         {
           labelName: "访客ip",
@@ -178,8 +182,8 @@ export default {
           { required: true, message: "请输入标题详述", trigger: "blur" },
           {
             min: 5,
-            max: 25,
-            message: "长度在 5 到 25 个字符",
+            max: 45,
+            message: "长度在 5 到 45 个字符",
             trigger: "blur",
           },
         ],
@@ -213,8 +217,15 @@ export default {
             articleDate: getDateFormat(this.ruleForm.articleDate),
             articleCreatTime: getDateFormat(new Date()),
           };
+          let submitForm = {
+            articleTitle: this.ruleForm.articleTitle,
+            articleDscibe: this.ruleForm.articleDscibe,
+            articlePic: this.ruleForm.articlePic,
+            articleDiff: this.ruleForm.articleDiff,
+            articleHtmlText: this.baseText,
+          };
           this.btnloading = true;
-          addarticle({ ...this.ruleForm, ...obj }).then((res) => {
+          addarticle({ ...submitForm, ...obj }).then((res) => {
             if (res.data.message == "success") {
               this.$message({
                 type: "success",
@@ -239,15 +250,16 @@ export default {
     },
     resetForm() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm.articleHtmlText = "";
     },
     $change(pos, $file) {
-      console.log(pos);
-      console.log($file);
+      // console.log(pos);
+      // console.log($file);
+      this.initMaven($file);
     },
-    $save(pos, $file) {
-      console.log(pos);
-      console.log($file);
-      //   this.initMaven($file);
+    $save() {
+      // console.log(pos);
+      // console.log($file);
     },
     initMaven(content) {
       const rendererMD = new Marked.Renderer();
@@ -269,21 +281,18 @@ export default {
           return highlight.highlightAuto(code).value;
         },
       });
-
       this.ruleForm.articleHtmlText = Marked(content).replace(
         /<pre>/g,
         "<pre class='language-html'>"
       );
+      this.baseText = Base64.encode(this.ruleForm.articleHtmlText)
+      console.log(this.baseText)
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    this.initMaven(
-      '## 二：修改elementUI样式？修改第三方组件的某个样式，很多样式往往被嵌在很多层样式里。我们才不想关注那么多，只想修改当前class这时可以使用/deep/样式穿透，无论要修改的样式藏得有多深，只需要使用/deep/.classname就可以搞定。需要注意，/deep/必须写在设置了scoped属性的style里，才能生效```<style lang="scss" scoped>.myStyle{/deep/ .content{background:red}}</style>```'
-    );
-  },
+  mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
