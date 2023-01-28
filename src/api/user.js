@@ -31,4 +31,10 @@ export function getarticlelist(data) {
   })
 }
 
-
+//获取ip详情
+export function getIpdetails() {
+  return request({
+    url: 'https://restapi.amap.com/v3/ip?ip=114.247.50.2&output=json&key=b1c28ac7c16a6168087271355ae39a89', // 接口名称
+    method: 'get', // 接口方法
+  })
+}

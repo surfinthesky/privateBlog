@@ -70,21 +70,28 @@
                     </div>
                     <div class="article_info">
                       <span class="p_author" title="作者"
-                        ><i class="el-icon-user">&nbsp;Author cong</i></span
+                        ><i class="el-icon-user"
+                          >&nbsp;<span style="color: #666">Author cong</span></i
+                        ></span
                       >
                       <span
                         ><i class="el-icon-folder" title="分类"
-                          >&nbsp;{{ item.articleDiff }}</i
+                          >&nbsp;
+                          <span style="color: #666">
+                            {{ item.articleDiff }}</span
+                          ></i
                         ></span
                       >
                       <span class="p_time"
                         ><i class="el-icon-date" title="时间"
-                          >&nbsp;{{ item.articleDate }}</i
+                          >&nbsp;<span style="color: #666">{{
+                            item.articleDate
+                          }}</span></i
                         ></span
                       >
                       <span class="p_time"
                         ><i class="el-icon-collection-tag" title="时间"
-                          >&nbsp;v-for</i
+                          >&nbsp;<span style="color: #666">标签</span></i
                         ></span
                       >
                     </div>
@@ -197,7 +204,7 @@ import { mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto } from "@/utils/utils";
 import { getDateFormatComplete } from "@/utils/formDate";
 import messagebox from "@/components/messageCom.vue";
-import { getarticlelist } from "@/api/user";
+import { getarticlelist,getIpdetails } from "@/api/user";
 Vue.use(infiniteScroll);
 Vue.use(Base64);
 export default {
@@ -226,6 +233,9 @@ export default {
     this.date = getDateFormatComplete(new Date());
     this.getPagelist();
     console.log(window.returnCitySN);
+    getIpdetails()
+    .then((res)=>{console.log(res);})
+    .then((err)=>{console.log(err);})
   },
   created() {},
   computed: {

@@ -28,7 +28,7 @@
 </template>
 <script>
 import { login } from "@/api/user";
-import {mapMutations} from "vuex"
+import { mapMutations } from "vuex";
 // import {loading} from "@/utils/utils"
 export default {
   data() {
@@ -76,25 +76,34 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapMutations({setActiveName: "SET_activeName"}),
+    ...mapMutations({ setActiveName: "SET_activeName" }),
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          if (this.ruleForm.name == "sysmaner") {
-            this.$router.replace({ path: "/editor/num" });
-          } else {
-            login({
-              username: this.ruleForm.name,
-              password: this.ruleForm.pass,
-            }).then((res) => {
-              if (res.data.message == "success") {
-                sessionStorage.setItem("access_token", res.data.token);
-                sessionStorage.setItem("refreshToken", res.data.refreshToken);
-                // this.setActiveName("/homepage")
+          login({
+            username: this.ruleForm.name,
+            password: this.ruleForm.pass,
+          }).then((res) => {
+            if (res.data.message == "success") {
+              this.$message({
+                type:"success",
+                message:"登录成功"
+              })
+              sessionStorage.setItem("access_token", res.data.token);
+              sessionStorage.setItem("refreshToken", res.data.refreshToken);
+              // this.setActiveName("/homepage")
+              if (this.ruleForm.name == "sysmaner") {
+                this.$router.replace({ path: "/editor/num" });
+              } else {
                 this.$router.replace({ path: "/homepage" });
               }
-            });
-          }
+            }else{
+              this.$message({
+                type:"warning",
+                message:res.data.message
+              })
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
