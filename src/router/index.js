@@ -65,7 +65,7 @@ export default new Router({
       component: index,
       children: [
         {
-          path: "/homePage",
+          path: "/homepage",
           name: "homePage",
           component: loadView("homePage/homePage"),
         },

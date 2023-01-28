@@ -12,93 +12,95 @@
     <div class="homePageBox">
       <!-- 内容左侧 -->
       <div class="content_left">
-        <div class="infinite-list" style="overflow: auto">
+        <div
+          class="infinite-list"
+          :style="{ overflow: overFlow == true ? 'auto' : 'hidden' }"
+        >
           <ul
             class="content_left_ul"
             v-infinite-scroll="load"
             infinite-scroll-disabled="disabled"
           >
-            <li v-for="(item, index) in tableList" :key="index">
-              <div class="text_left">
-                <h2>
-                  <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
-                  {{ item.articleTitle }}
-                </h2>
-                <div class="acticle_dscibe">
-                  <!-- 组件使用后时出现报错，解决方案 -->
-                  {{ item.articleDscibe }}
-                </div>
-                <div class="article_info">
-                  <span class="p_author" title="作者"
-                    ><i class="el-icon-user">&nbsp;Author</i></span
-                  >
-                  <span
-                    ><i class="el-icon-folder" title="分类"
-                      >&nbsp;{{ item.articleDiff }}</i
-                    ></span
-                  >
-                  <span class="p_time"
-                    ><i class="el-icon-date" title="时间"
-                      >&nbsp;{{ item.articleDate }}</i
-                    ></span
-                  >
-                  <span class="p_time"
-                    ><i class="el-icon-collection-tag" title="时间"
-                      >&nbsp;v-for</i
-                    ></span
-                  >
-                </div>
-                <span class="p_read"
-                  ><el-button type="text" @click="drawerMe(item)"
-                    >阅读全文</el-button
-                  ></span
+            <!-- 骨架层 -->
+            <el-skeleton style="" :loading="loadingSk" animated :count="10">
+              <!-- 初始骨架显示 -->
+              <template slot="template">
+                <div
+                  style="
+                    padding: 10px 15px;
+                    margin-bottom: 15px;
+                    min-height: 110px;
+                  "
                 >
-              </div>
-            </li>
+                  <div style="display: flex; flex-direction: column">
+                    <el-skeleton-item variant="h2" style="width: 50%" />
+                    <el-skeleton-item
+                      variant="h3"
+                      style="width: 50%; margin-top: 10px; min-height: 30px"
+                    />
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-items: space-between;
+                      margin-top: 16px;
+                      height: 16px;
+                    "
+                  >
+                    <el-skeleton-item
+                      variant="text"
+                      style="margin-right: 16px"
+                    />
+                    <el-skeleton-item variant="text" style="width: 30%" />
+                  </div>
+                </div>
+              </template>
+              <!-- 最终数据渲染 -->
+              <template>
+                <li v-for="(item, index) in tableList" :key="index">
+                  <div class="text_left">
+                    <h2>
+                      <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
+                      {{ item.articleTitle }}
+                    </h2>
+                    <div class="acticle_dscibe">
+                      <!-- 组件使用后时出现报错，解决方案 -->
+                      {{ item.articleDscibe }}
+                    </div>
+                    <div class="article_info">
+                      <span class="p_author" title="作者"
+                        ><i class="el-icon-user">&nbsp;Author cong</i></span
+                      >
+                      <span
+                        ><i class="el-icon-folder" title="分类"
+                          >&nbsp;{{ item.articleDiff }}</i
+                        ></span
+                      >
+                      <span class="p_time"
+                        ><i class="el-icon-date" title="时间"
+                          >&nbsp;{{ item.articleDate }}</i
+                        ></span
+                      >
+                      <span class="p_time"
+                        ><i class="el-icon-collection-tag" title="时间"
+                          >&nbsp;v-for</i
+                        ></span
+                      >
+                    </div>
+                    <span class="p_read"
+                      ><el-button type="text" @click="drawerMe(item)"
+                        >阅读全文</el-button
+                      ></span
+                    >
+                  </div>
+                </li>
+              </template>
+            </el-skeleton>
+            <p v-if="loading" style="color: #409eff">加载中......</p>
+            <p v-if="noMore" style="color: #409eff">没有更多了......</p>
           </ul>
-          <p v-if="loading">加载中...</p>
-          <p v-if="noMore">没有更多了</p>
         </div>
-
-        <ul class="content_left_ul" style="display: none">
-          <li v-for="(item, index) in tableList" :key="index">
-            <div class="text_left">
-              <h2>
-                <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
-                {{ item.articleTitle }}
-              </h2>
-              <div class="acticle_dscibe">
-                <!-- 组件使用后时出现报错，解决方案 -->
-                {{ item.articleDscibe }}
-              </div>
-              <div class="article_info">
-                <span class="p_author" title="作者"
-                  ><i class="el-icon-user">&nbsp;Author</i></span
-                >
-                <span
-                  ><i class="el-icon-folder" title="分类"
-                    >&nbsp;{{ item.articleDiff }}</i
-                  ></span
-                >
-                <span class="p_time"
-                  ><i class="el-icon-date" title="时间"
-                    >&nbsp;{{ item.articleDate }}</i
-                  ></span
-                >
-                <span class="p_time"
-                  ><i class="el-icon-collection-tag" title="时间"
-                    >&nbsp;v-for</i
-                  ></span
-                >
-              </div>
-              <span class="p_read"
-                ><el-button type="text" @click="drawerMe(item)"
-                  >阅读全文</el-button
-                ></span
-              >
-            </div>
-          </li>
-        </ul>
         <el-pagination
           style="display: none"
           @size-change="handleSizeChange"
@@ -184,10 +186,10 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
-import infiniteScroll from "vue-infinite-scroll";
 import Vue from "vue";
+import infiniteScroll from "vue-infinite-scroll";
+import { Base64 } from "js-base64";
 import Marked from "marked";
 import highlight from "highlight.js";
 // import "highlight.js/styles/github.css";
@@ -197,6 +199,7 @@ import { getDateFormatComplete } from "@/utils/formDate";
 import messagebox from "@/components/messageCom.vue";
 import { getarticlelist } from "@/api/user";
 Vue.use(infiniteScroll);
+Vue.use(Base64);
 export default {
   name: "vueInternationalI18n",
   components: {
@@ -215,10 +218,14 @@ export default {
       drawerarticleTitle: "",
       loading: false,
       noMore: false,
+      overFlow: true,
+      loadingSk: true,
     };
   },
   mounted() {
     this.date = getDateFormatComplete(new Date());
+    this.getPagelist();
+    console.log(window.returnCitySN);
   },
   created() {},
   computed: {
@@ -236,6 +243,11 @@ export default {
     },
   },
   methods: {
+    setLoading() {
+      setTimeout(() => {
+        this.loadingSk = false;
+      }, 1500);
+    },
     returnLoading() {
       return this.$loading({
         lock: true,
@@ -246,6 +258,7 @@ export default {
     },
     load() {
       this.returnLoading();
+      this.overFlow = false;
       preventOverHidden();
       this.getPagelist();
     },
@@ -256,10 +269,14 @@ export default {
       } else {
         setTimeout(() => {
           this.returnLoading().close();
+          this.overFlow = true;
           preventOverauto();
         }, 600);
         this.noMore = true;
         return;
+      }
+      if (this.currentPage == 1) {
+        this.setLoading();
       }
       getarticlelist({
         pagenum: this.currentPage,
@@ -272,6 +289,8 @@ export default {
         console.log(this.tableList);
         setTimeout(() => {
           this.returnLoading().close();
+          console.log(this.currentPage, "this.currentPage");
+          this.overFlow = true;
           preventOverauto();
         }, 600);
         this.currentPagetotal = res.data.count;
@@ -320,8 +339,8 @@ export default {
     drawerMe(payload) {
       this.drawer = true;
       this.drawerarticleTitle = payload.articleTitle;
-      this.initMaven(payload.articleHtmlText);
-      // console.log(payload);
+      this.initMaven(Base64.decode(payload.articleHtmlText));
+      console.log(payload);
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -422,7 +441,7 @@ $background_color: #fff;
     width: 100%;
   }
 
-  .content_left_ul > li {
+  .content_left_ul > div > li {
     display: flex;
     background-color: $background_color;
     margin-bottom: 15px;
@@ -431,7 +450,7 @@ $background_color: #fff;
     border-radius: 5px;
   }
 
-  .content_left_ul > li:hover {
+  .content_left_ul > div > li:hover {
     box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.1);
   }
 

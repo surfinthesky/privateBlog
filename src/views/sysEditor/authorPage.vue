@@ -108,20 +108,22 @@
 </template>
 
 <script>
-import tableCom from "../../components/tableCom.vue";
 import Vue from "vue";
+import { Base64 } from 'js-base64';
 import Marked from "marked";
 import highlight from "highlight.js";
 import "highlight.js/styles/github.css";
 import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 Vue.use(mavonEditor);
+Vue.use(Base64);
+
 import { getDateFormat } from "@/utils/formDate";
 import { addarticle } from "@/api/user";
 // import { _debounce } from "@/utils/utils";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import tableCom from "../../components/tableCom.vue";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
@@ -134,11 +136,12 @@ export default {
       ruleForm: {
         articleTitle: "",
         articleDscibe: "",
-        articlePic: "",
+        articlePic: "https://gd-hbimg.huaban.com/66fab9c48fe58cd01c9cef2a4e056d10e7a15fc512b7c5-Ovfo5P_fw658",
         articleDiff: "",
         articleDate: "",
         articleHtmlText: "",
       },
+      baseText: "",
       labelData: [
         {
           labelName: "访客ip",
@@ -179,8 +182,8 @@ export default {
           { required: true, message: "请输入标题详述", trigger: "blur" },
           {
             min: 5,
-            max: 25,
-            message: "长度在 5 到 25 个字符",
+            max: 45,
+            message: "长度在 5 到 45 个字符",
             trigger: "blur",
           },
         ],
@@ -214,9 +217,15 @@ export default {
             articleDate: getDateFormat(this.ruleForm.articleDate),
             articleCreatTime: getDateFormat(new Date()),
           };
-          console.log(this.ruleForm);
+          let submitForm = {
+            articleTitle: this.ruleForm.articleTitle,
+            articleDscibe: this.ruleForm.articleDscibe,
+            articlePic: this.ruleForm.articlePic,
+            articleDiff: this.ruleForm.articleDiff,
+            articleHtmlText: this.baseText,
+          };
           this.btnloading = true;
-          addarticle({ ...this.ruleForm, ...obj }).then((res) => {
+          addarticle({ ...submitForm, ...obj }).then((res) => {
             if (res.data.message == "success") {
               this.$message({
                 type: "success",
@@ -276,6 +285,8 @@ export default {
         /<pre>/g,
         "<pre class='language-html'>"
       );
+      this.baseText = Base64.encode(this.ruleForm.articleHtmlText)
+      console.log(this.baseText)
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）

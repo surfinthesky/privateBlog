@@ -35,7 +35,7 @@ service.interceptors.response.use(
   (response) => response,
   (error) => {
     const config = error.config; // 可以试着打印config看看具体是些什么
-    console.log(error)
+    // console.log(error)
     // 这里我对多数的状态码进行了一个统一整理。
     if (error.response.status === 400) {
       this.$message({
@@ -51,28 +51,12 @@ service.interceptors.response.use(
     }
     // 重点代码：当服务器返回401状态码时，使用refresh刷新接口更新已有token，再重复上一个接口请求，若失败，退出登录
     if (error.response.status === 401) {
+      // console.log(config.url,'config.url')
+      // console.log(config.baseURL,'config.baseURL')
+      config.headers["Authorization"] = "Bearer " + sessionStorage.getItem("refresh_token");
       if (config.url != config.baseURL + "/refresh") {
         // 判断上一次请求是否是刷新请求。不判断的话，容易出现一直刷新的bug
-        const retryreq = new Promise((resolve) => {
-          // 必须使用promise，否则不会被返回执行上一布操作
-          // 使用refresh接口
-          resolve(service(config));
-          // refresh({ refresh_token: sessionStorage.getItem("refresh_token") })
-          //   .then((res) => {
-          //     let data = res.data.data;
-          //     // 更新token
-          //     sessionStorage.setItem("refresh_token", data.refresh_token);
-          //     sessionStorage.setItem("access_token", data.access_token);
-          //     config.headers["Authorization"] =
-          //       "Bearer " + sessionStorage.getItem("access_token");
-          //     config.baseURL = "";
-          //     resolve(service(config)); // 必须resolve
-          //   })
-          //   .catch((error) => {
-          //     console.log(error);
-          //   });
-        });
-        return retryreq;
+
       } else {
         // 如果刷新失败重新登录
         this.$message({

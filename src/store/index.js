@@ -25,6 +25,7 @@ export default new Vuex.Store({
       state.scrollValue = payload;
     },
     SET_activeName(state, payload) {
+      console.log(payload)
       state.activeName = payload;
     },
   },
