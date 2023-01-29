@@ -171,7 +171,7 @@ export default {
         return value.$route.path;
       },
       set(newVal) {
-        return newVal
+        return newVal;
       },
     },
   },
@@ -252,6 +252,9 @@ export default {
 }
 #Boxindex {
   position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("@/assets/bg.jpg");
 }
 .el-footer {
   margin: 45px 0;

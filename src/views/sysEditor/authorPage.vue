@@ -223,6 +223,7 @@ export default {
             articlePic: this.ruleForm.articlePic,
             articleDiff: this.ruleForm.articleDiff,
             articleHtmlText: this.baseText,
+            articleNum:0 //临时阅读量参数
           };
           this.btnloading = true;
           addarticle({ ...submitForm, ...obj }).then((res) => {

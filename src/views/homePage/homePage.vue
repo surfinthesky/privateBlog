@@ -3,7 +3,7 @@
     <!-- 切换语言 -->
     <!-- tabs标签页 -->
     <div class="carousel">
-      <el-carousel :interval="4000" type="card" height="200px" arrow="never">
+      <el-carousel :interval="4000" type="card" height="180px" arrow="never">
         <el-carousel-item v-for="item in 6" :key="item">
           <h3 class="medium">{{ item }}</h3>
         </el-carousel-item>
@@ -108,8 +108,7 @@
             <p v-if="noMore" style="color: #409eff">没有更多了......</p>
           </ul>
         </div>
-        <el-pagination
-          style="display: none"
+        <!-- <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -117,7 +116,7 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="currentPagetotal"
         >
-        </el-pagination>
+        </el-pagination> -->
       </div>
       <!-- 内容右侧 -->
       <div class="content_right">
@@ -204,7 +203,7 @@ import { mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto } from "@/utils/utils";
 import { getDateFormatComplete } from "@/utils/formDate";
 import messagebox from "@/components/messageCom.vue";
-import { getarticlelist,getIpdetails } from "@/api/user";
+import { getarticlelist, getIpdetails } from "@/api/user";
 Vue.use(infiniteScroll);
 Vue.use(Base64);
 export default {
@@ -232,10 +231,10 @@ export default {
   mounted() {
     this.date = getDateFormatComplete(new Date());
     this.getPagelist();
-    console.log(window.returnCitySN);
-    getIpdetails()
-    .then((res)=>{console.log(res);})
-    .then((err)=>{console.log(err);})
+    getIpdetails().then((res) => {
+      console.log(res.data);
+    });
+    // .then((err)=>{console.log(err);})
   },
   created() {},
   computed: {
@@ -288,6 +287,7 @@ export default {
       if (this.currentPage == 1) {
         this.setLoading();
       }
+      //文章接口api
       getarticlelist({
         pagenum: this.currentPage,
         pagesize: this.currentPagesize,
@@ -306,6 +306,7 @@ export default {
         this.currentPagetotal = res.data.count;
       });
     },
+    // 国际化
     ...mapMutations({
       set_i18n: "SET_i18n",
     }),
@@ -346,27 +347,28 @@ export default {
         },
       });
     },
+    //阅读详情
     drawerMe(payload) {
       this.drawer = true;
       this.drawerarticleTitle = payload.articleTitle;
       this.initMaven(Base64.decode(payload.articleHtmlText));
       console.log(payload);
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(() => {
-          done();
-        })
-        .catch(() => {});
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val;
-      this.getPagelist();
-      console.log(`当前页: ${this.currentPage}`);
-    },
+    // handleClose(done) {
+    //   this.$confirm("确认关闭？")
+    //     .then(() => {
+    //       done();
+    //     })
+    //     .catch(() => {});
+    // },
+    // handleSizeChange(val) {
+    //   console.log(`每页 ${val} 条`);
+    // },
+    // handleCurrentChange(val) {
+    //   this.currentPage = val;
+    //   this.getPagelist();
+    //   console.log(`当前页: ${this.currentPage}`);
+    // },
   },
 };
 </script>
@@ -523,7 +525,7 @@ $background_color: #fff;
 
   //右侧aside
   .aside {
-    padding: 5px;
+    padding: 0px 5px 5px 5px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -566,6 +568,7 @@ $background_color: #fff;
         width: 100%;
         height: 100px;
         margin-bottom: 25px;
+        border-radius: 5px;
       }
     }
 

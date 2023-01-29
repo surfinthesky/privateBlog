@@ -2,12 +2,12 @@ import axios from "axios"; // 引入axios
 // import { refresh } from "@/api/user"; // 封装好的refresh(鉴权需要刷新)接口
 // 创建axios实例
 const service = axios.create({
-  baseURL:
-    process.env.NODE_ENV === "production"
-      ? ""
-      : process.env.NODE_ENV === "pre"
-        ? ""
-        : "http://localhost:3333",
+  // baseURL:
+  //   process.env.NODE_ENV === "production"
+  //     ? ""
+  //     : process.env.NODE_ENV === "pre"
+  //     ? ""
+  //     : "http://localhost:3333",
   timeout: 15000, // 请求超时时间
 });
 // request拦截器
@@ -53,20 +53,9 @@ service.interceptors.response.use(
     if (error.response.status === 401) {
       // console.log(config.url,'config.url')
       // console.log(config.baseURL,'config.baseURL')
-      config.headers["Authorization"] = "Bearer " + sessionStorage.getItem("refresh_token");
-      if (config.url != config.baseURL + "/refresh") {
-        // 判断上一次请求是否是刷新请求。不判断的话，容易出现一直刷新的bug
-
-      } else {
-        // 如果刷新失败重新登录
-        this.$message({
-          type: "warning",
-          message: "登录失效，请重新登录",
-        });
-        // removeToken();
-        sessionStorage.clear();
-        location.reload();
-      }
+      config.headers["Authorization"] =
+        "Bearer " + sessionStorage.getItem("refresh_token");
+      return config;
     }
     return Promise.reject(error);
   }
