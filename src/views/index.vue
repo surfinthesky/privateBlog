@@ -254,7 +254,8 @@ export default {
   position: relative;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url("@/assets/bg.jpg");
+  // background-image: url("@/assets/bg.jpg");
+  @include ele_bg_url("@/assets/bg.jpg")
 }
 .el-footer {
   margin: 45px 0;

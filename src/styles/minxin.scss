@@ -1,31 +1,136 @@
+//元素宽度
+@mixin ele_width($width) {
+  width: $width;
+}
+//元素高度
+@mixin ele_width($height) {
+  height: $height;
+}
+
 //元素居中
-@mixin displayEle(){
-    display: flex;
-    justify-content: center;
-    align-items: center;
+@mixin displayEle() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 //元素两边等距分开居中
-@mixin displayEleBetween(){
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+@mixin displayEleBetween() {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 //元素轴向排列
-@mixin displayEleColumn(){
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+@mixin displayEleColumn() {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-//元素
-@mixin displayflex(){
-    display: flex;
+//元素元素水平一行
+@mixin displayflex() {
+  display: flex;
 }
-//元素定位
-@mixin postionele(){
-    position: absolute;
-    top: -22px;
+//元素水平一行、宽度自适应父元素
+@mixin ele_display_flex1() {
+  display: flex;
+  flex: 1;
 }
-//元素定位
-@mixin postionRelaele(){
-    position: relative;
+//元素固定定位
+@mixin ele_position_fix() {
+  position: fixed;
+}
+//元素绝对定位
+@mixin postionele() {
+  position: absolute;
+  top: -22px;
+}
+//元素相对定位
+@mixin postionRelaele() {
+  position: relative;
+}
+//定位居中
+@mixin ele_position_center() {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+//定位偏移
+@mixin ele_position_direction($top, $rig, $bot, $lf) {
+  top: $top;
+  right: $rig;
+  bottom: $bot;
+  left: $lf;
+}
+
+//元素左浮动
+@mixin ele_float_lef() {
+  float: left;
+}
+//元素右浮动
+@mixin ele_float_rig() {
+  float: right;
+}
+//盒子模型
+@mixin ele_box($box) {
+  box-sizing: $box;
+}
+
+//背景色
+@mixin ele_bg_color($bgcolor) {
+  background-color: $bgcolor;
+}
+//背景图片
+@mixin ele_bg_url($url) {
+  background-image: url($url);
+}
+
+//文字水平及垂直位置
+@mixin ele_text($direction, $height) {
+  text-align: $direction;
+  line-height: $height;
+}
+//文字颜色及字体大小
+@mixin ele_text_color($color, $size) {
+  color: $color;
+  font-size: $size;
+}
+//文字一行并显示省略号
+@mixin ele_text_hidden($url) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+//元素内间距
+@mixin ele_padding($top, $rig, $bot, $lf) {
+  padding: $top $rig $bot $lf;
+}
+//元素外边距
+@mixin ele_margin($top, $rig, $bot, $lf) {
+  margin: $top $rig $bot $lf;
+}
+
+//bordernone
+@mixin ele_bordernone() {
+  border: none;
+}
+//border
+@mixin ele_border($height, $type, $color) {
+  border: $height $type $color;
+}
+//border-radius
+@mixin ele_border($num) {
+  border-radius: $num;
+}
+
+// 用法：$list-bg:red,orange,blue,skyblue,#ccc,#fff;几个元素就几个颜色
+// @include ele_for($list-bg)
+//循环元素发配样式
+@mixin ele_for($list-bg) {
+  @each $c in $list-bg {
+    $i: index($list-bg, $c);
+    &:nth-child(#{$i}) {
+      // #{$i + 1}
+      //+1是除了第一个以外的li
+      background: nth($list-bg, $i);
+    }
+  }
 }

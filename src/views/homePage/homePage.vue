@@ -394,6 +394,10 @@ $background_color: #fff;
 }
 .international {
   margin-bottom: 25px;
+  // @include ele_text(left,50px);
+  // @include ele_border(2px,#fff)
+  // @include ele_border_ra(50%)
+  // @include ele_text_padd(1px,0px,3px,1px)
 }
 
 .el-carousel__item h3 {
