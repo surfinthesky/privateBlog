@@ -30,7 +30,22 @@ export function getarticlelist(data) {
     data: data // 参数
   })
 }
-
+//timeline创建request
+export function addtimeline(data) {
+  return request({
+    url: 'proxyServer2/addtimeline', // 接口名称
+    method: 'post', // 接口方法
+    data: data // 参数
+  })
+}
+//获取timeline
+export function getTimelinelist(data) {
+  return request({
+    url: 'proxyServer2/timelinepage', // 接口名称
+    method: 'post', // 接口方法
+    data: data // 参数
+  })
+}
 //获取ip详情
 export function getIpdetails() {
   return request({

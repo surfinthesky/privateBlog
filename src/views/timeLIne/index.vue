@@ -3,18 +3,19 @@
     <div class="time_block">
       <el-timeline>
         <el-timeline-item
+          placement="top"
           :reverse="false"
           v-for="(item, index) in timeLineArr"
           :key="index"
-          :icon="item.icon"
-          :type="item.type"
-          :color="item.color"
-          :size="item.size"
-          :timestamp="item.completTime"
+          :icon="item.stageIcon"
+          type="success"
+          :color="item.stageColor"
+          size="large"
+          :timestamp="item.stageCompletTime"
         >
           <el-card>
-            <h4>{{ item.content }}</h4>
-            <p>葱头提交于 {{ item.timestamp }}</p>
+            <h4>{{ item.stageContent }}</h4>
+            <p>Author cong 提交于: {{ item.stageTimestamp }}</p>
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -25,38 +26,33 @@
 </template>
 
 <script>
-import { getDateFormatComplete } from "@/utils/formDate";
+import { getDateFormatComplete,getDateFormat } from "@/utils/formDate";
 import { mapMutations } from "vuex";
+import { getTimelinelist } from "@/api/user";
 export default {
   name: "ArchiveIndex",
   data() {
     return {
+      currentPage: 1,
+      currentPagesize: 10,
       timeLineArr: [
-        {
-          content: "支持使用图标1",
-          timestamp: "2018-04-12 20:46",
-          completTime: getDateFormatComplete(new Date()),
-          size: "large",
-          color: "#0bbd87",
-        },
-        {
-          content: "支持使用图标2",
-          timestamp: "2018-04-12 20:46",
-          completTime: getDateFormatComplete(new Date()),
-          size: "large",
-          color: "#0bbd87",
-        },
-        {
-          content: "个人博客开始时间",
-          timestamp: "2018-04-12 20:46",
-          completTime: "2012-12-16",
-          size: "large",
-          color: "#0bbd87",
-        },
       ],
     };
   },
-  mounted() {},
+  mounted() {
+    getTimelinelist({
+      pagenum: this.currentPage,
+      pagesize: this.currentPagesize,
+    }).then((res) => {
+      // let arr =[]
+      res.data.result.map((item)=>{
+        item.stageCompletTime = getDateFormatComplete(item.stageCompletTime)
+        item.stageTimestamp = getDateFormat(item.stageTimestamp)
+      });
+      // arr = res.data.result
+      this.timeLineArr = [...this.timeLineArr,...res.data.result]
+    });
+  },
   created() {},
   methods: {
     ...mapMutations({
@@ -74,6 +70,11 @@ export default {
   }
   p {
     color: #333333;
+  }
+  ::v-deep .el-timeline-item__node--large {
+    left: -5px;
+    width: 19px;
+    height: 19px;
   }
 }
 </style>

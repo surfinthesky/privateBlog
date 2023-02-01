@@ -61,7 +61,7 @@
             <el-col :span="24">
               <el-select
                 v-model="ruleForm.articleDiff"
-                placeholder="活动区域"
+                placeholder="请选择类别"
                 style="width: 100%"
               >
                 <el-option label="react" value="React"></el-option>

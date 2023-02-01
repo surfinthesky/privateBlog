@@ -1,18 +1,9 @@
 <!--  -->
 <template>
   <div class="article_ment">
-    <el-button type="primary" @click="acticle_show = true">创建文章</el-button>
-    <!-- <div v-html="value" class="markdown-body"></div>
-    <div class="main_maven">
-      <mavon-editor
-        :ishljs="true"
-        @change="$change"
-        @save="$save"
-        v-model="value"
-      />
-    </div> -->
-    <!-- 创建文章弹窗 -->
-    <el-dialog :visible.sync="acticle_show" width="80%">
+    <el-button type="primary" @click="article_show = true">创建文章</el-button>
+    <!-- 创建timeline弹窗 -->
+    <el-dialog :visible.sync="article_show" width="80%">
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -22,58 +13,86 @@
       >
         <!-- 1 -->
         <el-row style="display: flex">
-          <el-form-item label="文章标题" prop="acticleTitle" style="width: 50%">
-            <el-col :span="24">
-              <el-input v-model="ruleForm.acticleTitle"></el-input>
-            </el-col>
-          </el-form-item>
           <el-form-item
-            label="标题详述"
-            prop="acticleDscibe"
+            label="时间线内容"
+            prop="stageContent"
             style="width: 50%"
           >
             <el-col :span="24">
-              <el-input v-model="ruleForm.acticleDscibe"></el-input>
+              <el-input
+                v-model="ruleForm.stageContent"
+                placeholder="请填写内容"
+              ></el-input>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="取色器" prop="stageColor" style="width: 50%">
+            <el-col :span="24">
+              <!-- <el-input v-model="ruleForm.stageColor"></el-input> -->
+              <el-color-picker
+                style="width: 100%"
+                v-model="ruleForm.stageColor"
+                show-alpha
+                :predefine="predefineColors"
+              >
+              </el-color-picker>
             </el-col>
           </el-form-item>
         </el-row>
         <!-- 2 -->
         <el-row style="display: flex">
-          <el-form-item label="标题图片" prop="acticlePic" style="width: 50%">
-            <el-input v-model="ruleForm.acticlePic"></el-input>
-          </el-form-item>
-          <el-form-item label="记录日期" required style="width: 50%">
+          <el-form-item label="Icon类型" prop="stageIcon" style="width: 50%">
             <el-col :span="24">
-              <el-form-item prop="acticleDate">
+              <el-select
+                v-model="ruleForm.stageIcon"
+                placeholder="请选择icon类型"
+                style="width: 100%"
+              >
+                <el-option
+                  label="el-icon-ice-tea"
+                  value="el-icon-ice-tea"
+                ></el-option>
+                <el-option
+                  label="el-icon-notebook-2"
+                  value="el-icon-notebook-2"
+                ></el-option>
+                <el-option
+                  label="el-icon-notebook-1"
+                  value="el-icon-notebook-1"
+                ></el-option>
+                <el-option
+                  label="el-icon-sunny"
+                  value="el-icon-sunny"
+                ></el-option>
+                <el-option
+                  label="el-icon-water-cup"
+                  value="el-icon-water-cup"
+                ></el-option>
+                <el-option
+                  label="el-icon-coffee-cup"
+                  value="el-icon-coffee-cup"
+                ></el-option>
+              </el-select>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="完成时间" required style="width: 50%">
+            <el-col :span="24">
+              <el-form-item prop="stageCompletTime">
                 <el-date-picker
                   type="date"
                   placeholder="选择日期"
-                  v-model="ruleForm.acticleDate"
+                  v-model="ruleForm.stageCompletTime"
                   style="width: 100%"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
           </el-form-item>
         </el-row>
-        <!-- 3 -->
-        <el-row style="display: flex">
-          <el-form-item label="文章类别" prop="acticleDiff" style="width: 100%">
-            <el-col :span="24">
-              <el-select
-                v-model="ruleForm.acticleDiff"
-                placeholder="活动区域"
-                style="width: 100%"
-              >
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-col>
-          </el-form-item>
-        </el-row>
-
 
         <el-form-item style="text-align: right">
-          <el-button type="primary" @click="submitForm('ruleForm')"
+          <el-button
+            type="primary"
+            :loading="btnloading"
+            @click="submitForm('ruleForm')"
             >立即创建</el-button
           >
           <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -85,63 +104,80 @@
 </template>
 
 <script>
-import tableCom from "../../components/tableCom.vue";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import tableCom from "../../components/tableCom.vue";
+import { getDateFormat } from "@/utils/formDate";
+import { addtimeline } from "@/api/user";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
   data() {
     //这里存放数据
     return {
-      acticle_show: false,
-      titleText: "文章管理",
+      article_show: false,
+      btnloading: false,
+      titleText: "timeline管理",
       ruleForm: {
-        acticleTitle: "",
-        acticleDscibe: "",
-        acticlePic: "",
-        acticleDate: "",
-        acticleDiff: "",
-        acticleHtmlText: "",
+        stageContent: "",
+        stageTimestamp: "",
+        stageCompletTime: "",
+        stageColor: "rgba(255, 69, 0, 0.68)",
+        stageIcon: "",
       },
-      labelData:[
+      predefineColors: [
+        "#ff4500",
+        "#ff8c00",
+        "#ffd700",
+        "#90ee90",
+        "#00ced1",
+        "#1e90ff",
+        "#c71585",
+        "rgba(255, 69, 0, 0.68)",
+        "rgb(255, 120, 0)",
+        "hsv(51, 100, 98)",
+        "hsva(120, 40, 94, 0.5)",
+        "hsl(181, 100%, 37%)",
+        "hsla(209, 100%, 56%, 0.73)",
+        "#c7158577",
+      ],
+      labelData: [
         {
-          labelName:"访客ip",
-          propName:"date"
+          labelName: "访客ip",
+          propName: "date",
         },
         {
-          labelName:"操作类型",
-          propName:"name"
+          labelName: "操作类型",
+          propName: "name",
         },
         {
-          labelName:"操作内容",
+          labelName: "操作内容",
         },
         {
-          labelName:"访客定位",
+          labelName: "访客定位",
         },
         {
-          labelName:"访客来源",
-          propName:"address"
+          labelName: "访客来源",
+          propName: "address",
         },
         {
-          labelName:"浏览器",
+          labelName: "浏览器",
         },
         {
-          labelName:"访问时间",
-        }
+          labelName: "访问时间",
+        },
       ],
       rules: {
-        acticleTitle: [
-          { required: true, message: "请输入文章标题", trigger: "blur" },
+        stageContent: [
+          { required: true, message: "请输入内容", trigger: "blur" },
           {
             min: 5,
-            max: 25,
-            message: "长度在 5 到 25 个字符",
+            max: 45,
+            message: "长度在 5 到 45 个字符",
             trigger: "blur",
           },
         ],
-        acticleDscibe: [
+        stageColor: [
           { required: true, message: "请输入标题详述", trigger: "blur" },
           {
             min: 5,
@@ -150,13 +186,10 @@ export default {
             trigger: "blur",
           },
         ],
-        acticlePic: [
-          { required: true, message: "请输入标题图片路径", trigger: "blur" },
+        stageIcon: [
+          { required: true, message: "请选择icon", trigger: "change" },
         ],
-        acticleDiff: [
-          { required: true, message: "请选择文章类别", trigger: "change" },
-        ],
-        acticleDate: [
+        stageCompletTime: [
           {
             type: "date",
             required: true,
@@ -176,23 +209,47 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          let obj = {
+            stageTimestamp: getDateFormat(new Date()),
+            stageCompletTime: getDateFormat(this.ruleForm.stageCompletTime),
+          };
+          this.btnloading = true;
+          addtimeline({ ...this.ruleForm, ...obj })
+            .then((res) => {
+              if (res.data.message == "success") {
+                this.$message({
+                  type: "success",
+                  message: "已添加成功～",
+                });
+                this.btnloading = false;
+                this.resetForm();
+                this.article_show = false;
+              } else {
+                this.$message({
+                  type: "success",
+                  message: "请求异常，请稍后再试～",
+                });
+                this.btnloading = false;
+              }
+            })
+            .then((err) => {
+              console.log(err);
+            });
+          // alert("submit!");
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$refs.ruleForm.resetFields();
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-
-  },
+  mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
@@ -211,6 +268,9 @@ export default {
 .article_ment {
   ::v-deep .el-button--primary {
     margin-bottom: 10px;
+  }
+  ::v-deep .el-color-picker__trigger {
+    width: 100%;
   }
 }
 </style>

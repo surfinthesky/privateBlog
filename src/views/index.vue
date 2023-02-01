@@ -251,6 +251,7 @@ export default {
   flex-direction: column;
 }
 #Boxindex {
+  height: 100%;
   position: relative;
   background-repeat: no-repeat;
   background-size: cover;

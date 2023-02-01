@@ -39,10 +39,12 @@ body {
     font-size: 14px;
     background: #FFF;
     color: #000;
+    height: 100%;
 }
 
 html {
     overflow-y: scroll;
+    height: 100%;
 }
 
 ul,
