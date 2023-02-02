@@ -49,6 +49,7 @@
 }
 //定位居中
 @mixin ele_position_center() {
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -81,6 +82,8 @@
 //背景图片
 @mixin ele_bg_url($url) {
   background-image: url($url);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 //文字水平及垂直位置
@@ -107,7 +110,6 @@
 @mixin ele_margin($top, $rig, $bot, $lf) {
   margin: $top $rig $bot $lf;
 }
-
 //bordernone
 @mixin ele_bordernone() {
   border: none;
