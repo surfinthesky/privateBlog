@@ -10,6 +10,9 @@
             class="el-menu-vertical-demo"
             @select="activeSelect"
             :collapse="isCollapse"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b"
             :router="true"
           >
             <el-menu-item
@@ -28,7 +31,9 @@
           <el-header class="editor_sys_main_head">
             <div class="editor_sys_main_head_lft">
               <ul>
-                <li @click="goLogin" class="editor_sys_main_head_lft_login"><i class="el-icon-house" >&nbsp;用户端入口</i></li>
+                <li @click="goLogin" class="editor_sys_main_head_lft_login">
+                  <i class="el-icon-house">&nbsp;用户端入口</i>
+                </li>
                 <li></li>
                 <li></li>
               </ul>
@@ -122,13 +127,13 @@ export default {
         this.loginOutSow = false;
       }
     },
-    goLogin(){
-      this.$router.push({path:"/"})
+    goLogin() {
+      this.$router.push({ path: "/" });
     },
     ...mapMutations("editor", ["SET_activePath"]),
     activeSelect(key) {
       // console.log(key, keyPath);
-      this.SET_activePath(key)
+      this.SET_activePath(key);
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -136,9 +141,7 @@ export default {
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
   },
-  beforeCreate() {
-
-  }, //生命周期 - 创建之前
+  beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
   updated() {}, //生命周期 - 更新之后
@@ -157,15 +160,16 @@ $background_color: #fff;
       height: 120px;
       text-align: center;
       line-height: 120px;
-      background-color: $background_color;
+      color: #fff;
+      background-color: rgb(84, 92, 100);
     }
     &_head {
       padding: 0 20px;
       @include displayEleBetween;
       color: #666666;
       &_lft {
-        &_login{
-          cursor:pointer
+        &_login {
+          cursor: pointer;
         }
       }
       &_rht {
@@ -205,14 +209,15 @@ $background_color: #fff;
   text-align: center;
   position: fixed;
   height: 100%;
-  background-color: $background_color;
+  // background-color: $background_color;
+  background-color: rgb(84, 92, 100);
 }
 
 .el-main {
   margin: 10px;
   padding: 10px 0 10px 200px;
 }
-.el-menu{
+.el-menu {
   border-right: 0px;
 }
 </style>

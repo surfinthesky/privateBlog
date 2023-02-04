@@ -5,18 +5,14 @@
       <div class="Access_box_title">{{ title }}</div>
       <el-table :data="tableData" :border="true" stripe style="width: 100%">
         <el-table-column
+          show-overflow-tooltip
           :prop="item.propName"
           :label="item.labelName"
           v-for="(item, index) in labelData"
           :key="index"
         >
         </el-table-column>
-        <!-- <el-table-column prop="name" label="操作类型"> </el-table-column>
-      <el-table-column prop="address" label="操作内容"> </el-table-column>
-      <el-table-column prop="address" label="访客定位"> </el-table-column>
-      <el-table-column prop="address" label="访客来源"> </el-table-column>
-      <el-table-column prop="address" label="浏览器"> </el-table-column>
-      <el-table-column prop="address" label="访问时间"> </el-table-column> -->
+        <!-- <el-table-column prop="name" label="操作类型"> </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small"
@@ -32,7 +28,7 @@
         :page-size="10"
         :pager-count="11"
         layout="prev, pager, next"
-        :total="1000"
+        :total="total"
       >
       </el-pagination>
     </div>
@@ -46,64 +42,28 @@
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
-  props: { title: String, labelData: Array },
+  props: { title: String, labelData: Array, tableData: Array, total: Number },
   data() {
     //这里存放数据
     return {
       loading: true,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-      ],
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
   watch: {},
+  //生命周期 - 创建完成（可以访问当前this实例）
+  created() {
+    console.log(this.$props);
+  },
+  //生命周期 - 挂载完成（可以访问DOM元素）
+  mounted() {
+    console.log(this.$parent.currentPage,'currentPage')
+    setTimeout(() => {
+      this.loading = !this.loading;
+    }, 200);
+  },
   //方法集合
   methods: {
     handleClick(row) {
@@ -113,18 +73,10 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
-  },
-  //生命周期 - 创建完成（可以访问当前this实例）
-  created() {
-    console.log(this.$props);
-  },
-  //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    setTimeout(()=>{
-        this.loading = !this.loading
-    },200)
+      this.$parent.currentPage = val-1;
+      console.log(this.$parent);
+      console.log(this.$parent.currentPage);
+    }
   },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
@@ -146,17 +98,19 @@ $background_color: #fff;
     background-color: $background_color;
     padding-left: 10px;
   }
-  ::v-deep .el-pagination {
-    padding: 0px;
-    .btn-prev,
-    .btn-next,
-    .el-pager {
-      height: 40px;
-    }
-    .el-pager li {
-      height: 40px;
-      line-height: 40px;
-    }
+}
+::v-deep .el-pagination {
+  position: absolute;
+  bottom: 0;
+  padding: 0px;
+  .btn-prev,
+  .btn-next,
+  .el-pager {
+    height: 35px;
+  }
+  .el-pager li {
+    height: 35px;
+    line-height: 35px;
   }
 }
 </style>

@@ -10,52 +10,80 @@ export const loadView = (view) => {
 };
 Vue.use(Router);
 
-export default new Router({
-  routes: [
-    {
+
+
+
+const router = new Router({
+  routes: [{
       path: "/",
       name: "login",
       component: Login,
+      meta: {
+        requiresAuth: false, // false表示不需要登录
+      }
     },
     {
       path: "/main",
       name: "MainPage",
       component: MainPage,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/editor",
       name: "editor",
       component: loadView("sysEditor/editorIndex"),
-      children: [
-        {
+      meta: {
+        requiresAuth: true,
+      },
+      children: [{
           path: "/editor/num",
           name: "num",
           component: loadView("sysEditor/num"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/editor/authorpage",
           name: "authorpage",
           component: loadView("sysEditor/authorPage"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/editor/messagepage",
           name: "messagepage",
           component: loadView("sysEditor/messagePage"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/editor/commentpage",
           name: "commentpage",
           component: loadView("sysEditor/commentPage"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/editor/classification",
           name: "classification",
           component: loadView("sysEditor/classifiCation"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/editor/timeline",
           name: "timeline",
           component: loadView("sysEditor/timeLine"),
+          meta: {
+            requiresAuth: true,
+          },
         },
       ],
     },
@@ -63,11 +91,16 @@ export default new Router({
       path: "/index",
       name: "index",
       component: index,
-      children: [
-        {
+      meta: {
+        requiresAuth: true,
+      },
+      children: [{
           path: "/homepage",
           name: "homePage",
           component: loadView("homePage/homePage"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/about",
@@ -108,8 +141,33 @@ export default new Router({
     },
   ],
 });
-
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch((err) => err);
 };
+
+
+// 路由拦截，判断是否需要登录
+router.beforeEach((to, from, next) => {
+  // console.log(to.query);
+  // 通过requiresAuth判断当前路由导航是否需要登录
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    let token = sessionStorage.getItem("access_token");
+    // console.log("token", token);
+    // 若需要登录访问，检查是否为登录状态
+    if (!token) {
+      next({
+        path: '/',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // 确保一定要调用 next()
+  }
+})
+
+export default router;

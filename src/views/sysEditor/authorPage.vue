@@ -103,13 +103,13 @@
         />
       </div>
     </el-dialog>
-    <tableCom :title="titleText" :labelData="labelData"></tableCom>
+    <tableCom :title="titleText" :labelData="labelData" :tableData="tableList" :total="currentPagetotal"></tableCom>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import { Base64 } from 'js-base64';
+import { Base64 } from "js-base64";
 import Marked from "marked";
 import highlight from "highlight.js";
 import "highlight.js/styles/github.css";
@@ -119,7 +119,7 @@ Vue.use(mavonEditor);
 Vue.use(Base64);
 
 import { getDateFormat } from "@/utils/formDate";
-import { addarticle } from "@/api/user";
+import { addarticle, getarticlelist } from "@/api/user";
 // import { _debounce } from "@/utils/utils";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
@@ -136,38 +136,51 @@ export default {
       ruleForm: {
         articleTitle: "",
         articleDscibe: "",
-        articlePic: "https://gd-hbimg.huaban.com/66fab9c48fe58cd01c9cef2a4e056d10e7a15fc512b7c5-Ovfo5P_fw658",
+        articlePic:
+          "https://gd-hbimg.huaban.com/66fab9c48fe58cd01c9cef2a4e056d10e7a15fc512b7c5-Ovfo5P_fw658",
         articleDiff: "",
         articleDate: "",
         articleHtmlText: "",
       },
       baseText: "",
+      currentPage: 0,
+      currentPagesize: 10,
+      currentPagetotal: 1,
       labelData: [
         {
-          labelName: "访客ip",
-          propName: "date",
+          labelName: "ID",
+          propName: "id",
         },
         {
-          labelName: "操作类型",
-          propName: "name",
+          labelName: "文章标题",
+          propName: "articleTitle",
         },
         {
-          labelName: "操作内容",
+          labelName: "文章描述",
+          propName: "articleDscibe",
         },
         {
-          labelName: "访客定位",
+          labelName: "图片路径",
+          propName: "articlePic",
         },
         {
-          labelName: "访客来源",
-          propName: "address",
+          labelName: "文章分类",
+          propName: "articleDiff",
         },
         {
-          labelName: "浏览器",
+          labelName: "创建时间",
+          propName: "articleDate",
         },
         {
-          labelName: "访问时间",
+          labelName: "文章主内容",
+          propName: "articleHtmlText",
+        },
+        {
+          labelName: "阅读次数",
+          propName: "articleNum",
         },
       ],
+      tableList: [],
       rules: {
         articleTitle: [
           { required: true, message: "请输入文章标题", trigger: "blur" },
@@ -207,9 +220,36 @@ export default {
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    currentPage(newVal){
+      console.log(newVal,'newVal');
+    }
+  },
+  //生命周期 - 创建完成（可以访问当前this实例）
+  created() {},
+  //生命周期 - 挂载完成（可以访问DOM元素）
+  mounted() {
+    this.getPagelist()
+  },
   //方法集合
   methods: {
+    //获取首页文章
+    getPagelist() {
+      if (this.tableList.length !== this.currentPagetotal) {
+        this.currentPage += 1;
+      } else {
+        return;
+      }
+      //文章接口api
+      getarticlelist({
+        pagenum: this.currentPage,
+        pagesize: this.currentPagesize,
+      }).then((res) => {
+        this.tableList = [...this.tableList, ...res.data.result];
+        console.log(this.tableList);
+        this.currentPagetotal = res.data.count;
+      });
+    },
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -223,7 +263,7 @@ export default {
             articlePic: this.ruleForm.articlePic,
             articleDiff: this.ruleForm.articleDiff,
             articleHtmlText: this.baseText,
-            articleNum:0 //临时阅读量参数
+            articleNum: 0, //临时阅读量参数
           };
           this.btnloading = true;
           addarticle({ ...submitForm, ...obj }).then((res) => {
@@ -286,14 +326,10 @@ export default {
         /<pre>/g,
         "<pre class='language-html'>"
       );
-      this.baseText = Base64.encode(this.ruleForm.articleHtmlText)
-      console.log(this.baseText)
+      this.baseText = Base64.encode(this.ruleForm.articleHtmlText);
+      console.log(this.baseText);
     },
   },
-  //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
-  //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前

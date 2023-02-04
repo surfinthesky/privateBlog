@@ -77,6 +77,7 @@ export default {
   mounted() {},
   methods: {
     ...mapMutations({ setActiveName: "SET_activeName" }),
+    ...mapMutations("editor", ["SET_activePath"]),
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -86,22 +87,23 @@ export default {
           }).then((res) => {
             if (res.data.message == "success") {
               this.$message({
-                type:"success",
-                message:"登录成功"
-              })
+                type: "success",
+                message: "登录成功",
+              });
               sessionStorage.setItem("access_token", res.data.token);
               sessionStorage.setItem("refreshToken", res.data.refreshToken);
               // this.setActiveName("/homepage")
               if (this.ruleForm.name == "sysmaner") {
+                this.SET_activePath("/editor/num");
                 this.$router.replace({ path: "/editor/num" });
               } else {
                 this.$router.replace({ path: "/homepage" });
               }
-            }else{
+            } else {
               this.$message({
-                type:"warning",
-                message:res.data.message
-              })
+                type: "warning",
+                message: res.data.message,
+              });
             }
           });
         } else {
