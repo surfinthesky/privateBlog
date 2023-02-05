@@ -93,6 +93,7 @@
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
+      <!-- 编辑区 -->
       <div class="main_maven">
         <mavon-editor
           style="height: 500px"
@@ -103,7 +104,14 @@
         />
       </div>
     </el-dialog>
-    <tableCom :title="titleText" :labelData="labelData" :tableData="tableList" :total="currentPagetotal"></tableCom>
+    <tableCom
+      ref="tableCom"
+      :title="titleText"
+      :labelData="labelData"
+      :getApi="getPagelist"
+      :tableData="tableList"
+      :total="currentPagetotal"
+    ></tableCom>
   </div>
 </template>
 
@@ -124,6 +132,7 @@ import { addarticle, getarticlelist } from "@/api/user";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import tableCom from "../../components/tableCom.vue";
+import { mapActions } from "vuex";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
@@ -143,7 +152,7 @@ export default {
         articleHtmlText: "",
       },
       baseText: "",
-      currentPage: 0,
+      currentPage: 1,
       currentPagesize: 10,
       currentPagetotal: 1,
       labelData: [
@@ -220,34 +229,29 @@ export default {
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {
-    currentPage(newVal){
-      console.log(newVal,'newVal');
-    }
-  },
+  watch: {},
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    this.getPagelist()
+   mounted() {
+    this.getPagelist();
   },
   //方法集合
   methods: {
+    // ...mapMutations("editor", ["SET_tableLoading"]),
+    ...mapActions("editor",['SET_tableLoading']),
     //获取首页文章
     getPagelist() {
-      if (this.tableList.length !== this.currentPagetotal) {
-        this.currentPage += 1;
-      } else {
-        return;
-      }
       //文章接口api
       getarticlelist({
         pagenum: this.currentPage,
         pagesize: this.currentPagesize,
       }).then((res) => {
-        this.tableList = [...this.tableList, ...res.data.result];
-        console.log(this.tableList);
-        this.currentPagetotal = res.data.count;
+        if (res.data.result) {
+          this.SET_tableLoading(false);
+        }
+        this.tableList = res.data.result;
+          this.currentPagetotal = res.data.count;
       });
     },
     submitForm() {

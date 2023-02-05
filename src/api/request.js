@@ -1,4 +1,6 @@
 import axios from "axios"; // 引入axios
+import Vue from "vue"
+const _that =new Vue()
 // import { refresh } from "@/api/user"; // 封装好的refresh(鉴权需要刷新)接口
 // 创建axios实例
 const service = axios.create({
@@ -23,7 +25,7 @@ service.interceptors.request.use(
   },
   (error) => {
     console.log(error);
-    this.$message({
+    _that.$message({
       type: "warning",
       message: "请求异常，请稍后再试～",
     });
@@ -38,13 +40,13 @@ service.interceptors.response.use(
     // console.log(error)
     // 这里我对多数的状态码进行了一个统一整理。
     if (error.response.status === 400) {
-      this.$message({
+      _that.$message({
         type: "warning",
         message: error.response.data.err_msg,
       });
     }
     if (error.response.status === 500) {
-      this.$message({
+      _that.$message({
         type: "warning",
         message: "请求异常，请稍后再试～",
       });

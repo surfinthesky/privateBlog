@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <el-skeleton :rows="6" animated :loading="loading">
+  <el-skeleton :rows="6" animated :loading="tableLoading">
     <div class="table_box">
       <div class="Access_box_title">{{ title }}</div>
       <el-table :data="tableData" :border="true" stripe style="width: 100%">
@@ -27,6 +27,7 @@
         @current-change="handleCurrentChange"
         :page-size="10"
         :pager-count="11"
+        :current-page="currentPage"
         layout="prev, pager, next"
         :total="total"
       >
@@ -36,36 +37,45 @@
 </template>
 
 <script>
+// import editor from 'mavon-editor';
+import {  mapState ,mapActions} from 'vuex';
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
-  props: { title: String, labelData: Array, tableData: Array, total: Number },
+  props: {
+    title: String, //标题
+    labelData: Array, //接受表头及value
+    getApi: Function,
+    tableData: Array,
+    total: Number,
+  },
   data() {
     //这里存放数据
     return {
-      loading: true,
+      currentPage:1
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    ...mapState('editor',["tableLoading"])
+  },
   //监控data中的数据变化
   watch: {},
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    console.log(this.$props);
+    // console.log(this.getApi);
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
-    console.log(this.$parent.currentPage,'currentPage')
-    setTimeout(() => {
-      this.loading = !this.loading;
-    }, 200);
+
   },
   //方法集合
   methods: {
+    // ...mapMutations("editor",['SET_tableLoading']),
+    ...mapActions("editor",['SET_tableLoading']),
     handleClick(row) {
       console.log(row);
     },
@@ -73,10 +83,12 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      this.$parent.currentPage = val-1;
-      console.log(this.$parent);
-      console.log(this.$parent.currentPage);
-    }
+      this.SET_tableLoading(true)
+      this.currentPage= val
+      // this.loading = !this.loading
+      this.$parent.currentPage = val;
+      this.getApi();
+    },
   },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
@@ -100,7 +112,7 @@ $background_color: #fff;
   }
 }
 ::v-deep .el-pagination {
-  position: absolute;
+  position: relative;
   bottom: 0;
   padding: 0px;
   .btn-prev,
