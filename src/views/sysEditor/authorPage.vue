@@ -132,7 +132,7 @@ import { addarticle, getarticlelist } from "@/api/user";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import tableCom from "../../components/tableCom.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
@@ -224,69 +224,108 @@ export default {
           },
         ],
       },
+      status: "Add",
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    Loading() {
+      console.log(this.$store.state.editor.tableLoading);
+      return this.$store.state.editor.tableLoading;
+    },
+    ...mapState('editor',["editorRow"])
+  },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    "$store.state.editor.editorRow"(newVal) {
+      console.log(newVal);
+      // console.log(oldVal);
+      if (newVal) {
+        this.ruleForm.articleTitle = newVal.articleTitle;
+        this.ruleForm.articleDscibe = newVal.articleDscibe;
+        this.ruleForm.articleDiff = newVal.articleDiff;
+        this.ruleForm.articleDate = new Date(newVal.articleDate);
+        this.ruleForm.articleHtmlText = Base64.decode(newVal.articleHtmlText);
+      }
+    },
+  },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-   mounted() {
+  mounted() {
     this.getPagelist();
   },
   //方法集合
   methods: {
     // ...mapMutations("editor", ["SET_tableLoading"]),
-    ...mapActions("editor",['SET_tableLoading']),
+    ...mapActions("editor", ["SET_tableLoading"]),
+    ...mapMutations("editor", ["SET_editorRow"]),
     //获取首页文章
     getPagelist() {
+      this.SET_tableLoading(true);
       //文章接口api
       getarticlelist({
         pagenum: this.currentPage,
         pagesize: this.currentPagesize,
       }).then((res) => {
         if (res.data.result) {
-          this.SET_tableLoading(false);
-        }
-        this.tableList = res.data.result;
           this.currentPagetotal = res.data.count;
+          this.tableList = res.data.result;
+        }
       });
     },
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          let obj = {
-            articleDate: getDateFormat(this.ruleForm.articleDate),
-            articleCreatTime: getDateFormat(new Date()),
-          };
-          let submitForm = {
-            articleTitle: this.ruleForm.articleTitle,
-            articleDscibe: this.ruleForm.articleDscibe,
-            articlePic: this.ruleForm.articlePic,
-            articleDiff: this.ruleForm.articleDiff,
-            articleHtmlText: this.baseText,
-            articleNum: 0, //临时阅读量参数
-          };
-          this.btnloading = true;
-          addarticle({ ...submitForm, ...obj }).then((res) => {
-            if (res.data.message == "success") {
-              this.$message({
-                type: "success",
-                message: "已添加成功～",
-              });
-              this.btnloading = false;
-              this.resetForm();
-              this.article_show = false;
-            } else {
-              this.$message({
-                type: "success",
-                message: "请求异常，请稍后再试～",
-              });
-              this.btnloading = false;
+          //判断为新增还是修改
+          if (this.status == "Add") {
+            let obj = {
+              articleDate: getDateFormat(this.ruleForm.articleDate),
+              articleCreatTime: getDateFormat(new Date()),
+            };
+            let submitForm = {
+              articleTitle: this.ruleForm.articleTitle,
+              articleDscibe: this.ruleForm.articleDscibe,
+              articlePic: this.ruleForm.articlePic,
+              articleDiff: this.ruleForm.articleDiff,
+              articleHtmlText: this.baseText,
+              articleNum: 0, //临时阅读量参数
+            };
+            this.btnloading = true;
+            addarticle({ ...submitForm, ...obj }).then((res) => {
+              if (res.data.message == "success") {
+                this.$message({
+                  type: "success",
+                  message: "已添加成功～",
+                });
+                this.btnloading = false;
+                this.resetForm();
+                this.article_show = false;
+              } else {
+                this.$message({
+                  type: "success",
+                  message: "请求异常，请稍后再试～",
+                });
+                this.btnloading = false;
+              }
+            });
+          } else {
+            console.log("文章修改");
+            let submitFormEditor = {
+              articleTitle: this.ruleForm.articleTitle,
+              articleDscibe: this.ruleForm.articleDscibe,
+              articlePic: this.ruleForm.articlePic,
+              articleDiff: this.ruleForm.articleDiff,
+              articleHtmlText: this.baseText,
+            };
+            for (let item in submitFormEditor) {
+              console.log(submitFormEditor["articleHtmlText"]);
+              // console.log(this.editorRow["articleHtmlText"]);
+              if (submitFormEditor[item] !== this.editorRow[item]) {
+                // console.log(item);
+              }
             }
-          });
+          }
         } else {
           console.log("error submit!!");
           return false;

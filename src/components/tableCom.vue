@@ -15,10 +15,10 @@
         <!-- <el-table-column prop="name" label="操作类型"> </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small"
+            <!-- <el-button @click="handleClick(scope.row)" type="text" size="small"
               >查看</el-button
-            >
-            <el-button type="text" size="small">编辑</el-button>
+            > -->
+            <el-button type="text" size="small" @click="handleClick(scope.row)">修改</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -38,10 +38,12 @@
 
 <script>
 // import editor from 'mavon-editor';
-import {  mapState ,mapActions} from 'vuex';
+import {  mapState ,mapActions,mapMutations} from 'vuex';
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import Vue from "vue";
+import { Base64 } from "js-base64";
+Vue.use(Base64);
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
@@ -63,9 +65,15 @@ export default {
     ...mapState('editor',["tableLoading"])
   },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    '$store.state.editor.tableLoading'(newVal,oldVal){
+      console.log(newVal);
+      console.log(oldVal);
+    }
+  },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
+    // console.log(this.$store.state.editor.tableLoading);
     // console.log(this.getApi);
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
@@ -76,8 +84,16 @@ export default {
   methods: {
     // ...mapMutations("editor",['SET_tableLoading']),
     ...mapActions("editor",['SET_tableLoading']),
+    ...mapMutations("editor",['SET_editorRow']),
     handleClick(row) {
-      console.log(row);
+      this.SET_editorRow(row)
+      this.$parent.status="Editor"
+      this.$parent.article_show=true
+      // this.$parent.ruleForm.articleTitle = row.articleTitle
+      // this.$parent.ruleForm.articleDscibe = row.articleDscibe
+      // this.$parent.ruleForm.articleDiff = row.articleDiff
+      // this.$parent.ruleForm.articleDate = new Date(row.articleDate)
+      // this.$parent.ruleForm.articleHtmlText =  Base64.decode(row.articleHtmlText)
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
