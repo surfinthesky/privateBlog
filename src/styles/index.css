@@ -39,12 +39,15 @@ body {
     font-size: 14px;
     background: #FFF;
     color: #000;
-    height: 100%;
+    /* height: 100%; */
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-image: url("../assets/bg.jpg") !important;
 }
 
 html {
     overflow-y: scroll;
-    height: 100%;
+    /* height: 100%; */
 }
 
 ul,

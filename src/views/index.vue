@@ -53,7 +53,9 @@
       <!-- 内容区 -->
       <el-main>
         <div class="container-lg">
-          <router-view> </router-view>
+          <!-- <keep-alive>
+          </keep-alive> -->
+          <router-view ></router-view>
         </div>
       </el-main>
       <!-- 底部 -->
@@ -150,6 +152,7 @@ export default {
   },
   mounted() {
     this.successValue();
+    console.log(this.$route);
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
@@ -251,12 +254,11 @@ export default {
   flex-direction: column;
 }
 #Boxindex {
-  height: 100%;
+  // height: auto;
   position: relative;
-  background-repeat: no-repeat;
-  background-size: cover;
-  // background-image: url("@/assets/bg.jpg");
-  @include ele_bg_url("@/assets/bg.jpg")
+  // background-repeat: no-repeat;
+  // background-size: cover;
+  // @include ele_bg_url("@/assets/bg.jpg");
 }
 .el-footer {
   margin: 45px 0;
