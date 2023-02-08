@@ -16,6 +16,7 @@ const editor = {
       state.activePath = payload;
     },
     SET_editorRow: (state, payload) => {
+      console.log(payload,'payload');
       state.editorRow = payload;
     },
   },

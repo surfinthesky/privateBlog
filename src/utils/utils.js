@@ -51,6 +51,14 @@ export function loading() {
     background: "rgba(0, 0, 0, 0.7)",
   });
 }
-  
-  
-  
+
+export function stringFind(longstr, findStr) {
+  let selectArr = []; //集合
+  let pos = longstr.indexOf(findStr);
+  while (pos > -1) {
+    selectArr.push(pos);
+    pos = longstr.indexOf(findStr, pos + 1);
+  }
+  return selectArr;
+}
+

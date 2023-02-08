@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <el-skeleton :rows="6" animated :loading="tableLoading">
+  <el-skeleton :rows="6" animated :loading="false">
     <div class="table_box">
       <div class="Access_box_title">{{ title }}</div>
       <el-table :data="tableData" :border="true" stripe style="width: 100%">
@@ -18,7 +18,18 @@
             <!-- <el-button @click="handleClick(scope.row)" type="text" size="small"
               >查看</el-button
             > -->
-            <el-button type="text" size="small" @click="handleClick(scope.row)">修改</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="handleClickEditor(scope.row)"
+              >修改</el-button
+            >
+            <el-button
+              type="text"
+              size="small"
+              @click="handleClickDelete(scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -38,7 +49,7 @@
 
 <script>
 // import editor from 'mavon-editor';
-import {  mapState ,mapActions,mapMutations} from 'vuex';
+import { mapState, mapActions, mapMutations } from "vuex";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import Vue from "vue";
@@ -57,50 +68,45 @@ export default {
   data() {
     //这里存放数据
     return {
-      currentPage:1
+      currentPage: 1,
     };
   },
   //监听属性 类似于data概念
   computed: {
-    ...mapState('editor',["tableLoading"])
+    ...mapState("editor", ["tableLoading"]),
   },
   //监控data中的数据变化
-  watch: {
-    '$store.state.editor.tableLoading'(newVal,oldVal){
-      console.log(newVal);
-      console.log(oldVal);
-    }
-  },
+  watch: {},
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    // console.log(this.$store.state.editor.tableLoading);
+    // console.log(this.tableLoading);
     // console.log(this.getApi);
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-
-  },
+  mounted() {},
   //方法集合
   methods: {
     // ...mapMutations("editor",['SET_tableLoading']),
-    ...mapActions("editor",['SET_tableLoading']),
-    ...mapMutations("editor",['SET_editorRow']),
-    handleClick(row) {
-      this.SET_editorRow(row)
-      this.$parent.status="Editor"
-      this.$parent.article_show=true
+    ...mapActions("editor", ["SET_tableLoading"]),
+    ...mapMutations("editor", ["SET_editorRow"]),
+    handleClickEditor(row) {
+      this.SET_editorRow(row);
+      this.$parent.status = "Editor";
+      this.$parent.article_show = true;
       // this.$parent.ruleForm.articleTitle = row.articleTitle
       // this.$parent.ruleForm.articleDscibe = row.articleDscibe
       // this.$parent.ruleForm.articleDiff = row.articleDiff
       // this.$parent.ruleForm.articleDate = new Date(row.articleDate)
       // this.$parent.ruleForm.articleHtmlText =  Base64.decode(row.articleHtmlText)
     },
+    handleClickDelete(row) {
+      console.log(row);
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      this.SET_tableLoading(true)
-      this.currentPage= val
+      this.currentPage = val;
       // this.loading = !this.loading
       this.$parent.currentPage = val;
       this.getApi();
@@ -115,7 +121,7 @@ export default {
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 /*@import url(); 引入公共css类*/
 @import "@/styles/minxin.scss";
 $background_color: #fff;

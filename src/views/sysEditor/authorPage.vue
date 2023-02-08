@@ -12,7 +12,11 @@
       />
     </div> -->
     <!-- 创建文章弹窗 -->
-    <el-dialog :visible.sync="article_show" width="80%">
+    <el-dialog
+      :visible.sync="article_show"
+      width="80%"
+      :before-close="handleClose"
+    >
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -76,9 +80,11 @@
 
         <el-upload
           class="upload-demo"
+          :headers="headers"
           drag
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="proxyServer2/fileupload/profile"
           multiple
+          :on-success="handleAvatarSuccess"
         >
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -86,6 +92,12 @@
             只能上传jpg/png文件，且不超过500kb
           </div>
         </el-upload>
+        <div>
+          <ul v-for="(item, index) in fileData" :key="index">
+            <li>图片名称：{{ item.name }}</li>
+            <li>图片上传url：{{ item.response.path }}</li>
+          </ul>
+        </div>
         <el-form-item style="text-align: right">
           <el-button type="primary" :loading="btnloading" @click="submitForm"
             >立即创建</el-button
@@ -139,6 +151,10 @@ export default {
   data() {
     //这里存放数据
     return {
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("access_token"),
+      },
+      fileData: [],
       article_show: false,
       btnloading: false,
       titleText: "文章管理",
@@ -230,10 +246,9 @@ export default {
   //监听属性 类似于data概念
   computed: {
     Loading() {
-      console.log(this.$store.state.editor.tableLoading);
       return this.$store.state.editor.tableLoading;
     },
-    ...mapState('editor',["editorRow"])
+    ...mapState("editor", ["editorRow"]),
   },
   //监控data中的数据变化
   watch: {
@@ -257,18 +272,32 @@ export default {
   },
   //方法集合
   methods: {
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(() => {
+          this.resetForm();
+          done();
+        })
+        .catch(() => {});
+    },
+    handleAvatarSuccess(res, file) {
+      if (res) {
+        console.log(file);
+      }
+      this.fileData.push(file);
+    },
     // ...mapMutations("editor", ["SET_tableLoading"]),
     ...mapActions("editor", ["SET_tableLoading"]),
     ...mapMutations("editor", ["SET_editorRow"]),
     //获取首页文章
     getPagelist() {
-      this.SET_tableLoading(true);
       //文章接口api
       getarticlelist({
         pagenum: this.currentPage,
         pagesize: this.currentPagesize,
       }).then((res) => {
         if (res.data.result) {
+          // this.SET_tableLoading(false);
           this.currentPagetotal = res.data.count;
           this.tableList = res.data.result;
         }
@@ -301,6 +330,7 @@ export default {
                 this.btnloading = false;
                 this.resetForm();
                 this.article_show = false;
+                this.getPagelist();
               } else {
                 this.$message({
                   type: "success",
@@ -333,6 +363,7 @@ export default {
       });
     },
     resetForm() {
+      console.log('------')
       this.$refs.ruleForm.resetFields();
       this.ruleForm.articleHtmlText = "";
     },
@@ -370,7 +401,7 @@ export default {
         "<pre class='language-html'>"
       );
       this.baseText = Base64.encode(this.ruleForm.articleHtmlText);
-      console.log(this.baseText);
+      // console.log(this.baseText);
     },
   },
   beforeCreate() {}, //生命周期 - 创建之前
