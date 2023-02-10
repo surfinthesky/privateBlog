@@ -106,6 +106,9 @@
 @mixin ele_padding($top, $rig, $bot, $lf) {
   padding: $top $rig $bot $lf;
 }
+@mixin ele_padding2($a, $b) {
+  padding: $a $b;
+}
 //元素外边距
 @mixin ele_margin($top, $rig, $bot, $lf) {
   margin: $top $rig $bot $lf;

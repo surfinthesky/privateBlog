@@ -1,3 +1,4 @@
+//
 function getFuturePastDay() {
   let nfOptionsArray = new Array();
   let years = new Date().getFullYear();

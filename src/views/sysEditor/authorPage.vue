@@ -1,16 +1,7 @@
 <!--  -->
 <template>
   <div class="article_ment">
-    <el-button type="primary" @click="article_show = true">创建文章</el-button>
-    <!-- <div v-html="value" class="markdown-body"></div>
-    <div class="main_maven">
-      <mavon-editor
-        :ishljs="true"
-        @change="$change"
-        @save="$save"
-        v-model="value"
-      />
-    </div> -->
+    <el-button type="primary" @click="articleshow">创建文章</el-button>
     <!-- 创建文章弹窗 -->
     <el-dialog
       :visible.sync="article_show"
@@ -120,9 +111,7 @@
       ref="tableCom"
       :title="titleText"
       :labelData="labelData"
-      :getApi="getPagelist"
-      :tableData="tableList"
-      :total="currentPagetotal"
+      :getApi="initApi"
     ></tableCom>
   </div>
 </template>
@@ -139,18 +128,19 @@ Vue.use(mavonEditor);
 Vue.use(Base64);
 
 import { getDateFormat } from "@/utils/formDate";
-import { addarticle, getarticlelist } from "@/api/user";
+import { addarticle } from "@/api/user";
 // import { _debounce } from "@/utils/utils";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import tableCom from "../../components/tableCom.vue";
-import { mapActions, mapMutations, mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
   data() {
     //这里存放数据
     return {
+      initApi: "getarticlelist", //传递到table组件请求的api
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("access_token"),
       },
@@ -168,9 +158,6 @@ export default {
         articleHtmlText: "",
       },
       baseText: "",
-      currentPage: 1,
-      currentPagesize: 10,
-      currentPagetotal: 1,
       labelData: [
         {
           labelName: "ID",
@@ -245,40 +232,43 @@ export default {
   },
   //监听属性 类似于data概念
   computed: {
-    Loading() {
-      return this.$store.state.editor.tableLoading;
-    },
     ...mapState("editor", ["editorRow"]),
   },
   //监控data中的数据变化
   watch: {
     "$store.state.editor.editorRow"(newVal) {
-      console.log(newVal);
-      // console.log(oldVal);
+      console.log(newVal, "newVal");
+      console.log(getDateFormat(newVal.articleDate), "articleDatenewVal");
       if (newVal) {
         this.ruleForm.articleTitle = newVal.articleTitle;
         this.ruleForm.articleDscibe = newVal.articleDscibe;
+        this.ruleForm.articlePic = newVal.articlePic;
         this.ruleForm.articleDiff = newVal.articleDiff;
         this.ruleForm.articleDate = new Date(newVal.articleDate);
+        this.ruleForm.articleCreatTime = newVal.articleCreatTime;
         this.ruleForm.articleHtmlText = Base64.decode(newVal.articleHtmlText);
+        this.ruleForm.articleNum = newVal.articleNum;
       }
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    this.getPagelist();
-  },
+  mounted() {},
   //方法集合
   methods: {
+    articleshow() {
+      this.article_show = true;
+    },
     handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(() => {
-          this.resetForm();
-          done();
-        })
-        .catch(() => {});
+      this.resetForm();
+      done();
+      // this.$confirm("确认关闭？")
+      //   .then(() => {
+      //     this.resetForm();
+      //     done();
+      //   })
+      //   .catch(() => {});
     },
     handleAvatarSuccess(res, file) {
       if (res) {
@@ -286,23 +276,7 @@ export default {
       }
       this.fileData.push(file);
     },
-    // ...mapMutations("editor", ["SET_tableLoading"]),
-    ...mapActions("editor", ["SET_tableLoading"]),
     ...mapMutations("editor", ["SET_editorRow"]),
-    //获取首页文章
-    getPagelist() {
-      //文章接口api
-      getarticlelist({
-        pagenum: this.currentPage,
-        pagesize: this.currentPagesize,
-      }).then((res) => {
-        if (res.data.result) {
-          // this.SET_tableLoading(false);
-          this.currentPagetotal = res.data.count;
-          this.tableList = res.data.result;
-        }
-      });
-    },
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -330,7 +304,8 @@ export default {
                 this.btnloading = false;
                 this.resetForm();
                 this.article_show = false;
-                this.getPagelist();
+                this.$refs.tableCom.loadingshow = true;
+                this.$refs.tableCom.getPagelist();
               } else {
                 this.$message({
                   type: "success",
@@ -346,13 +321,39 @@ export default {
               articleDscibe: this.ruleForm.articleDscibe,
               articlePic: this.ruleForm.articlePic,
               articleDiff: this.ruleForm.articleDiff,
-              articleHtmlText: this.baseText,
+              articleDate: this.ruleForm.articleDate,
+              articleCreatTime: this.ruleForm.articleCreatTime,
+              articleHtmlText: this.ruleForm.articleHtmlText,
+              articleNum: this.ruleForm.articleNum,
             };
+            // console.log(this.ruleForm.articleDate);
+            console.log(submitFormEditor, "submitFormEditor");
             for (let item in submitFormEditor) {
-              console.log(submitFormEditor["articleHtmlText"]);
-              // console.log(this.editorRow["articleHtmlText"]);
               if (submitFormEditor[item] !== this.editorRow[item]) {
-                // console.log(item);
+                console.log(item);
+                //针对文章时间及文化编辑器内容做单独对比
+                if (
+                  item == "articleDate" &&
+                  new Date(submitFormEditor[item]).getTime() ==
+                    new Date(this.editorRow.articleDate).getTime()
+                ) {
+                  // console.log(new Date(submitFormEditor[item]).getTime());
+                  // console.log(new Date(this.editorRow.articleDate).getTime());
+                  // console.log(new Date(submitFormEditor[item]) > new Date(this.editorRow.articleDate))
+                  console.log("未做修改1");
+                } else if (
+                  item == "articleHtmlText" &&
+                  this.ruleForm.articleHtmlText ==
+                    Base64.decode(this.editorRow.articleHtmlText)
+                ) {
+                  console.log("未做修改2");
+                  console.log(
+                    this.ruleForm.articleHtmlText ==
+                      Base64.decode(this.editorRow.articleHtmlText)
+                  );
+                  console.log(this.ruleForm.articleHtmlText);
+                  console.log(Base64.decode(this.editorRow.articleHtmlText));
+                }
               }
             }
           }
@@ -363,7 +364,7 @@ export default {
       });
     },
     resetForm() {
-      console.log('------')
+      console.log("------");
       this.$refs.ruleForm.resetFields();
       this.ruleForm.articleHtmlText = "";
     },

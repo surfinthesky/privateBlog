@@ -1,6 +1,6 @@
 import axios from "axios"; // 引入axios
-import Vue from "vue"
-const _that =new Vue()
+import Vue from "vue";
+const _that = new Vue();
 // import { refresh } from "@/api/user"; // 封装好的refresh(鉴权需要刷新)接口
 // 创建axios实例
 const service = axios.create({
@@ -45,6 +45,12 @@ service.interceptors.response.use(
         message: error.response.data.err_msg,
       });
     }
+    if (error.response.status === 401) {
+      _that.$message({
+        type: "warning",
+        message: error.response.data,
+      });
+    }
     if (error.response.status === 500) {
       _that.$message({
         type: "warning",
@@ -53,11 +59,11 @@ service.interceptors.response.use(
     }
     // 重点代码：当服务器返回401状态码时，使用refresh刷新接口更新已有token，再重复上一个接口请求，若失败，退出登录
     if (error.response.status === 401) {
-      // console.log(config.url,'config.url')
+      console.log(config.url, "config.url");
       // console.log(config.baseURL,'config.baseURL')
       config.headers["Authorization"] =
         "Bearer " + sessionStorage.getItem("refreshToken");
-      return config;
+      // return service(config); // 必须resolve
     }
     return Promise.reject(error);
   }

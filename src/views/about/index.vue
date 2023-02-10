@@ -9,10 +9,11 @@
     </div> -->
         <div class="describe_text">
           <p class="normalP">
-            大家好，这是我的第一个前端博客，目前没有很好的界面设计思路，所以会借鉴别人一些经验，学习的第一步就是看别人怎么写，然后再结合自身，加以利用。编程的话那就
-            <span class="normalSpan">Ctrl C & Ctrl V</span
-            >,不过也应该理解为何这样使用，记住成为自己的脑袋中的知识。
-            在掘金平台分享过工作中遇到的小问题及初次体验：<a
+            Hello，这是我的第一个前端博客，使用的技术是<span class="normalSpan">Vue+Node.js</span
+            >作为主体开发。
+            后期目标：使用<span class="normalSpan">Java</span
+            >编写后台，目前Java学习到collection。
+            在掘金平台分享工作中遇到的小问题及初次体验：<a
               target="_blank"
               class="normalSpanA"
               href="https://juejin.cn/post/6979778875676950565"

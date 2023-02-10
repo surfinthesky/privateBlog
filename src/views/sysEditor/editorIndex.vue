@@ -175,6 +175,7 @@ $background_color: #fff;
       &_rht {
         ul > li {
           position: relative;
+          cursor: pointer;
         }
         ul > li > span {
           position: absolute;
