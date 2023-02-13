@@ -128,7 +128,7 @@ Vue.use(mavonEditor);
 Vue.use(Base64);
 
 import { getDateFormat } from "@/utils/formDate";
-import { addarticle } from "@/api/user";
+import * as Fn from "@/api/user";
 // import { _debounce } from "@/utils/utils";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
@@ -238,7 +238,6 @@ export default {
   watch: {
     "$store.state.editor.editorRow"(newVal) {
       console.log(newVal, "newVal");
-      console.log(getDateFormat(newVal.articleDate), "articleDatenewVal");
       if (newVal) {
         this.ruleForm.articleTitle = newVal.articleTitle;
         this.ruleForm.articleDscibe = newVal.articleDscibe;
@@ -295,7 +294,7 @@ export default {
               articleNum: 0, //临时阅读量参数
             };
             this.btnloading = true;
-            addarticle({ ...submitForm, ...obj }).then((res) => {
+            Fn.addarticle({ ...submitForm, ...obj }).then((res) => {
               if (res.data.message == "success") {
                 this.$message({
                   type: "success",
@@ -315,8 +314,10 @@ export default {
               }
             });
           } else {
+            let changeStatus = false;
             console.log("文章修改");
             let submitFormEditor = {
+              id: this.editorRow.id,
               articleTitle: this.ruleForm.articleTitle,
               articleDscibe: this.ruleForm.articleDscibe,
               articlePic: this.ruleForm.articlePic,
@@ -327,34 +328,46 @@ export default {
               articleNum: this.ruleForm.articleNum,
             };
             // console.log(this.ruleForm.articleDate);
-            console.log(submitFormEditor, "submitFormEditor");
+            // console.log(submitFormEditor, "submitFormEditor");
             for (let item in submitFormEditor) {
               if (submitFormEditor[item] !== this.editorRow[item]) {
-                console.log(item);
+                // console.log(item);
                 //针对文章时间及文化编辑器内容做单独对比
                 if (
                   item == "articleDate" &&
-                  new Date(submitFormEditor[item]).getTime() ==
+                  new Date(submitFormEditor[item]).getTime() !==
                     new Date(this.editorRow.articleDate).getTime()
                 ) {
-                  // console.log(new Date(submitFormEditor[item]).getTime());
-                  // console.log(new Date(this.editorRow.articleDate).getTime());
-                  // console.log(new Date(submitFormEditor[item]) > new Date(this.editorRow.articleDate))
-                  console.log("未做修改1");
+                  changeStatus = true;
+                  // console.log("%c修改---articleDate", "color:red");
                 } else if (
                   item == "articleHtmlText" &&
-                  this.ruleForm.articleHtmlText ==
+                  this.ruleForm.articleHtmlText !==
                     Base64.decode(this.editorRow.articleHtmlText)
                 ) {
-                  console.log("未做修改2");
-                  console.log(
-                    this.ruleForm.articleHtmlText ==
-                      Base64.decode(this.editorRow.articleHtmlText)
-                  );
-                  console.log(this.ruleForm.articleHtmlText);
-                  console.log(Base64.decode(this.editorRow.articleHtmlText));
+                  changeStatus = true;
+                  // console.log("%c修改---articleHtmlText", "color:green");
+                } else {
+                  if (item !== "articleDate" || item !== "articleHtmlText") {
+                    changeStatus = true;
+                  }
                 }
               }
+            }
+            //最终调用api更新文章
+            if (changeStatus == true) {
+              console.log("%c修改---changeStatus", "color:brown");
+              submitFormEditor.articleHtmlText = Base64.encode(
+                submitFormEditor.articleHtmlText
+              );
+              submitFormEditor.articleDate = getDateFormat(
+                submitFormEditor.articleDate
+              );
+              submitFormEditor.articleCreatTime = getDateFormat(
+                submitFormEditor.articleCreatTime
+              );
+              console.log(submitFormEditor);
+              Fn.updatearticle(submitFormEditor);
             }
           }
         } else {

@@ -30,6 +30,14 @@ export function getarticlelist(data) {
     data: data // 参数
   })
 }
+//更新文章request
+export function updatearticle(data) {
+  return request({
+    url: 'proxyServer2/articleupdate', // 接口名称
+    method: 'post', // 接口方法
+    data: data // 参数
+  })
+}
 //根据id删除文章request
 export function articledelete(data) {
   return request({
