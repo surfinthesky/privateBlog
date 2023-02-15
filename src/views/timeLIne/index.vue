@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { getDateFormatComplete,getDateFormat } from "@/utils/formDate";
+import { getDateFormatComplete, getDateFormat } from "@/utils/formDate";
 import { mapMutations } from "vuex";
 import { getTimelinelist } from "@/api/user";
 export default {
@@ -35,8 +35,7 @@ export default {
     return {
       currentPage: 1,
       currentPagesize: 10,
-      timeLineArr: [
-      ],
+      timeLineArr: [],
     };
   },
   mounted() {
@@ -45,12 +44,12 @@ export default {
       pagesize: this.currentPagesize,
     }).then((res) => {
       // let arr =[]
-      res.data.result.map((item)=>{
-        item.stageCompletTime = getDateFormatComplete(item.stageCompletTime)
-        item.stageTimestamp = getDateFormat(item.stageTimestamp)
+      res.data.result.map((item) => {
+        item.stageCompletTime = getDateFormatComplete(item.stageCompletTime);
+        item.stageTimestamp = getDateFormat(item.stageTimestamp);
       });
       // arr = res.data.result
-      this.timeLineArr = [...this.timeLineArr,...res.data.result]
+      this.timeLineArr = [...this.timeLineArr, ...res.data.result];
     });
   },
   created() {},
@@ -62,6 +61,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "@/styles/variables.scss";
 .time_block {
   margin: 30px 0px;
   h4 {
@@ -69,12 +69,20 @@ export default {
     padding-bottom: 15px;
   }
   p {
-    color: #333333;
+    // color: #333333;
+    @include font_color("timeline-card-p");
   }
   ::v-deep .el-timeline-item__node--large {
     left: -5px;
     width: 19px;
     height: 19px;
+  }
+  ::v-deep .el-timeline-item__timestamp.is-top {
+    @include font_color("timeline-card-timestamp");
+  }
+  ::v-deep .el-card {
+    @include background_color("main-left_licolor");
+    border: none;
   }
 }
 </style>

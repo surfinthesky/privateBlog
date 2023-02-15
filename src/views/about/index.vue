@@ -9,9 +9,9 @@
     </div> -->
         <div class="describe_text">
           <p class="normalP">
-            Hello，这是我的第一个前端博客，使用的技术是<span class="normalSpan">Vue+Node.js</span
-            >作为主体开发。
-            后期目标：使用<span class="normalSpan">Java</span
+            Hello，这是我的第一个前端博客，使用的技术是<span class="normalSpan"
+              >Vue+Node.js</span
+            >作为主体开发。 后期目标：使用<span class="normalSpan">Java</span
             >编写后台，目前Java学习到collection。
             在掘金平台分享工作中遇到的小问题及初次体验：<a
               target="_blank"
@@ -77,7 +77,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.el-row{
+@import "@/styles/variables.scss";
+.el-row {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -90,11 +91,13 @@ export default {
 .normalP {
   line-height: 2;
   margin: 10px 0;
-  color: #404040;
+  // color: #404040;
+  @include font_color("about-normalP");
 }
 .aboutBox {
   position: relative;
-  background-color: #fff;
+  // background-color: #fff;
+  @include background_color("main-left_licolor");
   border-radius: 5px;
   padding: 5px 0;
   font-size: 16px;

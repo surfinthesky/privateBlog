@@ -49,13 +49,23 @@
             </div></el-col
           >
         </el-row>
+        <el-switch
+          @change="themeChange"
+          style="display: block"
+          v-model="themevalue"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          active-text="light"
+          inactive-text="dark"
+        >
+        </el-switch>
       </el-header>
       <!-- 内容区 -->
       <el-main>
         <div class="container-lg">
           <!-- <keep-alive>
           </keep-alive> -->
-          <router-view ></router-view>
+          <router-view></router-view>
         </div>
       </el-main>
       <!-- 底部 -->
@@ -148,11 +158,17 @@ export default {
       activeIndex: "", //默认选中索引
       show: false,
       dialogVisible: false,
+      themevalue: "",
     };
   },
   mounted() {
     this.successValue();
-    console.log(this.$route);
+    // console.log(this.$route);
+    if (this.themeValue == "light") {
+      this.themevalue = true;
+    } else {
+      this.themevalue = false;
+    }
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
@@ -168,7 +184,7 @@ export default {
     // console.log(fun);
   },
   computed: {
-    ...mapState(["scrollValue", "activeName"]),
+    ...mapState(["scrollValue", "activeName", "themeValue"]),
     activeName: {
       get(value) {
         return value.$route.path;
@@ -195,6 +211,24 @@ export default {
     },
   },
   methods: {
+    // 切换主题 存储到缓存和store中，方便不同界面监听主题切换。
+    themeChange(theme) {
+      if (theme == false) {
+        window.document.documentElement.setAttribute(
+          "data-theme",
+          "dark-theme"
+        );
+        this.setThemeValue("dark");
+        localStorage.setItem("private-theme", "dark-theme");
+      } else {
+        window.document.documentElement.setAttribute(
+          "data-theme",
+          "light-theme"
+        );
+        this.setThemeValue("light");
+        localStorage.setItem("private-theme", "light-theme");
+      }
+    },
     childByValue(payload) {
       console.log("接受子组件value:" + payload);
     },
@@ -202,6 +236,7 @@ export default {
       set_i18n: "SET_i18n",
       setScrollValue: "SET_scrollValue",
       setActiveName: "SET_activeName",
+      setThemeValue: "SET_themeValue",
     }),
     //计算步骤条宽度根据滚动条滚动距离
     successValue() {
@@ -249,6 +284,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/styles/minxin.scss";
+@import "@/styles/variables.scss";
 ::v-deep .el-dialog__body {
   @include displayEle;
   flex-direction: column;
@@ -297,19 +333,29 @@ export default {
   left: 0px;
   width: 100%;
   z-index: 1033;
-  background-color: #fff;
+  @include background_color("header-top_bgcolor");
 }
 
 .el-header {
   color: #666;
   line-height: 60px;
+  position: relative;
+  ::v-deep .el-switch {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    user-select: none;
+  }
+  ::v-deep .el-switch__label--right {
+    @include font_color("header-top_color");
+  }
 }
 
 .el-main {
   margin-top: 70px;
   //   background-color: #e9eef3;
-  color: #333;
-  min-height: 650px;
+  // color: #333;
+  // min-height: 650px;
   margin-bottom: 20px;
 }
 
@@ -336,6 +382,7 @@ body > .el-container {
     vertical-align: middle;
   }
 }
+
 .topTabList {
   min-width: 410px;
   @include displayEleBetween;
@@ -344,6 +391,10 @@ body > .el-container {
   -khtml-user-select: none;
   user-select: none;
   box-sizing: border-box;
+  ::v-deep .el-tabs__item {
+    @include font_color("header-top_color");
+  }
+
   li {
     padding: 0 10px;
     box-sizing: border-box;

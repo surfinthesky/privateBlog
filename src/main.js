@@ -6,6 +6,25 @@ import store from './store/index'
 import './styles/index.css'
 import './styles/style.scss';
 import './styles/theme/index.css'
+if (localStorage.getItem('private-theme') == "dark-theme") {
+  window.document.documentElement.setAttribute(
+    "data-theme",
+    "dark-theme"
+  );
+  localStorage.setItem('private-theme', 'dark-theme');
+} else if (localStorage.getItem('private-theme') == "light-theme") {
+  window.document.documentElement.setAttribute(
+    "data-theme",
+    "light-theme"
+  );
+  localStorage.setItem('private-theme', 'light-theme');
+} else {
+  window.document.documentElement.setAttribute(
+    "data-theme",
+    "light-theme"
+  );
+  localStorage.setItem('private-theme', 'light-theme');
+}
 import {
   Pagination,
   Dialog,

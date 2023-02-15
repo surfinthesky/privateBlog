@@ -127,6 +127,9 @@ export default {
   align-items: center;
   .el-form {
     min-width: 500px;
+    ::v-deep .el-form-item__label {
+      color: #fff;
+    }
   }
 }
 </style>

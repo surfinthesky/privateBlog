@@ -367,7 +367,25 @@ export default {
                 submitFormEditor.articleCreatTime
               );
               console.log(submitFormEditor);
-              Fn.updatearticle(submitFormEditor);
+              this.btnloading = true;
+              Fn.updatearticle(submitFormEditor).then((res) => {
+                if (res.data.message == "success") {
+                  this.$message({
+                    type: "success",
+                    message: "更新成功",
+                  });
+                  this.btnloading = false;
+                  this.resetForm();
+                  this.article_show = false;
+                  this.$refs.tableCom.loadingshow = true;
+                  this.$refs.tableCom.getPagelist();
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: "更新失败",
+                  });
+                }
+              });
             }
           }
         } else {

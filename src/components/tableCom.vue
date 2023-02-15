@@ -133,8 +133,8 @@ export default {
               type: "success",
               message: res.data.message,
             });
-            this.loadingshow = !this.loadingshow;
             this.getPagelist();
+            this.loadingshow = !this.loadingshow;
           }
         })
         .catch(() => {});

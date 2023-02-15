@@ -71,27 +71,22 @@
                     <div class="article_info">
                       <span class="p_author" title="作者"
                         ><i class="el-icon-user"
-                          >&nbsp;<span style="color: #666">Author cong</span></i
+                          >&nbsp;<span>Author cong</span></i
                         ></span
                       >
                       <span
                         ><i class="el-icon-folder" title="分类"
-                          >&nbsp;
-                          <span style="color: #666">
-                            {{ item.articleDiff }}</span
-                          ></i
+                          >&nbsp; <span> {{ item.articleDiff }}</span></i
                         ></span
                       >
                       <span class="p_time"
                         ><i class="el-icon-date" title="时间"
-                          >&nbsp;<span style="color: #666">{{
-                            item.articleDate
-                          }}</span></i
+                          >&nbsp;<span>{{ item.articleDate }}</span></i
                         ></span
                       >
                       <span class="p_time"
                         ><i class="el-icon-collection-tag" title="时间"
-                          >&nbsp;<span style="color: #666">标签</span></i
+                          >&nbsp;<span>标签</span></i
                         ></span
                       >
                     </div>
@@ -134,9 +129,7 @@
               如果没有马上用得上，基本上就会很快忘掉，这个相信大家都会深有体会。那么
               最有效也是最笨的方法：那就是重复重复再重复。然后
               学完一定要总结，这个总结的过程就是在加深你的记忆！
-              每天进步一点点，终会厚积薄发。
-              借用一句话：冰冻三尺
-              非一日之寒。
+              每天进步一点点，终会厚积薄发。 借用一句话：冰冻三尺 非一日之寒。
             </p>
           </div>
           <div class="categories">
@@ -225,12 +218,12 @@ export default {
       currentPage: 0,
       currentPagesize: 10,
       currentPagetotal: 1,
-      tableList: [],
+      tableList: [], //列表数据
       drawerarticleTitle: "",
       loading: false,
       noMore: false,
       overFlow: true,
-      loadingSk: true,
+      loadingSk: true, //骨架的显示隐藏
     };
   },
   mounted() {
@@ -380,6 +373,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/minxin.scss";
 @import "@/styles/github-markdown.css";
+@import "@/styles/variables.scss";
 $background_color: #fff;
 .infinite-list {
   height: 1250px;
@@ -464,7 +458,8 @@ $background_color: #fff;
 
   .content_left_ul > div > li {
     display: flex;
-    background-color: $background_color;
+    // background-color: $background_color;
+    @include background_color("main-left_licolor");
     margin-bottom: 15px;
     padding: 10px 15px;
     min-height: 110px;
@@ -481,7 +476,8 @@ $background_color: #fff;
     padding: 5px;
 
     h2 {
-      color: #343a40;
+      // color: #343a40;
+      @include font_color("main-left_h2");
       font-size: 18px;
     }
 
@@ -501,7 +497,8 @@ $background_color: #fff;
   .acticle_dscibe {
     margin-top: 10px;
     min-height: 30px;
-    color: rgba(0, 0, 0, 0.43);
+    // color: rgba(0, 0, 0, 0.43);
+    @include font_color("main-left_dscibe");
     font-size: 12px;
   }
 
@@ -509,8 +506,8 @@ $background_color: #fff;
     position: absolute;
     left: 5px;
     bottom: 5px;
-    color: #999;
-
+    // color: #999;
+    @include font_color("main-left_info");
     span {
       padding-right: 10px;
       // text-indent:5px
@@ -547,13 +544,15 @@ $background_color: #fff;
       font-size: 15px;
       font-size: 14px;
       color: $background_color;
-      background: #1890ff;
+      // background: #1890ff;
+      @include background_color("main-right_title");
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
     }
 
     p {
-      color: #666666;
+      // color: #666666;
+      @include font_color("main-right_aside_p");
       // margin: 10px 0 0;
       line-height: 24px;
       text-align: justify;
@@ -561,7 +560,8 @@ $background_color: #fff;
       text-indent: 2rem;
       letter-spacing: 2px;
       padding: 10px 10px;
-      background-color: $background_color;
+      // background-color: $background_color;
+      @include background_color("main-left_licolor");
     }
 
     .introduction {
@@ -590,7 +590,9 @@ $background_color: #fff;
       }
 
       ul > li {
-        background-color: $background_color;
+        // background-color: $background_color;
+        @include background_color("main-left_licolor");
+        @include font_color("main-right_aside_p");
         padding: 10px 8px;
         cursor: pointer;
       }
@@ -625,7 +627,8 @@ $background_color: #fff;
       margin-bottom: 25px;
 
       ul > li > span:nth-child(even) {
-        background-color: #ccc;
+        // background-color: #ccc;
+        @include background_color("main-right_aside_catespan");
         border-radius: 50%;
         min-width: 25px;
         min-height: 25px;
@@ -639,7 +642,9 @@ $background_color: #fff;
         padding: 16px 8px;
         font-size: 14px;
         @include displayEleBetween;
-        background-color: $background_color;
+        @include background_color("main-left_licolor");
+        @include font_color("main-right_aside_p");
+        // background-color: $background_color;
       }
 
       ul > li:hover {

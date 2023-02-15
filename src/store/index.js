@@ -11,6 +11,7 @@ export default new Vuex.Store({
     i18nValue: "", //是否国际化
     scrollValue: 0, //滚动条滚动距离
     activeName: "/homepage", //默认页面路径
+    themeValue:"light",
   },
   //类似于组件中的计算属性
   getters: {
@@ -25,8 +26,11 @@ export default new Vuex.Store({
       state.scrollValue = payload;
     },
     SET_activeName(state, payload) {
-      console.log(payload)
       state.activeName = payload;
+    },
+    //主题
+    SET_themeValue(state, payload) {
+      state.themeValue = payload;
     },
   },
   //异步
