@@ -23,12 +23,22 @@
               @click="handleClickEditor(scope.row)"
               >修改</el-button
             >
-            <el-button
-              type="text"
-              size="small"
-              @click="handleClickDelete(scope.row)"
-              >删除</el-button
-            >
+
+            <el-popover placement="bottom" width="200" trigger="click">
+              <p>这是一段内容这是一段内容确定删除吗？</p>
+              <div style="text-align: right; margin: 0">
+                <el-button type="primary" size="mini" @click="handleClickDelete(scope.row)"
+                  >确定</el-button
+                >
+              </div>
+              <el-button
+                type="text"
+                size="small"
+                @click="setvisible"
+                slot="reference"
+                >删除</el-button
+              >
+            </el-popover>
           </template>
         </el-table-column>
       </el-table>
@@ -70,6 +80,7 @@ export default {
       comTableData: [], //列表数据
       currentPagetotal: 0, //数据总数
       loadingshow: true, //
+      visible: false,
     };
   },
   //监听属性 类似于data概念
@@ -117,6 +128,11 @@ export default {
         }
       });
     },
+    setvisible() {
+      this.visible = !this.visible;
+      console.log(this.visible);
+    },
+    //根据row.id删除文章
     handleClickDelete(row) {
       Fn.articledelete({
         delectId: row.id,

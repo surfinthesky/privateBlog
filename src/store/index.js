@@ -5,6 +5,7 @@ import notes from "./modules/notes";
 import about from "./modules/about";
 import editor from "./modules/editor";
 Vue.use(Vuex);
+const _that = new Vue();
 export default new Vuex.Store({
   //数据
   state: {
@@ -12,6 +13,7 @@ export default new Vuex.Store({
     scrollValue: 0, //滚动条滚动距离
     activeName: "/homepage", //默认页面路径
     themeValue:"light",
+    loginOut:false,//登出
   },
   //类似于组件中的计算属性
   getters: {
@@ -31,6 +33,11 @@ export default new Vuex.Store({
     //主题
     SET_themeValue(state, payload) {
       state.themeValue = payload;
+    },
+    //退出登录
+    SET_loginOut(state, payload) {
+      console.log(_that);
+      state.loginOut = payload;
     },
   },
   //异步

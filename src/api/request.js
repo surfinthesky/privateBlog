@@ -50,6 +50,10 @@ service.interceptors.response.use(
         type: "warning",
         message: error.response.data,
       });
+      // console.log(_that.$store)
+      _that.$store.commit('SET_loginOut',true)
+      // _that.$router.replace({ path: "/" });
+      // window.location.replace("/");
     }
     if (error.response.status === 500) {
       _that.$message({

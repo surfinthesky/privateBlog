@@ -404,9 +404,9 @@ export default {
       // console.log($file);
       this.initMaven($file);
     },
-    $save() {
+    $save(pos,$file) {
       // console.log(pos);
-      // console.log($file);
+      console.log($file);
     },
     initMaven(content) {
       const rendererMD = new Marked.Renderer();
