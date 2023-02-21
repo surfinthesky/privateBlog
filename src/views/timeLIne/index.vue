@@ -40,8 +40,8 @@ export default {
   },
   mounted() {
     getTimelinelist({
-      pagenum: this.currentPage,
-      pagesize: this.currentPagesize,
+      // pagenum: this.currentPage,
+      // pagesize: this.currentPagesize,
     }).then((res) => {
       // let arr =[]
       res.data.result.map((item) => {

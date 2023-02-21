@@ -14,6 +14,7 @@
       <div class="content_left">
         <div
           class="infinite-list"
+          ref="infinitelist"
           :style="{ overflow: overFlow == true ? 'auto' : 'hidden' }"
         >
           <ul
@@ -84,11 +85,11 @@
                           >&nbsp;<span>{{ item.articleDate }}</span></i
                         ></span
                       >
-                      <span class="p_time"
+                      <!-- <span class="p_time"
                         ><i class="el-icon-collection-tag" title="时间"
                           >&nbsp;<span>标签</span></i
                         ></span
-                      >
+                      > -->
                     </div>
                     <span class="p_read"
                       ><el-button type="text" @click="drawerMe(item)"
@@ -134,14 +135,16 @@
           </div>
           <div class="categories">
             <h3>文章分类</h3>
-            <ul>
-              <li><span>Vue</span><span>121</span></li>
-              <li><span>React</span><span>3</span></li>
-              <li><span>Java</span><span>44</span></li>
-              <li><span>Mysql</span><span>11</span></li>
-              <li><span>Javascript</span><span>0</span></li>
-              <li><span>Little knowledge</span><span>3</span></li>
-              <li><span>更多...</span></li>
+            <ul
+              v-for="(item, index) in sortlist"
+              :key="index"
+              @click="sortFn(item.articleDiff)"
+            >
+              <li>
+                <span>{{ item.articleDiff }}</span
+                ><span>{{ item.count }}</span>
+              </li>
+              <!-- <li><span>更多...</span></li> -->
             </ul>
           </div>
           <div class="hot_acticle">
@@ -201,9 +204,9 @@ import { mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto } from "@/utils/utils";
 import { getDateFormatComplete } from "@/utils/formDate";
 import messagebox from "@/components/messageCom.vue";
-import { getarticlelist, getIpdetails } from "@/api/user";
 Vue.use(infiniteScroll);
 Vue.use(Base64);
+import * as Fn from "@/api/user";
 export default {
   name: "vueInternationalI18n",
   components: {
@@ -224,14 +227,21 @@ export default {
       noMore: false,
       overFlow: true,
       loadingSk: true, //骨架的显示隐藏
+      sortlist: [],
+      sortValue: "", //默认不分类
+      sortBoolean: false,
     };
   },
   mounted() {
     this.date = getDateFormatComplete(new Date());
     this.getPagelist();
-    getIpdetails().then((res) => {
+    Fn.getIpdetails().then((res) => {
       console.log(res.data);
     });
+    Fn.articlesort().then((res) => {
+      this.sortlist = res.data.result;
+    });
+    window.addEventListener("scroll", this.handleScroll, true);
     // .then((err)=>{console.log(err);})
   },
   created() {},
@@ -250,6 +260,21 @@ export default {
     },
   },
   methods: {
+    //监听右侧滚动条滚动事件
+    handleScroll() {
+      //滚动的高度
+    },
+    //分类请求
+    sortFn(sortValue) {
+      this.$refs.infinitelist.scrollTop = 0;
+      this.tableList = [];
+      this.loadingSk = true;
+      this.noMore = false;
+      this.sortValue = sortValue;
+      this.currentPage = 0;
+      this.currentPagetotal = 1;
+      this.getPagelist();
+    },
     setLoading() {
       setTimeout(() => {
         this.loadingSk = false;
@@ -264,15 +289,17 @@ export default {
       });
     },
     load() {
-      this.returnLoading();
       this.overFlow = false;
       preventOverHidden();
       this.getPagelist();
     },
     //获取首页文章
     getPagelist() {
-      if (this.tableList.length !== this.currentPagetotal) {
+      console.log(this.tableList, "this.tableList");
+      console.log(this.currentPagetotal, "this.currentPagetotal");
+      if (this.tableList.length != this.currentPagetotal) {
         this.currentPage += 1;
+        this.returnLoading();
       } else {
         setTimeout(() => {
           this.returnLoading().close();
@@ -280,21 +307,34 @@ export default {
           preventOverauto();
         }, 600);
         this.noMore = true;
+        console.log(this.noMore, "this.noMore");
         return;
       }
       if (this.currentPage == 1) {
+        console.log("----zheli");
         this.setLoading();
       }
       //文章接口api
-      getarticlelist({
+      Fn.getarticlelist({
         pagenum: this.currentPage,
         pagesize: this.currentPagesize,
+        sortvalue: this.sortValue,
       }).then((res) => {
         res.data.result.map((item) => {
           item.articleDate = getDateFormatComplete(item.articleDate);
         });
-        this.tableList = [...this.tableList, ...res.data.result];
+        if (!this.sortValue) {
+          this.tableList = [...this.tableList, ...res.data.result];
+        } else if (this.sortValue && this.sortBoolean) {
+          this.tableList = [...this.tableList, ...res.data.result];
+        } else {
+          this.sortBoolean = true;
+          this.tableList = res.data.result;
+        }
         console.log(this.tableList);
+        if (this.tableList.length < 10) {
+          this.noMore = true;
+        }
         setTimeout(() => {
           this.returnLoading().close();
           console.log(this.currentPage, "this.currentPage");

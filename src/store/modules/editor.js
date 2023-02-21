@@ -14,6 +14,7 @@ const editor = {
     },
     SET_editorRow: (state, payload) => {
       state.editorRow = payload;
+      // console.log(state.editorRow);
     },
   },
 };

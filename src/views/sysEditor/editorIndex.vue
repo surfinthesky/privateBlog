@@ -113,6 +113,7 @@ export default {
   //监听属性 类似于data概念
   computed: {
     ...mapState("editor", ["activePath"]), //映射子module下state中属性，需要开启命名空间 namespaced: true,
+    ...mapState(["userInfo"]),
   },
   //监控data中的数据变化
   watch: {},
@@ -140,6 +141,18 @@ export default {
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
+    console.log(this.userInfo);
+  },
+  beforeRouteEnter(to, from, next) {
+    console.log(to);
+    let loginName = sessionStorage.getItem("loginName");
+    if (loginName == "admin123") {
+      next((vm) => {
+        vm.$router.replace(from.path);
+      });
+    } else {
+      next();
+    }
   },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前

@@ -4,7 +4,7 @@
     <div class="table_box">
       <div class="Access_box_title">
         <span>{{ title }}</span>
-        <span>文章总数：{{ currentPagetotal }}</span>
+        <span>数据总数：{{ currentPagetotal }}</span>
       </div>
       <el-table :data="comTableData" :border="true" stripe style="width: 100%">
         <el-table-column
@@ -27,7 +27,10 @@
             <el-popover placement="bottom" width="200" trigger="click">
               <p>这是一段内容这是一段内容确定删除吗？</p>
               <div style="text-align: right; margin: 0">
-                <el-button type="primary" size="mini" @click="handleClickDelete(scope.row)"
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="handleClickDelete(scope.row)"
                   >确定</el-button
                 >
               </div>
@@ -70,7 +73,8 @@ export default {
   props: {
     title: String, //标题
     labelData: Array, //接受表头及指定渲染value
-    getApi: String,
+    getApi: String, //请求数据列表api
+    deleteAPi: String, //删除api
   },
   data() {
     //这里存放数据
@@ -91,7 +95,7 @@ export default {
   watch: {},
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    // console.log(this.tableLoading);
+    console.log(this.deleteAPi);
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
@@ -105,16 +109,12 @@ export default {
       this.SET_editorRow(row);
       this.$parent.status = "Editor";
       this.$parent.article_show = true;
-      // this.$parent.ruleForm.articleTitle = row.articleTitle
-      // this.$parent.ruleForm.articleDscibe = row.articleDscibe
-      // this.$parent.ruleForm.articleDiff = row.articleDiff
-      // this.$parent.ruleForm.articleDate = new Date(row.articleDate)
-      // this.$parent.ruleForm.articleHtmlText =  Base64.decode(row.articleHtmlText)
     },
     //获取文章table列表
     getPagelist() {
       //文章接口api
       if (!this.getApi) {
+        this.loadingshow = false;
         return;
       }
       Fn[this.getApi]({
@@ -134,7 +134,7 @@ export default {
     },
     //根据row.id删除文章
     handleClickDelete(row) {
-      Fn.articledelete({
+      Fn[this.deleteAPi]({
         delectId: row.id,
       })
         .then((res) => {

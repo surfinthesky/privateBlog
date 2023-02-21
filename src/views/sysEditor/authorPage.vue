@@ -112,6 +112,7 @@
       :title="titleText"
       :labelData="labelData"
       :getApi="initApi"
+      :deleteAPi="deleteapi"
     ></tableCom>
   </div>
 </template>
@@ -141,6 +142,7 @@ export default {
     //这里存放数据
     return {
       initApi: "getarticlelist", //传递到table组件请求的api
+      deleteapi: "articledelete", //传递到table组件请求的api
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("access_token"),
       },
@@ -227,7 +229,7 @@ export default {
           },
         ],
       },
-      status: "Add",
+      status: "Add",//状态是添加或修改
     };
   },
   //监听属性 类似于data概念
@@ -348,7 +350,8 @@ export default {
                   changeStatus = true;
                   // console.log("%c修改---articleHtmlText", "color:green");
                 } else {
-                  if (item !== "articleDate" || item !== "articleHtmlText") {
+                  if (item !== "articleDate" && item !== "articleHtmlText") {
+                    console.log("%c修改---articleHtmlText", "color:yellow");
                     changeStatus = true;
                   }
                 }
@@ -386,6 +389,11 @@ export default {
                   });
                 }
               });
+            }else{
+              this.$message({
+                  type:"warning",
+                  message:"当前无修改信息，请重试"
+              })
             }
           }
         } else {

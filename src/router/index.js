@@ -30,6 +30,7 @@ const router = new Router({
         requiresAuth: true,
       },
     },
+    // sys后台模块
     {
       path: "/editor",
       name: "editor",
@@ -87,6 +88,7 @@ const router = new Router({
         },
       ],
     },
+    // 前台
     {
       path: "/index",
       name: "index",

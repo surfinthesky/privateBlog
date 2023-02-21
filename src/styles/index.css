@@ -43,6 +43,7 @@ body {
     background-repeat: no-repeat !important;
     background-size: cover !important;
     background-image: url("../assets/bg.jpg") !important;
+    box-sizing: border-box;
 }
 
 html {

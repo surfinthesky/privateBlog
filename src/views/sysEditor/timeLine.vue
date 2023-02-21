@@ -99,22 +99,31 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <tableCom :title="titleText" :labelData="labelData"></tableCom>
+    <tableCom
+      ref="tableCom"
+      :title="titleText"
+      :labelData="labelData"
+      :getApi="initApi"
+      :deleteAPi="deleteapi"
+    ></tableCom>
   </div>
 </template>
 
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import { mapState } from "vuex";
 import tableCom from "../../components/tableCom.vue";
 import { getDateFormat } from "@/utils/formDate";
-import { addtimeline } from "@/api/user";
+import * as Fn from "@/api/user";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: { tableCom },
   data() {
     //这里存放数据
     return {
+      initApi: "getTimelinelist", //传递到table组件请求的api
+      deleteapi: "timelinedelete", //传递到table组件请求的api
       article_show: false,
       btnloading: false,
       titleText: "timeline管理",
@@ -143,28 +152,28 @@ export default {
       ],
       labelData: [
         {
-          labelName: "访客ip",
-          propName: "date",
+          labelName: "ID",
+          propName: "id",
         },
         {
-          labelName: "操作类型",
-          propName: "name",
+          labelName: "内容标题",
+          propName: "stageContent",
         },
         {
-          labelName: "操作内容",
+          labelName: "创建时间",
+          propName: "stageTimestamp",
         },
         {
-          labelName: "访客定位",
+          labelName: "完成时间",
+          propName: "stageCompletTime",
         },
         {
-          labelName: "访客来源",
-          propName: "address",
+          labelName: "颜色",
+          propName: "stageColor",
         },
         {
-          labelName: "浏览器",
-        },
-        {
-          labelName: "访问时间",
+          labelName: "Icon",
+          propName: "stageIcon",
         },
       ],
       rules: {
@@ -198,44 +207,130 @@ export default {
           },
         ],
       },
+      status: "Add", //状态是添加或修改
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    ...mapState("editor", ["editorRow"]),
+  },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    "$store.state.editor.editorRow"(newVal) {
+      console.log(newVal, "newVal");
+      if (newVal) {
+        // this.ruleForm.articleDate = new Date(newVal.articleDate);
+        this.ruleForm.stageContent = newVal.stageContent;
+        this.ruleForm.stageTimestamp = newVal.stageTimestamp;
+        this.ruleForm.stageCompletTime = new Date(newVal.stageCompletTime);
+        this.ruleForm.stageColor = newVal.stageColor;
+        this.ruleForm.stageIcon = newVal.stageIcon;
+      }
+    },
+  },
   //方法集合
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let obj = {
-            stageTimestamp: getDateFormat(new Date()),
-            stageCompletTime: getDateFormat(this.ruleForm.stageCompletTime),
-          };
-          this.btnloading = true;
-          addtimeline({ ...this.ruleForm, ...obj })
-            .then((res) => {
-              if (res.data.message == "success") {
-                this.$message({
-                  type: "success",
-                  message: "已添加成功～",
-                });
-                this.btnloading = false;
-                this.resetForm();
-                this.article_show = false;
-              } else {
-                this.$message({
-                  type: "success",
-                  message: "请求异常，请稍后再试～",
-                });
-                this.btnloading = false;
+          //判断新增还是更新
+          if (this.status == "Add") {
+            let obj = {
+              stageTimestamp: getDateFormat(new Date()),
+              stageCompletTime: getDateFormat(this.ruleForm.stageCompletTime),
+            };
+            this.btnloading = true;
+            console.log(new Date());
+            console.log(getDateFormat(new Date()));
+            console.log({ ...this.ruleForm, ...obj });
+            Fn.addtimeline({ ...this.ruleForm, ...obj })
+              .then((res) => {
+                if (res.data.message == "success") {
+                  this.$message({
+                    type: "success",
+                    message: "已添加成功～",
+                  });
+                  this.btnloading = false;
+                  this.resetForm();
+                  this.article_show = false;
+                  this.$refs.tableCom.loadingshow = true;
+                  this.$refs.tableCom.getPagelist();
+                } else {
+                  this.$message({
+                    type: "success",
+                    message: "请求异常，请稍后再试～",
+                  });
+                  this.btnloading = false;
+                }
+              })
+              .then((err) => {
+                console.log(err);
+              });
+          } else {
+            let changeStatus = false;
+            console.log("timeline修改");
+            let submitFormEditor = {
+              id: this.editorRow.id,
+              stageColor: this.ruleForm.stageColor,
+              stageCompletTime: this.ruleForm.stageCompletTime,
+              stageContent: this.ruleForm.stageContent,
+              stageIcon: this.ruleForm.stageIcon,
+              stageTimestamp: this.ruleForm.stageTimestamp,
+            };
+            for (let item in submitFormEditor) {
+              if (submitFormEditor[item] !== this.editorRow[item]) {
+                if (item && item !== "stageCompletTime") {
+                  changeStatus = true;
+                } else {
+                  //时间比对修否修改
+                  let isTrue =
+                    new Date(this.ruleForm.stageCompletTime).getTime() ==
+                    new Date(this.editorRow.stageCompletTime).getTime()
+                      ? true
+                      : false;
+                  if (!isTrue) {
+                    changeStatus = true;
+                  }
+                }
               }
-            })
-            .then((err) => {
-              console.log(err);
-            });
-          // alert("submit!");
+            }
+            if (changeStatus) {
+              submitFormEditor.stageCompletTime = getDateFormat(
+                this.ruleForm.stageCompletTime
+              );
+              submitFormEditor.stageTimestamp = getDateFormat(
+                this.ruleForm.stageTimestamp
+              );
+              Fn.updatetimeline(submitFormEditor)
+                .then((res) => {
+                  if (res.data.message == "success") {
+                    this.$message({
+                      type: "success",
+                      message: "已更新成功～",
+                    });
+                    this.btnloading = false;
+                    this.resetForm();
+                    this.article_show = false;
+                    this.$refs.tableCom.loadingshow = true;
+                    this.$refs.tableCom.getPagelist();
+                  } else {
+                    this.$message({
+                      type: "success",
+                      message: "请求异常，请稍后再试～",
+                    });
+                    this.btnloading = false;
+                  }
+                })
+                .then((err) => {
+                  console.log(err);
+                });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "当前无修改信息，请重试",
+              });
+            }
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -259,7 +354,7 @@ export default {
   activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 /*@import url(); 引入公共css类*/
 @import "@/styles/minxin.scss";
 .upload-demo {

@@ -1,7 +1,7 @@
 import axios from "axios"; // 引入axios
 import Vue from "vue";
+import router from "@/router";
 const _that = new Vue();
-// import { refresh } from "@/api/user"; // 封装好的refresh(鉴权需要刷新)接口
 // 创建axios实例
 const service = axios.create({
   // baseURL:
@@ -36,7 +36,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => response,
   (error) => {
-    const config = error.config; // 可以试着打印config看看具体是些什么
+    // const config = error.config; // 可以试着打印config看看具体是些什么
     // console.log(error)
     // 这里我对多数的状态码进行了一个统一整理。
     if (error.response.status === 400) {
@@ -50,9 +50,8 @@ service.interceptors.response.use(
         type: "warning",
         message: error.response.data,
       });
-      // console.log(_that.$store)
-      _that.$store.commit('SET_loginOut',true)
-      // _that.$router.replace({ path: "/" });
+      // console.log(_that);
+      router.replace({ path: "/" });
       // window.location.replace("/");
     }
     if (error.response.status === 500) {
@@ -62,13 +61,16 @@ service.interceptors.response.use(
       });
     }
     // 重点代码：当服务器返回401状态码时，使用refresh刷新接口更新已有token，再重复上一个接口请求，若失败，退出登录
-    if (error.response.status === 401) {
-      console.log(config.url, "config.url");
-      // console.log(config.baseURL,'config.baseURL')
-      config.headers["Authorization"] =
-        "Bearer " + sessionStorage.getItem("refreshToken");
-      // return service(config); // 必须resolve
-    }
+    // if (error.response.status === 401) {
+    //   console.log(error.response, "config.url");
+    //   console.log(config.baseURL,'config.baseURL')
+    //   console.log(sessionStorage.getItem("refreshToken"), "config.baseURL2");
+    //   config.headers.Authorization =
+    //     "Bearer " + sessionStorage.getItem("refreshToken");
+    //   console.log(config);
+    //   console.log(config.headers);
+    //   return service(error.response.config); // 必须resolve
+    // }
     return Promise.reject(error);
   }
 );

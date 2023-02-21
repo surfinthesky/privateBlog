@@ -46,7 +46,17 @@ export function articledelete(data) {
     data: data // 参数
   })
 }
-//timeline创建request
+//文章分类 request
+export function articlesort() {
+  return request({
+    url: 'proxyServer2/articlesort', // 接口名称
+    method: 'post', // 接口方法
+    data: {
+      sortText:"articleDiff"
+    } // 参数
+  })
+}
+//timeline添加request
 export function addtimeline(data) {
   return request({
     url: 'proxyServer2/addtimeline', // 接口名称
@@ -54,10 +64,26 @@ export function addtimeline(data) {
     data: data // 参数
   })
 }
-//获取timeline
+//获取timeline列表 request
 export function getTimelinelist(data) {
   return request({
     url: 'proxyServer2/timelinepage', // 接口名称
+    method: 'post', // 接口方法
+    data: data // 参数
+  })
+}
+//更新timeline request
+export function updatetimeline(data) {
+  return request({
+    url: 'proxyServer2/timelineupdate', // 接口名称
+    method: 'post', // 接口方法
+    data: data // 参数
+  })
+}
+//删除timeline request
+export function timelinedelete(data) {
+  return request({
+    url: 'proxyServer2/timelinedelete', // 接口名称
     method: 'post', // 接口方法
     data: data // 参数
   })
