@@ -1,4 +1,4 @@
-@import "./themes.scss";//主题颜色变量配置
+@import "./themes.scss"; //主题颜色变量配置
 $themes: (
   dark-theme: $dark-theme,
   light-theme: $light-theme,
@@ -40,5 +40,11 @@ $themes: (
 @mixin border_color($color) {
   @include themeify {
     border: themed($color) !important;
+  }
+}
+// 获取阴影
+@mixin box_shadow($color) {
+  @include themeify {
+    box-shadow: 5px 1px 18px 0 themed($color) !important;
   }
 }

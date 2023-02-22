@@ -1,7 +1,6 @@
 <template>
   <div class="international">
-    <!-- 切换语言 -->
-    <!-- tabs标签页 -->
+    <!-- 轮播 -->
     <div class="carousel">
       <el-carousel :interval="4000" type="card" height="180px" arrow="never">
         <el-carousel-item v-for="item in 6" :key="item">
@@ -61,6 +60,7 @@
               <template>
                 <li v-for="(item, index) in tableList" :key="index">
                   <div class="text_left">
+                    <img class="text_left_img" :src="item.articlePic" alt="" />
                     <h2>
                       <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
                       {{ item.articleTitle }}
@@ -118,11 +118,13 @@
       <div class="content_right">
         <div class="aside">
           <div class="introduction">
-            <img
-              class="introduction_img"
-              src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
-              alt=""
-            />
+            <div class="introduction_imgbox">
+              <img
+                class="introduction_img"
+                src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
+                alt=""
+              />
+            </div>
             <h3>博客简介</h3>
             <p>
               在日常开发中遇到的问题总结出来，分享大家。
@@ -133,28 +135,34 @@
               每天进步一点点，终会厚积薄发。 借用一句话：冰冻三尺 非一日之寒。
             </p>
           </div>
+          <!-- 文章分类  -->
           <div class="categories">
             <h3>文章分类</h3>
-            <ul
-              v-for="(item, index) in sortlist"
-              :key="index"
-              @click="sortFn(item.articleDiff)"
-            >
-              <li>
+            <ul>
+              <li
+                v-for="(item, index) in sortlist"
+                :key="index"
+                @click="sortFn(item.articleDiff, index)"
+                :class="[index === sortIndex ? 'activeli' : '']"
+              >
                 <span>{{ item.articleDiff }}</span
                 ><span>{{ item.count }}</span>
               </li>
               <!-- <li><span>更多...</span></li> -->
             </ul>
           </div>
+          <!-- 热门文章 -->
           <div class="hot_acticle">
             <h3>热门文章</h3>
             <ul>
-              <li><span>No1</span><span> 第一个前端博客</span></li>
-              <li><span>No2</span><span> 第一个前端博客</span></li>
-              <li><span>No3</span><span> 第一个前端博客</span></li>
-              <li><span>No4</span><span> 第一个前端博客</span></li>
-              <li><span>No5</span><span> 第一个前端博客</span></li>
+              <li
+                v-for="(item, index) in hotList"
+                :key="index"
+                @click="hotFn(item.id)"
+              >
+                <span>No{{ index + 1 }}</span
+                ><span> {{ item.articleTitle }}</span>
+              </li>
             </ul>
           </div>
           <!-- <div class="alllabels">
@@ -230,19 +238,24 @@ export default {
       sortlist: [],
       sortValue: "", //默认不分类
       sortBoolean: false,
+      sortIndex: "",
+      hotList: [], //热门文章
+      hotId: "",
+      hotDetail: {},
     };
   },
   mounted() {
     this.date = getDateFormatComplete(new Date());
     this.getPagelist();
-    Fn.getIpdetails().then((res) => {
-      console.log(res.data);
-    });
+    // Fn.getIpdetails().then((res) => {
+    //   console.log(res.data);
+    // });
     Fn.articlesort().then((res) => {
       this.sortlist = res.data.result;
     });
-    window.addEventListener("scroll", this.handleScroll, true);
-    // .then((err)=>{console.log(err);})
+    Fn.articleHotList().then((res) => {
+      this.hotList = res.data.result;
+    });
   },
   created() {},
   computed: {
@@ -260,12 +273,27 @@ export default {
     },
   },
   methods: {
-    //监听右侧滚动条滚动事件
-    handleScroll() {
-      //滚动的高度
+    //热门文章事件
+    hotFn(hotID) {
+      if (hotID == this.hotId) {
+        this.drawerMe(this.hotDetail);
+        return;
+      }
+      this.hotId = hotID;
+      Fn.getArticledetail({ id: hotID }).then((res) => {
+        if (res.data.result) {
+          this.hotDetail = res.data.result[0];
+          this.drawerMe(res.data.result[0]);
+        }
+      });
     },
     //分类请求
-    sortFn(sortValue) {
+    sortFn(sortValue, sortIndex) {
+      this.sortIndex = sortIndex;
+      //点击相同分类不做请求
+      if (sortValue == this.sortValue) {
+        return;
+      }
       this.$refs.infinitelist.scrollTop = 0;
       this.tableList = [];
       this.loadingSk = true;
@@ -288,6 +316,7 @@ export default {
         background: "rgba(0, 0, 0, 0.5)",
       });
     },
+    // 无限加载初始化方法
     load() {
       this.overFlow = false;
       preventOverHidden();
@@ -295,8 +324,6 @@ export default {
     },
     //获取首页文章
     getPagelist() {
-      console.log(this.tableList, "this.tableList");
-      console.log(this.currentPagetotal, "this.currentPagetotal");
       if (this.tableList.length != this.currentPagetotal) {
         this.currentPage += 1;
         this.returnLoading();
@@ -307,11 +334,9 @@ export default {
           preventOverauto();
         }, 600);
         this.noMore = true;
-        console.log(this.noMore, "this.noMore");
         return;
       }
       if (this.currentPage == 1) {
-        console.log("----zheli");
         this.setLoading();
       }
       //文章接口api
@@ -373,17 +398,6 @@ export default {
         /<pre>/g,
         "<pre class='language-html'>"
       );
-    },
-    open() {
-      this.$alert("这是一段内容", "标题名称", {
-        confirmButtonText: "确定",
-        callback: (action) => {
-          this.$message({
-            type: "info",
-            message: `action: ${action}`,
-          });
-        },
-      });
     },
     //阅读详情
     drawerMe(payload) {
@@ -457,11 +471,10 @@ $background_color: #fff;
 
 .carousel {
   background-color: $background_color;
-  margin-top: 20px;
+  // margin-top: 20px;
 }
 
 .homePageBox {
-  margin-top: 15px;
   display: flex;
 
   // box-sizing: content-box;
@@ -495,7 +508,9 @@ $background_color: #fff;
   .content_left_ul {
     width: 100%;
   }
-
+  .content_left_ul > div > li:nth-child(1) {
+    margin-top: 15px;
+  }
   .content_left_ul > div > li {
     display: flex;
     // background-color: $background_color;
@@ -507,16 +522,27 @@ $background_color: #fff;
   }
 
   .content_left_ul > div > li:hover {
-    box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 1px 15px 0 rgba(255, 255, 255, 0.3);
+    @include box_shadow("main-left_shadow");
   }
 
   .text_left {
     position: relative;
     width: 100%;
     padding: 5px;
-
+    &_img {
+      width: 190px;
+      height: 120px;
+      margin-right: 10px;
+      border-radius: 4px;
+      float: left;
+    }
+    &_img:hover {
+      transform: scale(1.02);
+    }
     h2 {
       // color: #343a40;
+      display: inline-block;
       @include font_color("main-left_h2");
       font-size: 18px;
     }
@@ -540,11 +566,12 @@ $background_color: #fff;
     // color: rgba(0, 0, 0, 0.43);
     @include font_color("main-left_dscibe");
     font-size: 12px;
+    // display: inline-block;
   }
 
   .article_info {
     position: absolute;
-    left: 5px;
+    left: 205px;
     bottom: 5px;
     // color: #999;
     @include font_color("main-left_info");
@@ -611,13 +638,17 @@ $background_color: #fff;
       flex: 1;
       display: flex;
       flex-direction: column;
-
-      &_img {
+      &_imgbox {
         flex: 1;
         width: 100%;
         height: 100px;
         margin-bottom: 25px;
-        border-radius: 5px;
+        margin-top: 15px;
+      }
+      &_img {
+        width: 100%;
+        height: 340px;
+        border-radius: 3px;
       }
     }
 
@@ -635,10 +666,15 @@ $background_color: #fff;
         @include font_color("main-right_aside_p");
         padding: 10px 8px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
       }
 
       ul > li > span:nth-child(odd) {
         font-size: 16px;
+      }
+      ul > li > span:nth-child(even) {
+        margin-left: 4px;
       }
 
       ul > li:nth-child(1) > span:nth-child(1) {
@@ -686,11 +722,14 @@ $background_color: #fff;
         @include font_color("main-right_aside_p");
         // background-color: $background_color;
       }
-
+      .activeli {
+        border-left: 1px solid burlywood;
+        @include background_color("main-right_aside_activeli");
+      }
       ul > li:hover {
-        color: #11a8cd;
-        background: #f8f8f8;
-        border-left: 1px solid #11a8cd;
+        // color: #11a8cd;
+        // background: #f8f8f8;
+        // border-left: 1px solid #11a8cd;
       }
     }
 

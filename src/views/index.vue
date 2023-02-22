@@ -352,10 +352,10 @@ export default {
 }
 
 .el-main {
-  margin-top: 70px;
+  margin-top: 50px;
   //   background-color: #e9eef3;
   // color: #333;
-  // min-height: 650px;
+  min-height: 550px;
   margin-bottom: 20px;
 }
 
