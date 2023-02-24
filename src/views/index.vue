@@ -4,7 +4,7 @@
       <!-- 头部tab -->
       <el-header>
         <el-row :gutter="0" class="headerRow">
-          <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12"
+          <el-col :xs="0" :sm="12" :md="12" :lg="12" :xl="12"
             ><div class="grid-content bg-purple">
               <!-- <img
                 src=""
@@ -13,17 +13,9 @@
               /> -->
             </div></el-col
           >
-          <el-col :xs="4" :sm="12" :md="12" :lg="12" :xl="12"
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12"
             ><div class="grid-content bg-purple-light">
               <ul class="topTabList">
-                <!-- <li
-                  v-for="(item, index) in topTabList"
-                  :key="index"
-                  @click="activeClick(index)"
-                  :class="[activeIndex == index ? 'active' : '']"
-                >
-                  <router-link :to="item.path">{{ item.name }}</router-link>
-                </li> -->
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                   <el-tab-pane
                     v-for="(item, index) in topTabList"
@@ -32,22 +24,8 @@
                     :name="item.path"
                   ></el-tab-pane>
                 </el-tabs>
-                <!-- <li>
-                  <el-dropdown trigger="click">
-                    <span class="el-dropdown-link">
-                      <i class="el-icon-arrow-down el-icon--right"></i>
-                      More
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>React</el-dropdown-item>
-                      <el-dropdown-item>Vue</el-dropdown-item>
-                      <el-dropdown-item>Java</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </li> -->
-              </ul>
-            </div></el-col
-          >
+              </ul></div
+          ></el-col>
         </el-row>
         <el-switch
           @change="themeChange"
@@ -295,7 +273,9 @@ export default {
   // background-repeat: no-repeat;
   // background-size: cover;
   // @include ele_bg_url("@/assets/bg.jpg");
+
 }
+
 .el-footer {
   margin: 45px 0;
   // position: absolute;
@@ -323,6 +303,7 @@ export default {
 .el-header,
 .el-main {
   padding: 0px;
+
 }
 .el-header {
   box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);

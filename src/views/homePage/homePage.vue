@@ -9,102 +9,136 @@
       </el-carousel>
     </div>
     <div class="homePageBox">
-      <!-- 内容左侧 -->
-      <div class="content_left">
-        <div
-          class="infinite-list"
-          ref="infinitelist"
-          :style="{ overflow: overFlow == true ? 'auto' : 'hidden' }"
-        >
-          <ul
-            class="content_left_ul"
-            v-infinite-scroll="load"
-            infinite-scroll-disabled="disabled"
-          >
-            <!-- 骨架层 -->
-            <el-skeleton style="" :loading="loadingSk" animated :count="10">
-              <!-- 初始骨架显示 -->
-              <template slot="template">
-                <div
-                  style="
-                    padding: 10px 15px;
-                    margin-bottom: 15px;
-                    min-height: 110px;
-                  "
-                >
-                  <div style="display: flex; flex-direction: column">
-                    <el-skeleton-item variant="h2" style="width: 50%" />
-                    <el-skeleton-item
-                      variant="h3"
-                      style="width: 50%; margin-top: 10px; min-height: 30px"
-                    />
-                  </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      justify-items: space-between;
-                      margin-top: 16px;
-                      height: 16px;
-                    "
-                  >
-                    <el-skeleton-item
-                      variant="text"
-                      style="margin-right: 16px"
-                    />
-                    <el-skeleton-item variant="text" style="width: 30%" />
-                  </div>
-                </div>
-              </template>
-              <!-- 最终数据渲染 -->
-              <template>
-                <li v-for="(item, index) in tableList" :key="index">
-                  <div class="text_left">
-                    <img class="text_left_img" :src="item.articlePic" alt="" />
-                    <h2>
-                      <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
-                      {{ item.articleTitle }}
-                    </h2>
-                    <div class="acticle_dscibe">
-                      <!-- 组件使用后时出现报错，解决方案 -->
-                      {{ item.articleDscibe }}
+      <el-row>
+        <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="19">
+          <!-- 内容左侧 -->
+          <div class="content_left">
+            <div
+              class="infinite-list"
+              ref="infinitelist"
+              :style="{ overflow: overFlow == true ? 'auto' : 'hidden' }"
+            >
+              <ul
+                class="content_left_ul"
+                v-infinite-scroll="load"
+                infinite-scroll-disabled="disabled"
+              >
+                <!-- 骨架层 -->
+                <el-skeleton style="" :loading="loadingSk" animated :count="10">
+                  <!-- 初始骨架显示 -->
+                  <template slot="template">
+                    <div
+                      style="
+                        padding: 10px 15px;
+                        margin-bottom: 15px;
+                        min-height: 110px;
+                        display: flex;
+                        justify-content: space-between;
+                      "
+                    >
+                      <!-- 骨架图片 -->
+                      <el-skeleton-item
+                        variant="image"
+                        style="width: 190px; height: 120px; margin-right: 10px"
+                      />
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          justify-content: space-between;
+                          flex: 1;
+                        "
+                        class="skeletonBox"
+                      >
+                        <div>
+                          <el-skeleton-item variant="h2" style="" />
+                          <el-skeleton-item
+                            variant="h3"
+                            style="margin-top: 10px; min-height: 30px"
+                          />
+                        </div>
+                        <div
+                          style="margin-top: 16px; height: 16px; display: flex"
+                        >
+                          <div
+                            style="
+                              width: 80%;
+                              margin-right: 16px;
+                              display: flex;
+                            "
+                          >
+                            <el-skeleton-item
+                              variant="text"
+                              style="flex: 1; margin-right: 10px"
+                            />
+                            <el-skeleton-item
+                              variant="text"
+                              style="flex: 1; margin-right: 10px"
+                            />
+                            <el-skeleton-item variant="text" style="flex: 1" />
+                          </div>
+                          <el-skeleton-item variant="text" style="width: 20%" />
+                        </div>
+                      </div>
                     </div>
-                    <div class="article_info">
-                      <span class="p_author" title="作者"
-                        ><i class="el-icon-user"
-                          >&nbsp;<span>Author cong</span></i
-                        ></span
-                      >
-                      <span
-                        ><i class="el-icon-folder" title="分类"
-                          >&nbsp; <span> {{ item.articleDiff }}</span></i
-                        ></span
-                      >
-                      <span class="p_time"
-                        ><i class="el-icon-date" title="时间"
-                          >&nbsp;<span>{{ item.articleDate }}</span></i
-                        ></span
-                      >
-                      <!-- <span class="p_time"
+                  </template>
+                  <!-- 最终数据渲染 -->
+                  <template>
+                    <li v-for="(item, index) in tableList" :key="index">
+                      <div class="text_left">
+                        <img
+                          class="text_left_img"
+                          :src="item.articlePic"
+                          alt=""
+                        />
+                        <div class="text_left_contentRight">
+                          <div>
+                            <h2>
+                              <!-- 没有天赋的努力是否毫无意义？以你现在的努力程度还轮不到拼天赋 -->
+                              {{ item.articleTitle }}
+                            </h2>
+                            <div class="acticle_dscibe">
+                              <!-- 组件使用后时出现报错，解决方案 -->
+                              {{ item.articleDscibe }}
+                            </div>
+                          </div>
+                          <div class="article_info">
+                            <span class="p_author" title="作者"
+                              ><i class="el-icon-user"
+                                >&nbsp;<span>Author cong</span></i
+                              ></span
+                            >
+                            <span
+                              ><i class="el-icon-folder" title="分类"
+                                >&nbsp; <span> {{ item.articleDiff }}</span></i
+                              ></span
+                            >
+                            <span class="p_time"
+                              ><i class="el-icon-date" title="时间"
+                                >&nbsp;<span>{{ item.articleDate }}</span></i
+                              ></span
+                            >
+                            <!-- <span class="p_time"
                         ><i class="el-icon-collection-tag" title="时间"
                           >&nbsp;<span>标签</span></i
                         ></span
                       > -->
-                    </div>
-                    <span class="p_read"
-                      ><el-button type="text" @click="drawerMe(item)"
-                        >阅读全文</el-button
-                      ></span
-                    >
-                  </div>
-                </li>
-              </template>
-            </el-skeleton>
-            <p v-if="loading" style="color: #409eff">加载中......</p>
-            <p v-if="noMore" style="color: #409eff">没有更多了......</p>
-          </ul>
-        </div>
-        <!-- <el-pagination
+                          </div>
+                        </div>
+                        <span class="p_read"
+                          ><el-button type="text" @click="drawerMe(item)"
+                            >阅读全文</el-button
+                          ></span
+                        >
+                      </div>
+                    </li>
+                  </template>
+                </el-skeleton>
+                <p v-if="loading" style="color: #409eff">加载中......</p>
+                <p v-if="noMore" style="color: #409eff">没有更多了......</p>
+              </ul>
+            </div>
+            <!-- <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -113,59 +147,62 @@
           :total="currentPagetotal"
         >
         </el-pagination> -->
-      </div>
-      <!-- 内容右侧 -->
-      <div class="content_right">
-        <div class="aside">
-          <div class="introduction">
-            <div class="introduction_imgbox">
-              <img
-                class="introduction_img"
-                src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
-                alt=""
-              />
-            </div>
-            <h3>博客简介</h3>
-            <p>
-              在日常开发中遇到的问题总结出来，分享大家。
-              有不足之处希望大家多多指出，相互提升。在平常工作或学习的过程中学会新的知识，
-              如果没有马上用得上，基本上就会很快忘掉，这个相信大家都会深有体会。那么
-              最有效也是最笨的方法：那就是重复重复再重复。然后
-              学完一定要总结，这个总结的过程就是在加深你的记忆！
-              每天进步一点点，终会厚积薄发。 借用一句话：冰冻三尺 非一日之寒。
-            </p>
           </div>
-          <!-- 文章分类  -->
-          <div class="categories">
-            <h3>文章分类</h3>
-            <ul>
-              <li
-                v-for="(item, index) in sortlist"
-                :key="index"
-                @click="sortFn(item.articleDiff, index)"
-                :class="[index === sortIndex ? 'activeli' : '']"
-              >
-                <span>{{ item.articleDiff }}</span
-                ><span>{{ item.count }}</span>
-              </li>
-              <!-- <li><span>更多...</span></li> -->
-            </ul>
-          </div>
-          <!-- 热门文章 -->
-          <div class="hot_acticle">
-            <h3>热门文章</h3>
-            <ul>
-              <li
-                v-for="(item, index) in hotList"
-                :key="index"
-                @click="hotFn(item.id)"
-              >
-                <span>No{{ index + 1 }}</span
-                ><span> {{ item.articleTitle }}</span>
-              </li>
-            </ul>
-          </div>
-          <!-- <div class="alllabels">
+        </el-col>
+        <el-col :xs="0" :sm="6" :md="6" :lg="6" :xl="5">
+          <!-- 内容右侧 -->
+          <div class="content_right">
+            <div class="aside">
+              <div class="introduction">
+                <div class="introduction_imgbox">
+                  <img
+                    class="introduction_img"
+                    src="https://gd-hbimg.huaban.com/c4ab80a0b7289bd71784e7a2d7f7d40ecf28563981a3b-6Uowp5_fw658"
+                    alt=""
+                  />
+                </div>
+                <h3>博客简介</h3>
+                <p>
+                  在日常开发中遇到的问题总结出来，分享大家。
+                  有不足之处希望大家多多指出，相互提升。在平常工作或学习的过程中学会新的知识，
+                  如果没有马上用得上，基本上就会很快忘掉，这个相信大家都会深有体会。那么
+                  最有效也是最笨的方法：那就是重复重复再重复。然后
+                  学完一定要总结，这个总结的过程就是在加深你的记忆！
+                  每天进步一点点，终会厚积薄发。 借用一句话：冰冻三尺
+                  非一日之寒。
+                </p>
+              </div>
+              <!-- 文章分类  -->
+              <div class="categories">
+                <h3>文章分类</h3>
+                <ul>
+                  <li
+                    v-for="(item, index) in sortlist"
+                    :key="index"
+                    @click="sortFn(item.articleDiff, index)"
+                    :class="[index === sortIndex ? 'activeli' : '']"
+                  >
+                    <span>{{ item.articleDiff }}</span
+                    ><span>{{ item.count }}</span>
+                  </li>
+                  <!-- <li><span>更多...</span></li> -->
+                </ul>
+              </div>
+              <!-- 热门文章 -->
+              <div class="hot_acticle">
+                <h3>热门文章</h3>
+                <ul>
+                  <li
+                    v-for="(item, index) in hotList"
+                    :key="index"
+                    @click="hotFn(item.id)"
+                  >
+                    <span>No{{ index + 1 }}</span
+                    ><span> {{ item.articleTitle }}</span>
+                  </li>
+                </ul>
+              </div>
+              <!-- <div class="alllabels">
             <h3>全部标签</h3>
             <el-tag>标签一</el-tag>
             <el-tag type="success">yarn</el-tag>
@@ -185,24 +222,35 @@
             <el-tag type="success">babel</el-tag>
             <el-tag type="info">v-model</el-tag>
           </div> -->
-        </div>
-      </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <!-- 弹窗 -->
     <el-drawer title="没有天赋" size="95%">
       <span>我来啦!</span>
     </el-drawer>
-    <el-dialog :visible.sync="drawer" width="1112px">
-      <h1 style="height: 50px; color: #343a40; font-size: 28px">
+    <el-dialog :visible.sync="drawer" width="1180px">
+      <h1
+        style="height: 50px; color: #343a40; font-size: 28px"
+        class="dialog_h1"
+      >
         {{ drawerarticleTitle }}
       </h1>
-      <div v-html="value" class="markdown-body"></div>
+      <div
+        v-html="value"
+        :class="
+          themeValue == 'dark' ? 'markdown-body-dark' : 'markdown-body-light'
+        "
+      ></div>
       <messagebox></messagebox>
     </el-dialog>
   </div>
 </template>
 <script>
 import Vue from "vue";
+import { mapState } from "vuex";
 import infiniteScroll from "vue-infinite-scroll";
 import { Base64 } from "js-base64";
 import Marked from "marked";
@@ -262,6 +310,7 @@ export default {
     disabled() {
       return this.loading || this.noMore;
     },
+    ...mapState(["themeValue"]),
   },
   watch: {
     drawer(newval) {
@@ -271,6 +320,10 @@ export default {
         preventOverauto();
       }
     },
+    // "$store.state.themeValue"(newval) {
+    //   if (newval == "light") {
+    //   }
+    // },
   },
   methods: {
     //热门文章事件
@@ -426,12 +479,38 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/styles/minxin.scss";
-@import "@/styles/github-markdown.css";
 @import "@/styles/variables.scss";
+@import "@/styles/github-markdown-dark.css";
+@import "@/styles/github-markdown-light.css";
 $background_color: #fff;
+@keyframes el-skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+.el-row {
+  width: 100%;
+  padding: 0px !important;
+  margin: 0px !important;
+}
 .infinite-list {
   height: 1250px;
-  width: 100%;
+  // width: 100%;
+  flex: 1;
+  .el-skeleton.is-animated .el-skeleton__item {
+    background-image: linear-gradient(
+      90deg,
+      #d3d3d3 25%,
+      #a9a9a9 37%,
+      #d3d3d3 63%
+    ) !important;
+    background-size: 400% 100% !important;
+    animation: 1.4s ease infinite el-skeleton-loading !important;
+  }
 }
 .infinite-list::-webkit-scrollbar {
   width: 0 !important;
@@ -451,6 +530,12 @@ $background_color: #fff;
   // @include ele_border(2px,#fff)
   // @include ele_border_ra(50%)
   // @include ele_text_padd(1px,0px,3px,1px)
+  ::v-deep .el-dialog {
+    @include background_color("dialog_bgcolor");
+  }
+  .dialog_h1 {
+    @include font_color("main-left_h2");
+  }
 }
 
 .el-carousel__item h3 {
@@ -482,7 +567,7 @@ $background_color: #fff;
     // background-color: $background_color;
     position: relative;
     display: flex;
-    width: 71%;
+    // width: 71%;
 
     .el-pagination {
       position: absolute;
@@ -530,19 +615,23 @@ $background_color: #fff;
     position: relative;
     width: 100%;
     padding: 5px;
+    @include displayflex();
+    .text_left_contentRight {
+      @include displayEleColumn2();
+    }
     &_img {
       width: 190px;
       height: 120px;
       margin-right: 10px;
       border-radius: 4px;
-      float: left;
+      // float: left;
     }
     &_img:hover {
       transform: scale(1.02);
     }
     h2 {
       // color: #343a40;
-      display: inline-block;
+      // display: inline-block;
       @include font_color("main-left_h2");
       font-size: 18px;
     }
@@ -570,9 +659,9 @@ $background_color: #fff;
   }
 
   .article_info {
-    position: absolute;
-    left: 205px;
-    bottom: 5px;
+    // position: absolute;
+    // left: 205px;
+    // bottom: 5px;
     // color: #999;
     @include font_color("main-left_info");
     span {
@@ -598,7 +687,7 @@ $background_color: #fff;
 
   //右侧aside
   .aside {
-    padding: 0px 5px 5px 5px;
+    padding: 0px 0px 5px 5px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -720,6 +809,7 @@ $background_color: #fff;
         @include displayEleBetween;
         @include background_color("main-left_licolor");
         @include font_color("main-right_aside_p");
+        cursor: pointer;
         // background-color: $background_color;
       }
       .activeli {

@@ -25,6 +25,12 @@
   flex-direction: column;
   align-items: center;
 }
+//元素轴向
+@mixin displayEleColumn2() {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 //元素元素水平一行
 @mixin displayflex() {
   display: flex;

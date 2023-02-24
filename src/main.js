@@ -106,7 +106,8 @@ import {
   Notification,
   Skeleton,
   SkeletonItem,
-  Drawer
+  Drawer,
+  Avatar
 } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 Vue.config.productionTip = false;
@@ -187,6 +188,7 @@ Vue.use(CascaderPanel);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
 Vue.use(Drawer);
+Vue.use(Avatar);
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$msgbox = MessageBox;

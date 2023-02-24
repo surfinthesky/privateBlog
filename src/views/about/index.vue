@@ -8,11 +8,11 @@
       </pre>
     </div> -->
         <div class="describe_text">
-          <p class="normalP">
+          <p class="normalP" style="text-indent: 32px;">
             Hello，这是我的第一个前端博客，使用的技术是<span class="normalSpan"
-              >Vue+Node.js</span
-            >作为主体开发。 后期目标：使用<span class="normalSpan">Java</span
-            >编写后台，目前Java学习到collection。
+              >Vue+Node.js（express模块为主体）</span
+            >开发。本博客纯手写，非工具搭建。 后期目标：使用<span class="normalSpan">Java（语言）+Springboot框架</span
+            >编写后台，目前Java学习到collection。同时也会分享学习笔记及避坑经验。目前项目分为前台(用户端、管理端)及后台都已开发在Github。
             在掘金平台分享工作中遇到的小问题及初次体验：<a
               target="_blank"
               class="normalSpanA"
