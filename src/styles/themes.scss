@@ -3,6 +3,7 @@
 $light-theme: (
   header-top_bgcolor: #ffffff,
   header-top_color: #4e4e4e,
+  header-active_color:#409eff,
   main-left_licolor: #ffffff,
   main-left_shadow: rgba(192, 192, 192, 1),
   main-left_h2: #343a40,
@@ -16,10 +17,13 @@ $light-theme: (
   timeline-card-p: #333333,
   timeline-card-timestamp: #909399,
   dialog_bgcolor: #f5f5f5,
+  check_left: #749ed7,
+  check_right: #4e4e4e,
 );
 $dark-theme: (
   header-top_bgcolor: #1b1b1b,
   header-top_color: #cdcdcd,
+  header-active_color:#409eff,
   main-left_licolor: #343434,
   main-left_shadow: rgba(255, 255, 255, 0.3),
   main-left_h2: #ffffff,
@@ -33,4 +37,6 @@ $dark-theme: (
   timeline-card-p: #f5f5f5,
   timeline-card-timestamp: #f5f5f5,
   dialog_bgcolor: #c0c0c0,
+  check_left: #ffffff,
+  check_right: #749ed7,
 );

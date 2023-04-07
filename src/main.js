@@ -2,29 +2,20 @@ import Vue from "vue";
 import App from "./App.vue";
 import VueI18n from "vue-i18n";
 import router from "./router/index";
-import store from './store/index'
-import './styles/index.css'
-import './styles/style.scss';
-import './styles/theme/index.css'
+import store from "./store/index";
+import "./styles/index.css";
+import "./styles/style.scss";
+import "./styles/theme/index.css";
 //初始化默认主题
-if (localStorage.getItem('private-theme') == "dark-theme") {
-  window.document.documentElement.setAttribute(
-    "data-theme",
-    "dark-theme"
-  );
-  localStorage.setItem('private-theme', 'dark-theme');
-} else if (localStorage.getItem('private-theme') == "light-theme") {
-  window.document.documentElement.setAttribute(
-    "data-theme",
-    "light-theme"
-  );
-  localStorage.setItem('private-theme', 'light-theme');
+if (localStorage.getItem("private-theme") == "dark-theme") {
+  window.document.documentElement.setAttribute("data-theme", "dark-theme");
+  localStorage.setItem("private-theme", "dark-theme");
+} else if (localStorage.getItem("private-theme") == "light-theme") {
+  window.document.documentElement.setAttribute("data-theme", "light-theme");
+  localStorage.setItem("private-theme", "light-theme");
 } else {
-  window.document.documentElement.setAttribute(
-    "data-theme",
-    "light-theme"
-  );
-  localStorage.setItem('private-theme', 'light-theme');
+  window.document.documentElement.setAttribute("data-theme", "light-theme");
+  localStorage.setItem("private-theme", "light-theme");
 }
 import {
   Pagination,
@@ -107,7 +98,7 @@ import {
   Skeleton,
   SkeletonItem,
   Drawer,
-  Avatar
+  Avatar,
 } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 Vue.config.productionTip = false;
@@ -197,7 +188,8 @@ Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
-Vue.prototype.$store = store
+Vue.prototype.$store = store;
+
 // /*---------使用语言包-----------*/
 const i18n = new VueI18n({
   locale: "zh-CN", // 语言标识

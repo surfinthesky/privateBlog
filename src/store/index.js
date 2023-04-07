@@ -4,6 +4,7 @@ import createPersistedState from "vuex-persistedstate";
 import notes from "./modules/notes";
 import about from "./modules/about";
 import editor from "./modules/editor";
+import roast from "./modules/roast";
 Vue.use(Vuex);
 export default new Vuex.Store({
   //数据
@@ -14,66 +15,9 @@ export default new Vuex.Store({
     themeValue: "light",
     loginOut: false, //登出
     userInfo: {},
-    // 评论数量
-    commentNum: 0,
-    // 当前用户信息
-    userInfoMessage: {
-      userId: 10086,
-      nickName: "huazizhanye",
-      avatar:
-        "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/avatat.jpg",
-    },
-    commentList: [
-      {
-        id: 1,
-        isFirstLevel: 0,
-        commentUser: {
-          userId: 10086,
-          nickName: "huazizhanye",
-          avatar:
-            "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/avatat.jpg",
-        },
-        content: "my name is huazizhanye",
-        createDate: new Date().toLocaleDateString(),
-        childrenList: [
-          {
-            id: 2,
-            isFirstLevel: 1,
-            commentUser: {
-              userId: 10010,
-              nickName: "mqq",
-              avatar:
-                "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/mqq.jpg",
-            },
-            targetUser: {
-              userId: 10086,
-              nickName: "huazizhanye",
-              avatar:
-                "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/avatat.jpg",
-            },
-            content: "hello huazizhanye",
-            createDate: new Date().toLocaleDateString(),
-          },
-          {
-            id: 3,
-            commentUser: {
-              userId: 10086,
-              nickName: "huazizhanye",
-              avatar:
-                "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/avatat.jpg",
-            },
-            targetUser: {
-              userId: 10010,
-              nickName: "mqq",
-              avatar:
-                "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/mqq.jpg",
-            },
-            content: "hello mqq~",
-            createDate: new Date().toLocaleDateString(),
-          },
-        ],
-      },
-    ],
+    userlocaltioninfo: {},
+    userareaInfo: {},
+    weatherList:[],//当前用户所在地天气数据存储
   },
   //类似于组件中的计算属性
   getters: {
@@ -101,53 +45,28 @@ export default new Vuex.Store({
     //存储用户信息
     SET_userInfo(state, payload) {
       state.userInfo = payload;
-      console.log(state.userInfo);
     },
-    // 添加一级评论
-    __addCommentLevelOne(state, data) {
-      console.log(data);
-      state.commentList.unshift(data);
+    //存储用户信息
+    SET_userlocaltion(state, payload) {
+      state.userlocaltioninfo = payload;
     },
-    // 添加二级评论
-    __addCommentLevelTwo(state, data) {
-      console.log(state, data);
-      if (
-        state.commentList.findIndex((x) => x.id === data.toCommentId) !== -1
-      ) {
-        state.commentList.forEach((items) => {
-          if (items.id == data.toCommentId) {
-            if (items.childrenList) {
-              items.childrenList.push(data.dataList);
-            } else {
-              items.childrenList = [];
-              items.childrenList.push(data.dataList);
-            }
-          }
-        });
-      }
+    //存储用户信息
+    SET_userarea(state, payload) {
+      state.userareaInfo = payload;
     },
-    // 统计评论数量
-    __getCommentNum(state) {
-      state.commentNum = state.commentList.length;
+    //存储用户所在地天气
+    SET_userWeather(state, payload) {
+      state.weatherList = payload;
     },
   },
   //异步
-  actions: {
-    // 添加一级评论
-    addCommentLevelOne({ commit }, data) {
-      commit("__addCommentLevelOne", data);
-      commit("__getCommentNum");
-    },
-    // 添加二级评论
-    addCommentLevelTwo({ commit }, data) {
-      commit("__addCommentLevelTwo", data);
-    },
-  },
+  actions: {},
   //分块管理
   modules: {
     notes,
     about,
     editor,
+    roast,
   },
   //持久化
   plugins: [createPersistedState()],

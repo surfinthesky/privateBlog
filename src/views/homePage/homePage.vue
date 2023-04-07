@@ -10,7 +10,7 @@
     </div>
     <div class="homePageBox">
       <el-row>
-        <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="19">
+        <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18">
           <!-- 内容左侧 -->
           <div class="content_left">
             <div
@@ -149,7 +149,7 @@
         </el-pagination> -->
           </div>
         </el-col>
-        <el-col :xs="0" :sm="6" :md="6" :lg="6" :xl="5">
+        <el-col :xs="0" :sm="6" :md="6" :lg="6" :xl="6">
           <!-- 内容右侧 -->
           <div class="content_right">
             <div class="aside">
@@ -161,7 +161,7 @@
                     alt=""
                   />
                 </div>
-                <h3>博客简介</h3>
+                <!-- <h3>博客简介</h3>
                 <p>
                   在日常开发中遇到的问题总结出来，分享大家。
                   有不足之处希望大家多多指出，相互提升。在平常工作或学习的过程中学会新的知识，
@@ -170,7 +170,7 @@
                   学完一定要总结，这个总结的过程就是在加深你的记忆！
                   每天进步一点点，终会厚积薄发。 借用一句话：冰冻三尺
                   非一日之寒。
-                </p>
+                </p> -->
               </div>
               <!-- 文章分类  -->
               <div class="categories">
@@ -409,7 +409,7 @@ export default {
           this.sortBoolean = true;
           this.tableList = res.data.result;
         }
-        console.log(this.tableList);
+        // console.log(this.tableList);
         if (this.tableList.length < 10) {
           this.noMore = true;
         }
@@ -753,7 +753,7 @@ $background_color: #fff;
         // background-color: $background_color;
         @include background_color("main-left_licolor");
         @include font_color("main-right_aside_p");
-        padding: 10px 8px;
+        padding: 16px 8px;
         cursor: pointer;
         display: flex;
         align-items: center;

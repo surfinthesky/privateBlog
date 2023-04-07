@@ -75,12 +75,13 @@ export default {
       },
     };
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     ...mapMutations({ setActiveName: "SET_activeName" }),
     ...mapMutations(["SET_userInfo"]),
+    // ...mapMutations({ setPath: "editor/SET_activePath" }),
+    //注意此处的setPath是我们在页面调用的方法名哦，调用这个即是调用模块的方法
+    //第二种写法 '模块名',['调用方法名称']
     ...mapMutations("editor", ["SET_activePath"]),
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
@@ -94,12 +95,12 @@ export default {
                 type: "success",
                 message: "登录成功",
               });
-              this.SET_userInfo(res.data)
+              this.SET_userInfo(res.data);
               sessionStorage.setItem("access_token", res.data.token);
               sessionStorage.setItem("refreshToken", res.data.refreshToken);
               sessionStorage.setItem("loginName", res.data.result[0].username);
               // this.setActiveName("/homepage")
-              if (this.ruleForm.name !== "admin123") {
+              if (this.ruleForm.name == "sysmaner") {
                 this.SET_activePath("/editor/num");
                 this.$router.replace({ path: "/editor/num" });
               } else {

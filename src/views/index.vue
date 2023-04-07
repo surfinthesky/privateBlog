@@ -27,7 +27,8 @@
               </ul></div
           ></el-col>
         </el-row>
-        <el-switch
+        <!-- 主题切换 -->
+        <!-- <el-switch
           @change="themeChange"
           style="display: block"
           v-model="themevalue"
@@ -36,7 +37,8 @@
           active-text="light"
           inactive-text="dark"
         >
-        </el-switch>
+        </el-switch> -->
+        <checkTheme></checkTheme>
       </el-header>
       <!-- 内容区 -->
       <el-main>
@@ -88,17 +90,84 @@
           <img src="@/assets/backTotop.png" alt="" />
         </div>
       </transition>
+      <!-- 右侧天气 -->
+      <div class="weather-box">
+        <el-collapse accordion>
+          <el-collapse-item>
+            <template slot="title"> Weather </template>
+            <div
+              class="weather-box-content"
+              v-for="(item, index) in weatherList"
+              :key="index"
+            >
+              <div class="weather-box-content-header">
+                <h3>{{ item.location.name }}</h3>
+                <img
+                  v-if="
+                    new Date().getHours() >= 18 || new Date().getHours() == 0
+                  "
+                  class="icon"
+                  :src="[weathersortFn(item.daily[0].text_night)]"
+                  alt=""
+                />
+                <img
+                  v-else
+                  class="icon"
+                  :src="[weathersortFn(item.daily[0].text_day)]"
+                  alt=""
+                />
+                <!-- <h6>{{ item.daily[0].text_day }}</h6> -->
+                <h1>{{ item.daily[0].high }}</h1>
+              </div>
+              <ul class="weather-box-content-main">
+                <li
+                  v-show="index2 !== 0"
+                  v-for="(item, index2) in item.daily"
+                  :key="index2"
+                >
+                  <span>{{ Funutils.formdateDay(item.date) }}</span>
+                  <span>
+                    <img
+                      v-if="
+                        new Date().getHours() >= 18 ||
+                        new Date().getHours() == 0
+                      "
+                      class="icon"
+                      :src="[weathersortFn(item.text_night)]"
+                      alt=""
+                    />
+                    <img
+                      v-else
+                      class="icon"
+                      :src="[weathersortFn(item.text_day)]"
+                      alt=""
+                    />
+                  </span>
+                  <span>{{ item.high }}</span>
+                  <span>{{ item.low }}</span>
+                  <span>{{ item.wind_direction }}</span>
+                </li>
+              </ul>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+      <div></div>
     </el-container>
   </div>
 </template>
 <script>
+import checkTheme from "@/components/checktheme";
 import $ from "jquery";
 import { mapState, mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto, _debounce } from "@/utils/utils";
+import * as Func from "@/api/user.js";
+import * as Funutils from "@/utils/utils.js";
 import testFile from "./testFile/testFile.vue";
+import json from "@/json/map.json";
 export default {
   name: "homePage",
-  components: { testFile },
+  components: { testFile, checkTheme },
   data() {
     return {
       clientHeightValue: 0,
@@ -135,18 +204,124 @@ export default {
       ],
       activeIndex: "", //默认选中索引
       show: false,
-      dialogVisible: false,
-      themevalue: "",
+      dialogVisible: false, //底部图片展示
+      themevalue: "", //主题键值
+      weatherarr: [
+        {
+          name: "小雨",
+          url: require("@/assets/weather/lightrain.svg"),
+        },
+        {
+          name: "中雨",
+          url: require("@/assets/weather/moderaterain.svg"),
+        },
+        {
+          name: "大雨",
+          url: require("@/assets/weather/heavyrain.svg"),
+        },
+        {
+          name: "晴",
+          url: require("@/assets/weather/sunny.svg"),
+        },
+        {
+          name: "多云",
+          url: require("@/assets/weather/cloudy.svg"),
+        },
+        {
+          name: "台风",
+          url: require("@/assets/weather/typhoon.svg"),
+        },
+        {
+          name: "龙卷风",
+          url: require("@/assets/weather/tornado.svg"),
+        },
+        {
+          name: "大风",
+          url: require("@/assets/weather/highwind.svg"),
+        },
+        {
+          name: "冰雹",
+          url: require("@/assets/weather/hail.svg"),
+        },
+        {
+          name: "小雪",
+          url: require("@/assets/weather/scouther.svg"),
+        },
+        {
+          name: "中雪",
+          url: require("@/assets/weather/moderatesnow.svg"),
+        },
+        {
+          name: "大雪",
+          url: require("@/assets/weather/heavysnow.svg"),
+        },
+        {
+          name: "雨夹雪",
+          url: require("@/assets/weather/rainandsnowmixed.svg"),
+        },
+        {
+          name: "雷电",
+          url: require("@/assets/weather/thunderandlightning.svg"),
+        },
+        {
+          name: "雷阵雨",
+          url: require("@/assets/weather/thundershower.svg"),
+        },
+        {
+          name: "雷阵雨夹雪",
+          url: require("@/assets/weather/thundershowerwithsnow.svg"),
+        },
+        {
+          name: "阴",
+          url: require("@/assets/weather/overcastsky.svg"),
+        },
+        {
+          name: "雾",
+          url: require("@/assets/weather/fog.svg"),
+        },
+        {
+          name: "雾霾",
+          url: require("@/assets/weather/smog.svg"),
+        },
+        {
+          name: "晚晴",
+          url: require("@/assets/weather/eveningclear.svg"),
+        },
+        {
+          name: "晚多云",
+          url: require("@/assets/weather/eveningcloudy.svg"),
+        },
+        {
+          name: "强沙尘暴",
+          url: require("@/assets/weather/strongsandstorm.svg"),
+        },
+        {
+          name: "沙尘暴",
+          url: require("@/assets/weather/sandstorm.svg"),
+        },
+      ],
+      //引入后需要存储在data中
+      Funutils,
     };
   },
   mounted() {
+    Func.getlocationIp().then((res) => {
+      this.setUserlocaltion(res.data);
+      //查询adcode json表返回详细地区信息
+      let areaObj = this.sortArea(res.data);
+      this.setUserareaInfo(areaObj);
+      Func.getlocalWeather(areaObj.Location_ID).then((res) => {
+        // console.log(res.data, "天气");
+        this.setUserWeather(res.data.results);
+      });
+    });
     this.successValue();
-    // console.log(this.$route);
     if (this.themeValue == "light") {
       this.themevalue = true;
     } else {
       this.themevalue = false;
     }
+    // console.log(this.weathersortFn("多云"));
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
@@ -162,7 +337,13 @@ export default {
     // console.log(fun);
   },
   computed: {
-    ...mapState(["scrollValue", "activeName", "themeValue"]),
+    ...mapState([
+      "scrollValue",
+      "activeName",
+      "themeValue",
+      "userlocaltioninfo",
+      "weatherList",
+    ]),
     activeName: {
       get(value) {
         return value.$route.path;
@@ -189,6 +370,20 @@ export default {
     },
   },
   methods: {
+    // 根据adcode筛选出完整地区信息
+    sortArea(data) {
+      let obj = {};
+      let num = 0;
+      json.map((item) => {
+        if (item.adcode == data.code) {
+          obj = item;
+        } else if (item.Adm2_Name_ZH == data.city && num == 0) {
+          num += 1;
+          obj = item;
+        }
+      });
+      return obj;
+    },
     // 切换主题 存储到缓存和store中，方便不同界面监听主题切换。
     themeChange(theme) {
       if (theme == false) {
@@ -215,6 +410,9 @@ export default {
       setScrollValue: "SET_scrollValue",
       setActiveName: "SET_activeName",
       setThemeValue: "SET_themeValue",
+      setUserlocaltion: "SET_userlocaltion",
+      setUserareaInfo: "SET_userarea",
+      setUserWeather: "SET_userWeather",
     }),
     //计算步骤条宽度根据滚动条滚动距离
     successValue() {
@@ -230,6 +428,15 @@ export default {
           _that.progressValue = perc * 100 + "%";
         });
       });
+    },
+    weathersortFn(value) {
+      let imgurl = "";
+      this.weatherarr.map((item) => {
+        if (item.name == value) {
+          imgurl = item.url;
+        }
+      });
+      return imgurl;
     },
     handleClick(tab) {
       this.$router.push({
@@ -273,7 +480,6 @@ export default {
   // background-repeat: no-repeat;
   // background-size: cover;
   // @include ele_bg_url("@/assets/bg.jpg");
-
 }
 
 .el-footer {
@@ -303,13 +509,11 @@ export default {
 .el-header,
 .el-main {
   padding: 0px;
-
 }
 .el-header {
   box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
-  position: fixed;
   top: 0px;
   left: 0px;
   width: 100%;
@@ -320,7 +524,7 @@ export default {
 .el-header {
   color: #666;
   line-height: 60px;
-  position: relative;
+  position: sticky;
   ::v-deep .el-switch {
     position: absolute;
     right: 10px;
@@ -374,6 +578,10 @@ body > .el-container {
   box-sizing: border-box;
   ::v-deep .el-tabs__item {
     @include font_color("header-top_color");
+    font-size: 16px;
+  }
+  ::v-deep .is-active {
+    @include font_color("header-active_color");
   }
 
   li {
@@ -456,5 +664,56 @@ a:active {
 
 ::v-deep .el-tabs__nav-wrap::after {
   display: none;
+}
+.weather-box {
+  // background-color: #fff;
+  // width: 200px;
+  // height: 200px;
+  position: absolute;
+  right: 0px;
+  top: 110px;
+  &-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .icon {
+        width: 50px;
+      }
+    }
+    &-main {
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .icon {
+          width: 38px;
+        }
+        span {
+          // flex: 1;
+          margin: 0px 8px;
+          display: flex;
+          white-space: nowrap;
+          min-width: 30px;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+.weather-box {
+  // animation-duration: 1s;
+  // animation-name: move;
+}
+@keyframes move {
+  0% {
+    right: 0px;
+  }
+  100% {
+    right: 180px;
+  }
 }
 </style>
