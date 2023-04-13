@@ -154,3 +154,27 @@ export function getreplyMessgaelist(data) {
     data,
   });
 }
+/**
+ * @description: 根据id获取用户信息
+ * @return {*}
+ * @param {*} data
+ */
+export function getuserInfo(data) {
+  return request({
+    url: "proxyServer2/getuserInfo", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}
+/**
+ * @description: 添加用户留言
+ * @return {*}
+ * @param {*} data
+ */
+export function insertMessage(data) {
+  return request({
+    url: "proxyServer2/insertMessage", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}

@@ -40,6 +40,18 @@ function getDateFormatComplete(time) {
   let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
   return year + "-" + month + "-" + day;
 }
+//返回格式：2023/01/11
+function getDateFormatnext(time) {
+  if (!time) return;
+  let date = new Date(time);
+  let year = date.getFullYear();
+  let month =
+    date.getMonth() + 1 < 10
+      ? "0" + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+  let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+  return year + "/" + month + "/" + day;
+}
 // ['2023-1-5', '2023-1-6', '2023-1-7', '2023-1-8', '2023-1-9', '2023-1-10', '2023-1-11']
 function getOverday(day) {
   let nowdate = new Date();
@@ -74,4 +86,4 @@ function getOverday(day) {
   let newdate = date.reverse(); //往后一周的话需要将数组倒叙，完后不需要
   return newdate;
 }
-export { getFuturePastDay, getDateFormat, getDateFormatComplete, getOverday };
+export { getFuturePastDay, getDateFormat, getDateFormatComplete, getOverday ,getDateFormatnext};

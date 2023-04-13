@@ -12,7 +12,7 @@
           @focus="showButton(0)"
           maxlength="500"
           :placeholder="placeholder"
-          v-model="textareaMap[0]"
+          v-model="textareaMap.textValue"
         >
         </textarea>
         <div v-if="buttonMap[0]">
@@ -41,7 +41,7 @@
               </ul>
             </div>
           </div>
-          <div class="public public-btn">
+          <div class="public public-btn messageParent">
             <button class="btn" @click="doSend()">发送</button>
             <button @click="cancelFn(0)" class="btn btn-cancel">取消</button>
           </div>
@@ -65,13 +65,15 @@
       <div class="content">
         <div class="comment-f">
           <avatar
-            :avatar="item.commentUser.avatar ? item.commentUser.avatar : avatar"
+            :avatar="
+              item.commentUser.avatarurl ? item.commentUser.avatarurl : avatar
+            "
           ></avatar>
         </div>
         <div class="comment-f">
           <div>
             <div class="username author">
-              {{ item.commentUser.userName }}
+              {{ item.commentUser.username }}
             </div>
             <div class="date">
               {{ item.createDate }}
@@ -93,14 +95,14 @@
           <div
             class="comment"
             :style="{ width: commentWidth }"
-            v-if="replyMap[item.id]"
+            v-if="replyMap.focusValue == item.id"
             :showAvatar="showAvatar"
           >
             <textarea
               class="textarea_hf"
               @focus="showButton(item.id)"
               :placeholder="placeholder"
-              v-model="textareaMap[item.id]"
+              v-model="textareaMap.textValue"
             >
             </textarea>
 
@@ -131,10 +133,10 @@
                 </div>
               </div>
 
-              <div class="public public-btn">
+              <div class="public public-btn messageChild">
                 <button
                   class="btn"
-                  @click="doChidSend(item.id, item.commentUser, item.id)"
+                  @click="doChidSend(item.id, item.commentUser, item.id,item.userId)"
                 >
                   发送
                 </button>
@@ -157,8 +159,8 @@
           <div class="comment-f">
             <avatar
               :avatar="
-                replyitem.commentUser.avatar
-                  ? replyitem.commentUser.avatar
+                replyitem.commentUser.avatarurl
+                  ? replyitem.commentUser.avatarurl
                   : avatar
               "
             ></avatar>
@@ -167,7 +169,7 @@
           <div class="comment-f">
             <div>
               <div class="username author">
-                {{ replyitem.commentUser.userName }}
+                {{ replyitem.commentUser.username }}
               </div>
               <div class="date">
                 {{ replyitem.createDate }}
@@ -177,7 +179,7 @@
 
           <div class="infosend-content">
             <div class="send send-to">
-              <a href="#">@{{ replyitem.targetUser.userName }}</a>
+              <a href="#">@{{ replyitem.targetUser.username }}</a>
             </div>
 
             <div class="send" v-html="analyzeEmoji(replyitem.content)"></div>
@@ -186,6 +188,7 @@
           <div class="infosend-content infosend-fa">
             <div class="infosend-font" @click="doReply(replyitem.id)">
               <div>
+                <!-- 下级评论区域 -->
                 <img
                   src="@/assets/img/icon/reply.png"
                   class="icon-infosend"
@@ -196,14 +199,14 @@
             <div
               class="comment"
               :style="{ width: commentWidth }"
-              v-if="replyMap[replyitem.id]"
+              v-if="replyMap.focusValue == replyitem.id"
               :showAvatar="showAvatar"
             >
               <textarea
                 class="textarea_hf"
                 @focus="showButton(replyitem.id)"
                 :placeholder="placeholder"
-                v-model="textareaMap[replyitem.id]"
+                v-model="textareaMap.textValue"
               >
               </textarea>
 
@@ -233,11 +236,11 @@
                   </div>
                 </div>
 
-                <div class="public public-btn">
+                <div class="public public-btn messageChild2">
                   <button
                     class="btn"
                     @click="
-                      doChidSend(replyitem.id, replyitem.commentUser, item.id)
+                      doChidSend(replyitem.id, replyitem.commentUser, item.id,item.userId)
                     "
                   >
                     发送
@@ -261,6 +264,7 @@
 <script>
 import avatar from "./Avatar.vue";
 import { emoji } from "./emoji.js";
+import { mapState } from "vuex";
 export default {
   props: {
     emojiWidth: {
@@ -295,10 +299,6 @@ export default {
       type: Number,
       default: 1,
     },
-    commentList: {
-      type: Array,
-      default: () => [],
-    },
     commentWidth: {
       type: String,
       default: "80%",
@@ -311,24 +311,34 @@ export default {
   },
   data() {
     return {
-      replyMap: [],
+      replyMap:{
+        focusValue:0
+      },
       buttonMap: [],
-      pBodyMap: [],
-      textareaMap: [],
+      pBodyMap: {
+        pBodyValue:0
+      },
+      textareaMap:{
+        textValue:""
+      },
       Emolist: emoji,
     };
   },
+  computed: {
+    ...mapState("roast", ["commentList"]),
+  },
   mounted() {
-    // console.log(this.commentList);
+    
+    console.log(this.commentList);
   },
   watch: {
-    pBodyMap: {
-      handler(newval, oldval) {
-        console.log(newval);
-        console.log(oldval);
-      },
-      deep: true,
-    },
+    // pBodyMap: {
+    //   handler(newval, oldval) {
+    //     console.log(newval);
+    //     console.log(oldval);
+    //   },
+    //   deep: true,
+    // },
   },
   components: {
     avatar,
@@ -342,33 +352,30 @@ export default {
     showButton(index) {
       this.$set(this.buttonMap, index, true);
     },
+    //关闭输入框及emoji表情
     cancelFn(index) {
       this.$set(this.buttonMap, index, false);
       if (index !== 0) {
-        this.$set(this.replyMap, index, false);
+        this.$set(this.replyMap, "focusValue", 0);
       }
     },
     doSend() {
       // 一级评论发送事件
-      this.$emit("doSend", this.textareaMap[0]);
-      console.log(this.textareaMap[0], "顶部留言");
-      // this.$set(this.textareaMap, 0, "");
+      this.$emit("doSend", this.textareaMap.textValue);
+      console.log(this.textareaMap.textValue, "顶部留言");
+      this.$set(this.textareaMap, "textValue", "");
     },
     // 二级评论发送事件
-    doChidSend(index, commentUserId, pid) {
-      console.log(this.textareaMap[index], commentUserId, pid, "回复其他留言");
-      this.$emit("messageSend", this.textareaMap[index], commentUserId, pid);
-      this.$set(this.textareaMap, index, "");
+    doChidSend(index, commentUserId, pid,userId) {
+      console.log(index, commentUserId, pid,userId, "回复其他留言");
+      this.$emit("messageSend", this.textareaMap.textValue, commentUserId, pid,userId);
+      this.$set(this.textareaMap, "textValue", "");
     },
-
     //选择表情包
     choseEmoji: function (index, inner) {
       var con = "";
-      if (!this.textareaMap[index]) {
-        this.$set(this.textareaMap, index, "");
-      }
-      con = this.textareaMap[index] += "[" + inner + "]";
-      this.$set(this.textareaMap, index, con);
+      con = this.textareaMap.textValue += "[" + inner + "]";
+      this.$set(this.textareaMap, 'textValue', con);
     },
     analyzeEmoji: function (cont) {
       //编译表情替换成图片展示出来
@@ -386,20 +393,21 @@ export default {
           }
           var s = require("@/assets/img/face/" + src);
           var imoj = "<img src='" + s + "'/>";
-
           str = str.replace(pattern2, imoj);
         }
       }
       return str;
     },
+    //当前点击回复他人id存储
     doReply(index) {
-      this.$set(this.replyMap, index, true);
-      console.log(this.replyMap[index]);
+      this.$set(this.replyMap, 'focusValue', index);
+      this.$set(this.textareaMap, 'textValue', '');
+      console.log(this.replyMap,'focusValue');
     },
-
-    pBodyStatus(index) {
-      console.log(index, "index");
-      this.$set(this.pBodyMap, index, !this.pBodyMap[index]);
+    //传递回复他人的id
+    pBodyStatus(itemid) {
+      this.$set(this.pBodyMap, "pBodyValue",itemid);
+      console.log(this.pBodyMap);
     },
   },
 };
@@ -610,6 +618,11 @@ export default {
   top: 29px;
   border-radius: 0 4px 4px 4px;
   display: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 }
 .Emo-open .Emo-body {
   display: block;
