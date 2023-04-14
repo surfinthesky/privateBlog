@@ -58,53 +58,52 @@ export default {
         async (res) => {
           this.$store.commit("roast/__getCommentNum", res.data.count);
           for (let i = 0; i < res.data.result.length; i++) {
-            let obj = {};
+            // let obj = {};
             if (res.data.result[i].isFirstLevel === 0) {
-              obj.content = res.data.result[i].content;
-              obj.createDate = res.data.result[i].createDate;
-              obj.id = res.data.result[i].id;
-              obj.isFirstLevel = res.data.result[i].isFirstLevel;
-              obj.toCommentId = res.data.result[i].toCommentId;
-              obj.userId = res.data.result[i].userId;
-              obj.createDate = intutils.getDateFormat(
+              // obj.content = res.data.result[i].content;
+              // obj.createDate = res.data.result[i].createDate;
+              // obj.id = res.data.result[i].id;
+              // obj.isFirstLevel = res.data.result[i].isFirstLevel;
+              // obj.toCommentId = res.data.result[i].toCommentId;
+              // obj.userId = res.data.result[i].userId;
+              res.data.result[i].createDate = intutils.getDateFormat(
                 res.data.result[i].createDate
               );
-              obj.createFormdate = intutils.getDateFormatnext(
+              res.data.result[i].createFormdate = intutils.getDateFormatnext(
                 res.data.result[i].createDate
               );
-              await Fn.getuserInfo({ id: res.data.result[i].userId }).then(
-                (res) => {
-                  obj.commentUser = res.data.result[0];
-                  // console.log(res, "用户信息");
-                }
-              );
-              parentList.push(obj);
+              // await Fn.getuserInfo({ id: res.data.result[i].userId }).then(
+              //   (res) => {
+              //     obj.commentUser = res.data.result[0];
+              //   }
+              // );
+              parentList.push(res.data.result[i]);
             } else {
-              let obj = {};
-              obj.content = res.data.result[i].content;
-              obj.createDate = res.data.result[i].createDate;
-              obj.id = res.data.result[i].id;
-              obj.isFirstLevel = res.data.result[i].isFirstLevel;
-              obj.parentId = res.data.result[i].parentId;
-              obj.toCommentId = res.data.result[i].toCommentId;
-              obj.userId = res.data.result[i].userId;
-              obj.createDate = intutils.getDateFormat(
+              // let obj = {};
+              // obj.content = res.data.result[i].content;
+              // obj.createDate = res.data.result[i].createDate;
+              // obj.id = res.data.result[i].id;
+              // obj.isFirstLevel = res.data.result[i].isFirstLevel;
+              // obj.parentId = res.data.result[i].parentId;
+              // obj.toCommentId = res.data.result[i].toCommentId;
+              // obj.userId = res.data.result[i].userId;
+              res.data.result[i].createDate = intutils.getDateFormat(
                 res.data.result[i].createDate
               );
-              obj.createFormdate = intutils.getDateFormatnext(
+              res.data.result[i].createFormdate = intutils.getDateFormatnext(
                 res.data.result[i].createDate
               );
-              await Fn.getuserInfo({ id: res.data.result[i].toCommentId }).then(
-                (res) => {
-                  obj.targetUser = res.data.result[0];
-                }
-              );
-              await Fn.getuserInfo({ id: res.data.result[i].userId }).then(
-                (res) => {
-                  obj.commentUser = res.data.result[0];
-                }
-              );
-              childrenArr.push(obj);
+              // await Fn.getuserInfo({ id: res.data.result[i].toCommentId }).then(
+              //   (res) => {
+              //     obj.targetUser = res.data.result[0];
+              //   }
+              // );
+              // await Fn.getuserInfo({ id: res.data.result[i].userId }).then(
+              //   (res) => {
+              //     obj.commentUser = res.data.result[0];
+              //   }
+              // );
+              childrenArr.push(res.data.result[i]);
             }
           }
           // console.log(parentList, "parentList");
@@ -145,7 +144,7 @@ export default {
        * 	传参
        * })
        */
-      console.log(data,'一级留言');
+      console.log(data, "一级留言");
       this.$store.dispatch("roast/addCommentLevelOne", data);
       // Fn.insertMessage(data).then((res) => {
       //   console.log(res, "返回的结果");

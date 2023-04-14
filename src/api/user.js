@@ -178,3 +178,15 @@ export function insertMessage(data) {
     data,
   });
 }
+/**
+ * @description: 添加用户
+ * @return {*}
+ * @param {*} data
+ */
+export function registerUser(data) {
+  return request({
+    url: "proxyServer2/register", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}
