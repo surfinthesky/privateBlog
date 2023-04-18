@@ -39,6 +39,12 @@ export default {
     };
   },
   mounted() {
+    this.$loading({
+      lock: true,
+      text: "Loading",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.5)",
+    });
     getTimelinelist({
       // pagenum: this.currentPage,
       // pagesize: this.currentPagesize,
@@ -48,6 +54,9 @@ export default {
         item.stageCompletTime = getDateFormatComplete(item.stageCompletTime);
         item.stageTimestamp = getDateFormat(item.stageTimestamp);
       });
+      if (res.data.result) {
+        this.$loading().close();
+      }
       // arr = res.data.result
       this.timeLineArr = [...this.timeLineArr, ...res.data.result];
     });

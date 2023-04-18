@@ -3,6 +3,7 @@
     <comment
       @doSend="doSend($event)"
       @messageSend="doChidSend(arguments)"
+      @initMessagePage="intMessage($event)"
       :commentNum="commentNum"
       :avatar="avatarurl"
       :placeholder="placeholder"
@@ -29,15 +30,7 @@ export default {
       commentList: [],
     };
   },
-  watch: {
-    // "$store.state.roast.commentList": {
-    //   handler(newval, oldval) {
-    //     console.log(newval);
-    //     console.log(oldval);
-    //   },
-    //   deep: true,
-    // },
-  },
+  watch: {},
   computed: {
     ...mapState({
       // 从vuex里面当前用户信息
@@ -47,81 +40,65 @@ export default {
     }),
   },
   async mounted() {
+    this.$loading({
+      lock: true,
+      text: "Loading",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.5)",
+    });
     await this.intMessage();
   },
   methods: {
     ...mapActions("roast", ["getAllmessage"]),
-    intMessage() {
+    //格式化留言数据
+    intMessage(pagenum) {
       let parentList = [];
       let childrenArr = [];
-      Fn.getreplyMessgaelist({ pagenum: "1", pagesize: "20" }).then(
-        async (res) => {
-          this.$store.commit("roast/__getCommentNum", res.data.count);
-          for (let i = 0; i < res.data.result.length; i++) {
-            // let obj = {};
-            if (res.data.result[i].isFirstLevel === 0) {
-              // obj.content = res.data.result[i].content;
-              // obj.createDate = res.data.result[i].createDate;
-              // obj.id = res.data.result[i].id;
-              // obj.isFirstLevel = res.data.result[i].isFirstLevel;
-              // obj.toCommentId = res.data.result[i].toCommentId;
-              // obj.userId = res.data.result[i].userId;
-              res.data.result[i].createDate = intutils.getDateFormat(
-                res.data.result[i].createDate
-              );
-              res.data.result[i].createFormdate = intutils.getDateFormatnext(
-                res.data.result[i].createDate
-              );
-              // await Fn.getuserInfo({ id: res.data.result[i].userId }).then(
-              //   (res) => {
-              //     obj.commentUser = res.data.result[0];
-              //   }
-              // );
-              parentList.push(res.data.result[i]);
-            } else {
-              // let obj = {};
-              // obj.content = res.data.result[i].content;
-              // obj.createDate = res.data.result[i].createDate;
-              // obj.id = res.data.result[i].id;
-              // obj.isFirstLevel = res.data.result[i].isFirstLevel;
-              // obj.parentId = res.data.result[i].parentId;
-              // obj.toCommentId = res.data.result[i].toCommentId;
-              // obj.userId = res.data.result[i].userId;
-              res.data.result[i].createDate = intutils.getDateFormat(
-                res.data.result[i].createDate
-              );
-              res.data.result[i].createFormdate = intutils.getDateFormatnext(
-                res.data.result[i].createDate
-              );
-              // await Fn.getuserInfo({ id: res.data.result[i].toCommentId }).then(
-              //   (res) => {
-              //     obj.targetUser = res.data.result[0];
-              //   }
-              // );
-              // await Fn.getuserInfo({ id: res.data.result[i].userId }).then(
-              //   (res) => {
-              //     obj.commentUser = res.data.result[0];
-              //   }
-              // );
-              childrenArr.push(res.data.result[i]);
-            }
+      let pageObj = {
+        pagenum: 1,
+        pagesize: "10",
+      };
+      if (pagenum) {
+        (pageObj.pagenum = pagenum), (pageObj.pagesize = pagenum * 10);
+      }
+      Fn.getreplyMessgaelist(pageObj).then(async (res) => {
+        this.$store.commit("roast/__getCommentNum", res.data.count);
+        for (let i = 0; i < res.data.result.length; i++) {
+          if (res.data.result[i].isFirstLevel === 0) {
+            res.data.result[i].createDate = intutils.getDateFormat(
+              res.data.result[i].createDate
+            );
+            res.data.result[i].createFormdate = intutils.getDateFormatnext(
+              res.data.result[i].createDate
+            );
+            parentList.push(res.data.result[i]);
+          } else {
+            res.data.result[i].createDate = intutils.getDateFormat(
+              res.data.result[i].createDate
+            );
+            res.data.result[i].createFormdate = intutils.getDateFormatnext(
+              res.data.result[i].createDate
+            );
+
+            childrenArr.push(res.data.result[i]);
           }
-          // console.log(parentList, "parentList");
-          // console.log(childrenArr, "childrenArr");
-          parentList.map((itemp) => {
-            let arr = [];
-            childrenArr.map((items) => {
-              // items.toCommentId == itemp.userId &&
-              if (items.parentId == itemp.id) {
-                arr.push(items);
-                itemp.childrenList = arr;
-              }
-            });
-          });
-          this.commentList = parentList;
-          this.getAllmessage(parentList);
         }
-      );
+
+        parentList.map((itemp) => {
+          let arr = [];
+          childrenArr.map((items) => {
+            if (items.parentId == itemp.id) {
+              arr.push(items);
+              itemp.childrenList = arr;
+            }
+          });
+        });
+        if (parentList) {
+          this.$loading().close();
+        }
+        this.commentList = parentList;
+        this.getAllmessage(parentList);
+      });
     },
     doSend(content) {
       console.log("一级评论发送内容" + content);
@@ -146,9 +123,9 @@ export default {
        */
       console.log(data, "一级留言");
       this.$store.dispatch("roast/addCommentLevelOne", data);
-      // Fn.insertMessage(data).then((res) => {
-      //   console.log(res, "返回的结果");
-      // });
+      Fn.insertMessage(data).then((res) => {
+        console.log(res, "返回的结果");
+      });
     },
     //接受到子组件的回复调用
     doChidSend(replyInfo) {
@@ -160,13 +137,14 @@ export default {
         userId: 10010 + this.commentId++,
         // 二级评论
         isFirstLevel: 1,
-        // 暂时写死恢复评论的人
-        commentUser: {
-          id: 10010 + this.commentId++,
-          username: "mqq" + this.commentId++,
-          avatarurl:
-            "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/mqq.jpg",
-        },
+        // 暂时写死回复评论的人
+        commentUser: this.userInfo,
+        // commentUser: {
+        //   id: 10010 + this.commentId++,
+        //   username: "mqq" + this.commentId++,
+        //   avatarurl:
+        //     "https://huazizhanye.oss-cn-beijing.aliyuncs.com/blogs/images/mqq.jpg",
+        // },
         // 回复谁
         targetUser: {
           userId: replyInfo[1].id,

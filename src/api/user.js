@@ -190,3 +190,17 @@ export function registerUser(data) {
     data,
   });
 }
+export function getAllmessage(data) {
+  return request({
+    url: "proxyServer2/getAllmessage", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}
+export function deleteMessage(data) {
+  return request({
+    url: "proxyServer2/deleteMessage", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}

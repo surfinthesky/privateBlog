@@ -163,7 +163,7 @@ import { mapState, mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto, _debounce } from "@/utils/utils";
 import * as Func from "@/api/user.js";
 import * as Funutils from "@/utils/utils.js";
-import {weatherJson} from  "@/utils/weatherUrl.js"
+import { weatherJson } from "@/utils/weatherUrl.js";
 import testFile from "./testFile/testFile.vue";
 import json from "@/json/map.json";
 export default {
@@ -177,10 +177,6 @@ export default {
         {
           name: "首页",
           path: "/homepage",
-        },
-        {
-          name: "关于",
-          path: "/about",
         },
         {
           name: "时间线",
@@ -202,6 +198,10 @@ export default {
           name: "Notes",
           path: "/notes",
         },
+        {
+          name: "关于",
+          path: "/about",
+        },
       ],
       activeIndex: "", //默认选中索引
       show: false,
@@ -210,7 +210,6 @@ export default {
 
       //引入后需要存储在data中
       Funutils,
-      
     };
   },
   mounted() {

@@ -2,6 +2,7 @@ import axios from "axios"; // 引入axios
 import Vue from "vue";
 import router from "@/router";
 const _that = new Vue();
+
 // 创建axios实例
 const service = axios.create({
   // baseURL:
@@ -34,7 +35,9 @@ service.interceptors.request.use(
 
 // response拦截器，实现鉴权刷新
 service.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return  response;
+  },
   (error) => {
     // const config = error.config; // 可以试着打印config看看具体是些什么
     // console.log(error)

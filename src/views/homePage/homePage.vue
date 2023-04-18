@@ -722,7 +722,7 @@ $background_color: #fff;
 
     .introduction {
       // background-color: $background_color;
-      margin-bottom: 25px;
+      // margin-bottom: 25px;
       border-radius: 5px;
       flex: 1;
       display: flex;

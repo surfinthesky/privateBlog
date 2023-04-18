@@ -162,10 +162,12 @@ export default {
         {
           labelName: "创建时间",
           propName: "stageTimestamp",
+          formatter: 'getDateFormat',
         },
         {
           labelName: "完成时间",
           propName: "stageCompletTime",
+          formatter: 'getDateFormat',
         },
         {
           labelName: "颜色",

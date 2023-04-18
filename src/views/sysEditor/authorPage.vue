@@ -184,6 +184,7 @@ export default {
         {
           labelName: "创建时间",
           propName: "articleDate",
+          formatter: 'getDateFormat',
         },
         {
           labelName: "文章主内容",

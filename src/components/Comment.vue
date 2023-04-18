@@ -15,7 +15,7 @@
           v-model="textareaMapTop.textValue"
         >
         </textarea>
-        <div v-if="buttonMap[0]">
+        <div v-if="buttonMap.buttonval == ''">
           <div
             v-if="isUseEmoj"
             :class="[
@@ -34,7 +34,7 @@
                   class="Emo-item"
                   v-for="(oitem, index) in Emolist"
                   :key="'oitem' + index"
-                  @click="choseEmoji(0, oitem.title)"
+                  @click="choseEmojimax(oitem.title)"
                 >
                   <img
                     :src="require('@/assets/img/face/' + oitem.url)"
@@ -94,7 +94,7 @@
 
         <div class="infosend-content" v-html="analyzeEmoji(item.content)"></div>
         <div class="infosend-content infosend-fa">
-          <div class="infosend-font" @click="doReply(item.id)">
+          <div class="infosend-font" @click="doReply(item)">
             <div>
               <img
                 src="@/assets/img/icon/reply.png"
@@ -117,7 +117,7 @@
             >
             </textarea>
 
-            <div v-if="buttonMap[item.id]">
+            <div v-if="buttonMap.buttonval == item.id">
               <div
                 v-if="isUseEmoj"
                 :class="[
@@ -195,14 +195,16 @@
 
           <div class="infosend-content">
             <div class="send send-to">
-              <a href="#">@{{ replyitem.targetUser.username }}</a>
+              <a href="javascript:void(0);"
+                >@{{ replyitem.targetUser.username }}</a
+              >
             </div>
 
             <div class="send" v-html="analyzeEmoji(replyitem.content)"></div>
           </div>
 
           <div class="infosend-content infosend-fa">
-            <div class="infosend-font" @click="doReply(replyitem.id)">
+            <div class="infosend-font" @click="doReply(replyitem)">
               <div>
                 <!-- 下级评论区域 -->
                 <img
@@ -226,7 +228,7 @@
               >
               </textarea>
 
-              <div v-if="buttonMap[replyitem.id]">
+              <div v-if="buttonMap.buttonval == replyitem.id">
                 <div
                   :class="[
                     pBodyMap.pBodyValue == replyitem.id
@@ -284,10 +286,19 @@
         </div>
       </div>
     </div>
+    <div class="block">
+      <el-pagination
+        layout="prev, pager, next"
+        :total="commentNum"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import avatar from "./Avatar.vue";
 import { emoji } from "./emoji.js";
 import { mapState } from "vuex";
@@ -343,7 +354,9 @@ export default {
       replyMap: {
         focusValue: 0,
       },
-      buttonMap: [],
+      buttonMap: {
+        buttonval: "",
+      },
       pBodyMapMax: {
         pBodyValue: "",
       },
@@ -360,7 +373,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("roast", ["commentList"]),
+    ...mapState("roast", ["commentList", "userInfo"]),
   },
   mounted() {
     if (localStorage.getItem("userMessageobj")) {
@@ -383,23 +396,27 @@ export default {
     avatar,
   },
   methods: {
+    ...mapMutations("roast", ["__setUserinfo"]),
     // this.$set(target, propertyName/index, value)
     // （1） target: 要更改的数据源（可以是一个对象或者数组）
     // （2）propertyName/index: 要更改的具体数据 （索引）
     // （3）value: 重新赋的值(any)
     //事件处理器
-    showButton(index) {
-      this.$set(this.buttonMap, index, true);
+    showButton(indexid) {
+      this.$set(this.buttonMap, "buttonval", indexid);
     },
     //关闭输入框及emoji表情
     cancelFn(index) {
-      this.$set(this.buttonMap, index, false);
+      this.$set(this.buttonMap, "buttonval", "");
       if (index !== 0) {
         this.$set(this.replyMap, "focusValue", 0);
       }
     },
     doSend() {
       // 一级评论发送事件
+      if (this.textareaMapTop.textValue == "") {
+        return;
+      }
       console.log(this.nameText, "nameText");
       console.log(localStorage.getItem("userMessageobj"));
       if (!this.nameText && !localStorage.getItem("userMessageobj")) {
@@ -412,22 +429,34 @@ export default {
       if (!localStorage.getItem("userMessageobj")) {
         let userMessageobj = {};
         userMessageobj.username = this.nameText;
-        userMessageobj.password = "123456";
+        userMessageobj.password = "";
         userMessageobj.avatarurl =
           "http://localhost:3333/images/user/20230306144046upload_700306d455f63bf4e4139fbddb31efff.jpg";
         Fn.registerUser(userMessageobj).then((res) => {
-          localStorage.setItem(
-            "userMessageobj",
-            JSON.stringify(userMessageobj)
-          );
-          console.log(res);
+          console.log(res, "res.....");
+          if (res.data.message == "当前账号名已存在，请更换") {
+            this.$message({
+              type: "warning",
+              message: "填写的用户名已存在了",
+            });
+            return;
+          }
+          let obj = {};
+          obj.id = res.data.userId;
+          obj.username = userMessageobj.username;
+          obj.avatarurl = userMessageobj.avatarurl;
+          this.__setUserinfo(obj);
+          localStorage.setItem("userMessageobj", JSON.stringify(obj));
+          this.nameTextShow = false; //隐藏输入框（留言名称）
+          this.$emit("doSend", this.textareaMapTop.textValue);
+          console.log(this.textareaMapTop.textValue, "顶部留言");
+          this.$set(this.textareaMapTop, "textValue", "");
         });
       } else {
-        console.log("-----");
+        this.$emit("doSend", this.textareaMapTop.textValue);
+        console.log(this.textareaMapTop.textValue, "顶部留言");
+        this.$set(this.textareaMapTop, "textValue", "");
       }
-      this.$emit("doSend", this.textareaMapTop.textValue);
-      console.log(this.textareaMapTop.textValue, "顶部留言");
-      this.$set(this.textareaMapTop, "textValue", "");
     },
     // 二级评论发送事件
     doChidSend(index, commentUserId, pid, userId) {
@@ -443,9 +472,16 @@ export default {
     },
     //选择表情包
     choseEmoji: function (index, inner) {
+      console.log(inner);
       var con = "";
       con = this.textareaMap.textValue += "[" + inner + "]";
       this.$set(this.textareaMap, "textValue", con);
+    },
+    //选择表情包max
+    choseEmojimax: function (inner) {
+      var con = "";
+      con = this.textareaMapTop.textValue += "[" + inner + "]";
+      this.$set(this.textareaMapTop, "textValue", con);
     },
     analyzeEmoji: function (cont) {
       //编译表情替换成图片展示出来
@@ -469,8 +505,13 @@ export default {
       return str;
     },
     //当前点击回复他人id存储
-    doReply(index) {
-      this.$set(this.replyMap, "focusValue", index);
+    doReply(item) {
+      // 阻止当前登录用户与相同userid回复
+      if (item.userId == this.userInfo.id) {
+        return;
+      }
+      console.log(item, "-item");
+      this.$set(this.replyMap, "focusValue", item.id);
       this.$set(this.textareaMap, "textValue", "");
       console.log(this.replyMap, "focusValue");
     },
@@ -482,12 +523,26 @@ export default {
         this.$set(this.pBodyMapMax, "pBodyValue", itemid);
       }
     },
+    //子留言 -传递回复关键字id
     pBodyStatus(itemid) {
       if (itemid == this.pBodyMap.pBodyValue) {
         this.$set(this.pBodyMap, "pBodyValue", "");
       } else {
         this.$set(this.pBodyMap, "pBodyValue", itemid);
       }
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.5)",
+      });
+      this.intMessage(val);
+    },
+    intMessage(val) {
+      this.$emit("initMessagePage", val);
     },
   },
 };
@@ -684,6 +739,11 @@ export default {
   box-sizing: border-box;
   z-index: 2;
   line-height: 30px;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 }
 .Emo .Emo-logo:hover {
   animation: a 5s infinite ease-in-out;
@@ -880,5 +940,9 @@ export default {
 
 .icon-hf {
   margin-top: 2px;
+}
+.block {
+  text-align: center;
+  border-top: 1px solid #ccc;
 }
 </style>

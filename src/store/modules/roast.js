@@ -15,9 +15,9 @@ const roast = {
   },
   actions: {
     // 添加一级评论
-    addCommentLevelOne({ commit }, data) {
+    addCommentLevelOne({ commit, state }, data) {
       commit("__addCommentLevelOne", data);
-      commit("__getCommentNum");
+      commit("__getCommentNum", (state.commentNum += 1));
     },
     // 添加二级评论
     addCommentLevelTwo({ commit }, data) {
@@ -29,6 +29,11 @@ const roast = {
     },
   },
   mutations: {
+    //添加用户
+    __setUserinfo(state, data) {
+      console.log(data, "用户信息");
+      state.userInfo = data;
+    },
     //获取留言
     __getAllmessage(state, data) {
       state.commentList = data;
@@ -43,31 +48,30 @@ const roast = {
     __addCommentLevelTwo(state, data) {
       // console.log(state.commentList, "commentList");
       console.log(data, "data--");
-      console.log(state.commentList,'commentList');
+      console.log(state.commentList, "commentList");
       // return;
       // 判断是不是回复他人消息标识Id匹配
       if (
-        state.commentList.findIndex((item) => item.id === data.parentId) !==
-        -1
+        state.commentList.findIndex((item) => item.id === data.parentId) !== -1
       ) {
         state.commentList.forEach((items) => {
           //  console.log(items,'items');
           if (items.id == data.parentId) {
             if (items.childrenList) {
               items.childrenList.unshift(data);
-              console.log(items.childrenList,'itemschildrenList');
+              console.log(items.childrenList, "itemschildrenList");
             } else {
               items.childrenList = [];
               items.childrenList.unshift(data);
-              console.log(items.childrenList,'itemschildrenList2');
+              console.log(items.childrenList, "itemschildrenList2");
             }
           }
         });
-         console.log(state.commentList,'state.commentList');
+        console.log(state.commentList, "state.commentList");
       }
     },
     // 统计评论数量
-    __getCommentNum(state,count) {
+    __getCommentNum(state, count) {
       state.commentNum = count;
     },
   },

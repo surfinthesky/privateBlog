@@ -14,10 +14,19 @@
           v-for="(item, index) in labelData"
           :key="index"
         >
+        <!-- 格式化数据 -->
+          <template slot-scope="scope">
+            {{
+              item.formatter
+                ? UtlisFn[item.formatter](scope.row[item.propName])
+                : scope.row[item.propName]
+            }}
+          </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
             <el-button
+              v-if="changeStatus"
               type="text"
               size="small"
               @click="handleClickEditor(scope.row)"
@@ -61,6 +70,7 @@
 
 <script>
 import * as Fn from "@/api/user";
+import * as UtlisFn from "@/utils/formDate.js";
 import { mapState, mapMutations } from "vuex";
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
@@ -75,6 +85,10 @@ export default {
     labelData: Array, //接受表头及指定渲染value
     getApi: String, //请求数据列表api
     deleteAPi: String, //删除api
+    changeStatus: {
+      type: Boolean,
+      default: true,
+    }, //是否存在修改按钮
   },
   data() {
     //这里存放数据
@@ -85,6 +99,7 @@ export default {
       currentPagetotal: 0, //数据总数
       loadingshow: true, //
       visible: false,
+      UtlisFn
     };
   },
   //监听属性 类似于data概念
