@@ -110,6 +110,11 @@ const router = new Router({
           component: loadView("about"),
         },
         {
+          path: "/article",
+          name: "Article",
+          component: loadView("homePage/article"),
+        },
+        {
           path: "/timeline",
           name: "timeLIne",
           component: loadView("timeLIne"),

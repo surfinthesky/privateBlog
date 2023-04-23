@@ -373,7 +373,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("roast", ["commentList", "userInfo"]),
+    ...mapState("article", ["commentList", "userInfo"]),
   },
   mounted() {
     if (localStorage.getItem("userMessageobj")) {
@@ -396,7 +396,7 @@ export default {
     avatar,
   },
   methods: {
-    ...mapMutations("roast", ["__setUserinfo"]),
+    ...mapMutations("article", ["__setUserinfo"]),
     // this.$set(target, propertyName/index, value)
     // （1） target: 要更改的数据源（可以是一个对象或者数组）
     // （2）propertyName/index: 要更改的具体数据 （索引）

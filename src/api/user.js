@@ -190,6 +190,7 @@ export function registerUser(data) {
     data,
   });
 }
+//管理后台
 export function getAllmessage(data) {
   return request({
     url: "proxyServer2/getAllmessage", // 接口名称
@@ -197,6 +198,7 @@ export function getAllmessage(data) {
     data,
   });
 }
+//管理后台
 export function deleteMessage(data) {
   return request({
     url: "proxyServer2/deleteMessage", // 接口名称

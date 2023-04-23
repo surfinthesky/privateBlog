@@ -5,6 +5,7 @@ import notes from "./modules/notes";
 import about from "./modules/about";
 import editor from "./modules/editor";
 import roast from "./modules/roast";
+import article from "./modules/article";
 Vue.use(Vuex);
 export default new Vuex.Store({
   //数据
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     userlocaltioninfo: {},
     userareaInfo: {},
     weatherList:[],//当前用户所在地天气数据存储
+    articleList:[]
   },
   //类似于组件中的计算属性
   getters: {
@@ -46,17 +48,22 @@ export default new Vuex.Store({
     SET_userInfo(state, payload) {
       state.userInfo = payload;
     },
-    //存储用户信息
+    //存储用户信息ip
     SET_userlocaltion(state, payload) {
       state.userlocaltioninfo = payload;
     },
-    //存储用户信息
+    //存储用户信息区域
     SET_userarea(state, payload) {
       state.userareaInfo = payload;
     },
     //存储用户所在地天气
     SET_userWeather(state, payload) {
       state.weatherList = payload;
+    },
+    //首页文章list
+    SET_articleList(state, payload) {
+      console.log(payload);
+      state.articleList = payload;
     },
   },
   //异步
@@ -67,6 +74,7 @@ export default new Vuex.Store({
     about,
     editor,
     roast,
+    article
   },
   //持久化
   plugins: [createPersistedState()],

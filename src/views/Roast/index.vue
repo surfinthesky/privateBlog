@@ -14,7 +14,7 @@
 
 <script>
 import Comment from "@/components/Comment.vue";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import * as Fn from "@/api/user.js";
 import * as intutils from "@/utils/formDate.js";
 export default {
@@ -40,6 +40,9 @@ export default {
     }),
   },
   async mounted() {
+    if (localStorage.getItem("userMessageobj")) {
+      this.__setUserinfo(JSON.parse(localStorage.getItem("userMessageobj")));
+    }
     this.$loading({
       lock: true,
       text: "Loading",
@@ -50,6 +53,7 @@ export default {
   },
   methods: {
     ...mapActions("roast", ["getAllmessage"]),
+    ...mapMutations("roast", ["__setUserinfo"]),
     //格式化留言数据
     intMessage(pagenum) {
       let parentList = [];
@@ -57,6 +61,7 @@ export default {
       let pageObj = {
         pagenum: 1,
         pagesize: "10",
+        type: "roast",
       };
       if (pagenum) {
         (pageObj.pagenum = pagenum), (pageObj.pagesize = pagenum * 10);
@@ -110,6 +115,7 @@ export default {
         content: content,
         createDate: intutils.getDateFormat(new Date()),
         commentUser: this.userInfo,
+        type: "roast",
       };
       /*
        * 1、以载荷形式分发
@@ -153,6 +159,7 @@ export default {
         },
         parentId: replyInfo[2],
         content: replyInfo[0],
+        type: "roast",
         createDate: intutils.getDateFormat(new Date()),
         createFormdate: intutils.getDateFormatnext(new Date()),
       };

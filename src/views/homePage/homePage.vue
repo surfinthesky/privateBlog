@@ -228,10 +228,7 @@
       </el-row>
     </div>
     <!-- 弹窗 -->
-    <el-drawer title="没有天赋" size="95%">
-      <span>我来啦!</span>
-    </el-drawer>
-    <el-dialog :visible.sync="drawer" width="1180px">
+    <!-- <el-dialog :visible.sync="drawer" width="1180px">
       <h1
         style="height: 50px; color: #343a40; font-size: 28px"
         class="dialog_h1"
@@ -245,28 +242,26 @@
         "
       ></div>
       <messagebox></messagebox>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
 import Vue from "vue";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import infiniteScroll from "vue-infinite-scroll";
-import { Base64 } from "js-base64";
-import Marked from "marked";
-import highlight from "highlight.js";
+// import { Base64 } from "js-base64";
+// import Marked from "marked";
+// import highlight from "highlight.js";
 // import "highlight.js/styles/github.css";
-import { mapMutations } from "vuex";
 import { preventOverHidden, preventOverauto } from "@/utils/utils";
 import { getDateFormatComplete } from "@/utils/formDate";
-import messagebox from "@/components/messageCom.vue";
+// import messagebox from "@/components/messageCom.vue";
 Vue.use(infiniteScroll);
-Vue.use(Base64);
+// Vue.use(Base64);
 import * as Fn from "@/api/user";
 export default {
   name: "vueInternationalI18n",
   components: {
-    messagebox,
   },
   data() {
     return {
@@ -326,6 +321,7 @@ export default {
     // },
   },
   methods: {
+    ...mapMutations(["SET_articleList"]),
     //热门文章事件
     hotFn(hotID) {
       if (hotID == this.hotId) {
@@ -409,6 +405,7 @@ export default {
           this.sortBoolean = true;
           this.tableList = res.data.result;
         }
+        this.SET_articleList(this.tableList);
         // console.log(this.tableList);
         if (this.tableList.length < 10) {
           this.noMore = true;
@@ -422,41 +419,12 @@ export default {
         this.currentPagetotal = res.data.count;
       });
     },
-    // 国际化
-    ...mapMutations({
-      set_i18n: "SET_i18n",
-    }),
-    initMaven(content) {
-      const rendererMD = new Marked.Renderer();
-      rendererMD.image = function (href, title, text) {
-        return `<img onclick="showMarkedImage(event, '${href}')" src="${href}" alt="${text}" title="${
-          title ? title : ""
-        }">`;
-      };
-      Marked.setOptions({
-        renderer: rendererMD,
-        gfm: true,
-        tables: true,
-        breaks: false,
-        pedantic: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        highlight: function (code) {
-          return highlight.highlightAuto(code).value;
-        },
-      });
-
-      this.value = Marked(content).replace(
-        /<pre>/g,
-        "<pre class='language-html'>"
-      );
-    },
     //阅读详情
     drawerMe(payload) {
-      this.drawer = true;
-      this.drawerarticleTitle = payload.articleTitle;
-      this.initMaven(Base64.decode(payload.articleHtmlText));
+      this.$router.push({
+        path: "article",
+        query: { id: payload.id },
+      });
       console.log(payload);
     },
     // handleClose(done) {

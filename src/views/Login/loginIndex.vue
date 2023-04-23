@@ -103,6 +103,10 @@ export default {
               if (this.ruleForm.name == "sysmaner") {
                 this.SET_activePath("/editor/num");
                 this.$router.replace({ path: "/editor/num" });
+              } else if (this.$route.query.redirect) {
+                this.$router.replace({
+                  path: this.$route.query.redirect,
+                });
               } else {
                 this.$router.replace({ path: "/homepage" });
               }

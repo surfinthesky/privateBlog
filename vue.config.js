@@ -26,6 +26,7 @@ module.exports = defineConfig({
         secure: true,
       },
       "/proxyServer2": {
+        // target: "http://localhost:3333", //代理服务server1 配置跨域请求的地址
         target: "http://localhost:3333", //代理服务server1 配置跨域请求的地址
         changeOrigin: true,
         ws: true,
