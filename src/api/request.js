@@ -1,16 +1,18 @@
 import axios from "axios"; // 引入axios
 import Vue from "vue";
 import router from "@/router";
+import { ipConfig } from "../../ipconfig";
 const _that = new Vue();
-
 // 创建axios实例
 const service = axios.create({
+  baseURL: ipConfig,
   // baseURL:
   //   process.env.NODE_ENV === "production"
   //     ? ""
   //     : process.env.NODE_ENV === "pre"
   //     ? ""
-  //     : "http://localhost:3333",
+  //     : "http://140.246.66.44:3333",
+
   timeout: 15000, // 请求超时时间
 });
 // request拦截器
@@ -36,7 +38,7 @@ service.interceptors.request.use(
 // response拦截器，实现鉴权刷新
 service.interceptors.response.use(
   (response) => {
-    return  response;
+    return response;
   },
   (error) => {
     // const config = error.config; // 可以试着打印config看看具体是些什么

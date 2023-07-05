@@ -64,6 +64,7 @@
                 <el-option label="echarts" value="Echarts"></el-option>
                 <el-option label="javascript" value="Javascript"></el-option>
                 <el-option label="java" value="Java"></el-option>
+                <el-option label="node" value="Node"></el-option>
               </el-select>
             </el-col>
           </el-form-item>
@@ -210,8 +211,8 @@ export default {
           { required: true, message: "请输入标题详述", trigger: "blur" },
           {
             min: 5,
-            max: 45,
-            message: "长度在 5 到 45 个字符",
+            max: 65,
+            message: "长度在 5 到 65 个字符",
             trigger: "blur",
           },
         ],

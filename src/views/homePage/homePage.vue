@@ -261,8 +261,7 @@ Vue.use(infiniteScroll);
 import * as Fn from "@/api/user";
 export default {
   name: "vueInternationalI18n",
-  components: {
-  },
+  components: {},
   data() {
     return {
       value: "",
@@ -299,6 +298,9 @@ export default {
     Fn.articleHotList().then((res) => {
       this.hotList = res.data.result;
     });
+  },
+  beforeDestory() {
+    this.returnLoading().close();
   },
   created() {},
   computed: {
@@ -351,6 +353,13 @@ export default {
       this.currentPage = 0;
       this.currentPagetotal = 1;
       this.getPagelist();
+    },
+    //当前时间+12小时 毫秒数
+    accessTimeInHour() {
+      let date = new Date();
+      let date1 = new Date().getTime(); // 获取当前时间戳
+      // 当前时间戳+3600s（一小时，其他时间通过计算时间戳进行相应加减），重新设置 Date 对象
+      return date.setTime(date1 + 3600000 * 12);
     },
     setLoading() {
       setTimeout(() => {
@@ -421,11 +430,73 @@ export default {
     },
     //阅读详情
     drawerMe(payload) {
-      this.$router.push({
-        path: "article",
-        query: { id: payload.id },
-      });
+      console.log(payload.id);
+      if (!localStorage.getItem("readNumList")) {
+        this.initRead(payload.id, "");
+      } else if (localStorage.getItem("readNumList")) {
+        let list = JSON.parse(localStorage.getItem("readNumList"));
+        let timeobj = list.find((item) => item.readid == payload.id);
+        //未添加过的id文章
+        if (!timeobj) {
+          this.initRead(payload.id, timeobj);
+          return;
+        }
+        // 有添加过的文章 比较上次增加阅读量的时间
+        if (new Date().getTime() > timeobj.time) {
+          this.initRead(payload.id, "");
+        } else {
+          this.initRead(payload.id, timeobj);
+        }
+        console.log(timeobj);
+      }
+
       console.log(payload);
+    },
+    initRead(readId, status) {
+      if (status) {
+        this.$router.push({
+          path: "article",
+          query: { id: readId },
+        });
+        return;
+      } else {
+        Fn.readnum(readId).then((res) => {
+          console.log(res, "res");
+          let list = JSON.parse(localStorage.getItem("readNumList"));
+          let objStatus = list.find((item) => item.readid == readId);
+          let objIndex = list.findIndex((item) => item.readid == readId);
+          if (res) {
+            // 是否存储过文章阅读id 存储过在原基础time属性重新赋值
+            if (objStatus) {
+              list[objIndex].time = this.accessTimeInHour();
+              localStorage.setItem("readNumList", JSON.stringify(list));
+              this.$router.push({
+                path: "article",
+                query: { id: readId },
+              });
+              return;
+            }
+            const obj = new Object();
+            obj.time = this.accessTimeInHour();
+            obj.readid = readId;
+            let arr = [];
+            arr.push(obj);
+            let localarr = JSON.parse(localStorage.getItem("readNumList"));
+            if (localarr) {
+              localStorage.setItem(
+                "readNumList",
+                JSON.stringify([...arr, ...localarr])
+              );
+            } else {
+              localStorage.setItem("readNumList", JSON.stringify(arr));
+            }
+            this.$router.push({
+              path: "article",
+              query: { id: readId },
+            });
+          }
+        });
+      }
     },
     // handleClose(done) {
     //   this.$confirm("确认关闭？")

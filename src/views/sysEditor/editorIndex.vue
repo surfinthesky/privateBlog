@@ -82,13 +82,13 @@ export default {
           menuPath: "/editor/authorpage",
         },
         {
-          text: "留言管理",
+          text: "留言吐槽",
           icon: "el-icon-edit",
           sortNum: 3,
           menuPath: "/editor/messagePage",
         },
         {
-          text: "评论管理",
+          text: "文章评论",
           icon: "el-icon-chat-dot-round",
           sortNum: 4,
           menuPath: "/editor/commentpage",
@@ -104,6 +104,12 @@ export default {
           icon: "el-icon-time",
           sortNum: 6,
           menuPath: "/editor/timeline",
+        },
+        {
+          text: "日常案列",
+          icon: "el-icon-coffee-cup",
+          sortNum: 7,
+          menuPath: "/editor/dailycase",
         },
       ],
       activeChange: "el-icon-caret-bottom",

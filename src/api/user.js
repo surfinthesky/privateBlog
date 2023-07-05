@@ -5,7 +5,7 @@ import request from "@/api/request"; // 引入已经封装好的js文件，我�
  */
 export function getlocationIp() {
   return request({
-    url: "proxyServer2/getlocationIp", // 接口名称
+    url: "/getlocationIp", // 接口名称
     method: "post", // 接口方法
   });
 }
@@ -30,7 +30,7 @@ export function getlocationIp() {
  */
 export function getlocalWeather(id) {
   return request({
-    url: `proxyServer2/getWeather?locationid=${id}`, // 接口名称
+    url: `/getWeather?locationid=${id}`, // 接口名称
     method: "get", // 接口方法
   });
 }
@@ -45,7 +45,7 @@ export function refresh(data) {
 //登录request
 export function login(data) {
   return request({
-    url: "proxyServer2/loginperson", // 接口名称
+    url: "/loginperson", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -53,7 +53,7 @@ export function login(data) {
 //文章创建request
 export function addarticle(data) {
   return request({
-    url: "proxyServer2/addarticle", // 接口名称
+    url: "/addarticle", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -61,7 +61,7 @@ export function addarticle(data) {
 //获取文章request
 export function getarticlelist(data) {
   return request({
-    url: "proxyServer2/articlepage", // 接口名称
+    url: "/articlepage", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -69,7 +69,7 @@ export function getarticlelist(data) {
 //更新文章request
 export function updatearticle(data) {
   return request({
-    url: "proxyServer2/articleupdate", // 接口名称
+    url: "/articleupdate", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -77,15 +77,22 @@ export function updatearticle(data) {
 //根据id删除文章request
 export function articledelete(data) {
   return request({
-    url: "proxyServer2/articledelete", // 接口名称
+    url: "/articledelete", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
+  });
+}
+//根据id添加阅读量request
+export function readnum(data) {
+  return request({
+    url: "/readnum?id=" + data, // 接口名称
+    method: "get", // 接口方法
   });
 }
 //文章分类 request
 export function articlesort() {
   return request({
-    url: "proxyServer2/articlesort", // 接口名称
+    url: "/articlesort", // 接口名称
     method: "post", // 接口方法
     data: {
       sortText: "articleDiff",
@@ -95,7 +102,7 @@ export function articlesort() {
 //timeline添加request
 export function addtimeline(data) {
   return request({
-    url: "proxyServer2/addtimeline", // 接口名称
+    url: "/addtimeline", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -103,7 +110,7 @@ export function addtimeline(data) {
 //获取timeline列表 request
 export function getTimelinelist(data) {
   return request({
-    url: "proxyServer2/timelinepage", // 接口名称
+    url: "/timelinepage", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -111,7 +118,7 @@ export function getTimelinelist(data) {
 //更新timeline request
 export function updatetimeline(data) {
   return request({
-    url: "proxyServer2/timelineupdate", // 接口名称
+    url: "/timelineupdate", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -119,7 +126,7 @@ export function updatetimeline(data) {
 //删除timeline request
 export function timelinedelete(data) {
   return request({
-    url: "proxyServer2/timelinedelete", // 接口名称
+    url: "/timelinedelete", // 接口名称
     method: "post", // 接口方法
     data: data, // 参数
   });
@@ -134,14 +141,14 @@ export function getIpdetails() {
 //获取热门文章前5
 export function articleHotList() {
   return request({
-    url: "proxyServer2/articleHotlist", // 接口名称
+    url: "/articleHotlist", // 接口名称
     method: "post", // 接口方法
   });
 }
 //根据id获取文章
 export function getArticledetail(data) {
   return request({
-    url: "proxyServer2/articledetail", // 接口名称
+    url: "/articledetail", // 接口名称
     method: "post", // 接口方法
     data,
   });
@@ -149,7 +156,23 @@ export function getArticledetail(data) {
 //获取所有的留言
 export function getreplyMessgaelist(data) {
   return request({
-    url: "proxyServer2/replyMessgaelist", // 接口名称
+    url: "/replyMessgaelist", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}
+//获取文章所有的留言
+export function getartMeslist(data) {
+  return request({
+    url: "/getartMeslist", // 接口名称
+    method: "post", // 接口方法
+    data,
+  });
+}
+//根据id删除指定留言
+export function deleteArtMes(data) {
+  return request({
+    url: "/deleteArtMes", // 接口名称
     method: "post", // 接口方法
     data,
   });
@@ -161,7 +184,7 @@ export function getreplyMessgaelist(data) {
  */
 export function getuserInfo(data) {
   return request({
-    url: "proxyServer2/getuserInfo", // 接口名称
+    url: "/getuserInfo", // 接口名称
     method: "post", // 接口方法
     data,
   });
@@ -173,7 +196,7 @@ export function getuserInfo(data) {
  */
 export function insertMessage(data) {
   return request({
-    url: "proxyServer2/insertMessage", // 接口名称
+    url: "/insertMessage", // 接口名称
     method: "post", // 接口方法
     data,
   });
@@ -185,7 +208,7 @@ export function insertMessage(data) {
  */
 export function registerUser(data) {
   return request({
-    url: "proxyServer2/register", // 接口名称
+    url: "/register", // 接口名称
     method: "post", // 接口方法
     data,
   });
@@ -193,7 +216,7 @@ export function registerUser(data) {
 //管理后台
 export function getAllmessage(data) {
   return request({
-    url: "proxyServer2/getAllmessage", // 接口名称
+    url: "/getAllmessage", // 接口名称
     method: "post", // 接口方法
     data,
   });
@@ -201,7 +224,7 @@ export function getAllmessage(data) {
 //管理后台
 export function deleteMessage(data) {
   return request({
-    url: "proxyServer2/deleteMessage", // 接口名称
+    url: "/deleteMessage", // 接口名称
     method: "post", // 接口方法
     data,
   });

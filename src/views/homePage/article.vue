@@ -30,7 +30,7 @@ import { Base64 } from "js-base64";
 import Marked from "marked";
 import highlight from "highlight.js";
 import CommentArticle from "@/components/CommentArticle.vue";
-import { mapState, mapActions,mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import * as Fn from "@/api/user.js";
 import * as intutils from "@/utils/formDate.js";
 Vue.use(Base64);
@@ -63,7 +63,7 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(["articleList", "themeValue"]),
+    ...mapState(["articleList", "themeValue", "scrollValue"]),
     ...mapState({
       // 从vuex里面当前用户信息
       userInfo: (state) => state.article.userInfo,
@@ -71,7 +71,18 @@ export default {
       commentNum: (state) => state.article.commentNum,
     }),
   },
-  watch: {},
+  watch: {
+    drawerarticleTitle: {
+      handler(newval, oldval) {
+        if (this.scrollValue) {
+          window.scrollTo({ top: 0, right: 0, behavior: "smooth" });
+        }
+        console.log(newval);
+        console.log(oldval);
+      },
+      deep: true,
+    },
+  },
   methods: {
     ...mapActions("article", ["getAllmessage"]),
     ...mapMutations("article", ["__setUserinfo"]),

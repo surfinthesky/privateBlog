@@ -5,7 +5,7 @@ import router from "./router/index";
 import store from "./store/index";
 import "./styles/index.css";
 import "./styles/style.scss";
-import "./styles/theme/index.css";
+import "./styles/variables.scss";
 //初始化默认主题
 if (localStorage.getItem("private-theme") == "dark-theme") {
   window.document.documentElement.setAttribute("data-theme", "dark-theme");

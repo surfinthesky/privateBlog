@@ -10,17 +10,15 @@ export const loadView = (view) => {
 };
 Vue.use(Router);
 
-
-
-
 const router = new Router({
-  routes: [{
+  routes: [
+    {
       path: "/",
       name: "login",
       component: Login,
       meta: {
         requiresAuth: false, // false表示不需要登录
-      }
+      },
     },
     {
       path: "/main",
@@ -38,7 +36,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
       },
-      children: [{
+      children: [
+        {
           path: "/editor/num",
           name: "num",
           component: loadView("sysEditor/num"),
@@ -86,6 +85,14 @@ const router = new Router({
             requiresAuth: true,
           },
         },
+        {
+          path: "/editor/dailycase",
+          name: "dailycase",
+          component: loadView("sysEditor/dailycase"),
+          meta: {
+            requiresAuth: true,
+          },
+        },
       ],
     },
     // 前台
@@ -96,7 +103,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
       },
-      children: [{
+      children: [
+        {
           path: "/homepage",
           name: "homePage",
           component: loadView("homePage/homePage"),
@@ -153,12 +161,11 @@ Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch((err) => err);
 };
 
-
 // 路由拦截，判断是否需要登录
 router.beforeEach((to, from, next) => {
   // console.log(to.query);
   // 通过requiresAuth判断当前路由导航是否需要登录
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     let token = sessionStorage.getItem("access_token");
     // console.log("token", token);
     // 若需要登录访问，检查是否为登录状态
@@ -172,9 +179,10 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
+    // next();
   } else {
-    next() // 确保一定要调用 next()
+    next(); // 确保一定要调用 next()
   }
-})
+});
 
 export default router;

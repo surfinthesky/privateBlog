@@ -33,7 +33,6 @@ input {
     border: none;
     vertical-align: middle;
 }
-
 body {
     font-family: Tahoma, Arial, Helvetica, "宋体";
     font-size: 14px;
@@ -131,7 +130,7 @@ code {
 
 @media screen and(min-width: 1024px) {
     body {
-        font-size: 12px
+        font-size: 12px;
     }
 }
 

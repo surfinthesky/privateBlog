@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>Music</div>
+    <div id="aplayer"></div>
     <!-- 切换语言 -->
     <!-- tabs标签页 -->
     <ul>
@@ -14,15 +15,31 @@
     </ul>
   </div>
 </template>
-
 <script>
 import { mapMutations } from "vuex";
+// import { songList } from "@/json/song.js";
 export default {
   name: "MusicPage",
   data() {
     return {};
   },
-  mounted() {},
+  mounted() {
+    // new aplayer({
+    //   container: document.getElementById("aplayer"),
+    //   mini: false,
+    //   autoplay: false,
+    //   theme: "#FADFA3",
+    //   loop: "all",
+    //   order: "random",
+    //   preload: "auto",
+    //   volume: 0.7,
+    //   mutex: true,
+    //   listFolded: false,
+    //   listMaxHeight: 90,
+    //   lrcType: 3,
+    //   audio: songList,
+    // });
+  },
   created() {},
   methods: {
     ...mapMutations({
@@ -33,8 +50,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/styles/minxin.scss";
-  ul>li{
-    $list-bg:red,orange,blue,skyblue,#ccc,#fff;
-    @include ele_for($list-bg)
-  }
+ul > li {
+  $list-bg: red, orange, blue, skyblue, #ccc, #fff;
+  @include ele_for($list-bg);
+  width: calc(100% - 20px);
+}
 </style>

@@ -14,6 +14,13 @@ export function _debounce(fn, delay) {
     }, newdelay);
   };
 }
+
+export function debounce(fn, wait) {
+  if (this.fun !== null) {
+    clearTimeout(this.fun);
+  }
+  this.fun = setTimeout(fn, wait);
+}
 // 节流
 export function _throttle(fn, interval) {
   let last;

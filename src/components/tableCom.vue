@@ -14,7 +14,7 @@
           v-for="(item, index) in labelData"
           :key="index"
         >
-        <!-- 格式化数据 -->
+          <!-- 格式化数据 -->
           <template slot-scope="scope">
             {{
               item.formatter
@@ -34,7 +34,7 @@
             >
 
             <el-popover placement="bottom" width="200" trigger="click">
-              <p>这是一段内容这是一段内容确定删除吗？</p>
+              <p>确定删除当前信息吗？</p>
               <div style="text-align: right; margin: 0">
                 <el-button
                   type="primary"
@@ -99,7 +99,7 @@ export default {
       currentPagetotal: 0, //数据总数
       loadingshow: true, //
       visible: false,
-      UtlisFn
+      UtlisFn,
     };
   },
   //监听属性 类似于data概念
@@ -154,6 +154,7 @@ export default {
       })
         .then((res) => {
           console.log(res.data);
+          this.currentPage = 1;
           if (res.data.status == 0) {
             this.$message({
               type: "warning",
