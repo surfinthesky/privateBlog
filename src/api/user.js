@@ -91,6 +91,7 @@ export function readnum(data) {
 }
 //文章分类 request
 export function articlesort() {
+  console.log(sessionStorage.getItem('loginName'),'loginName')
   return request({
     url: "/articlesort", // 接口名称
     method: "post", // 接口方法

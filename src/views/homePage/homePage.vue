@@ -432,6 +432,7 @@ export default {
     drawerMe(payload) {
       console.log(payload.id);
       if (!localStorage.getItem("readNumList")) {
+        console.log("----");
         this.initRead(payload.id, "");
       } else if (localStorage.getItem("readNumList")) {
         let list = JSON.parse(localStorage.getItem("readNumList"));
@@ -462,9 +463,15 @@ export default {
       } else {
         Fn.readnum(readId).then((res) => {
           console.log(res, "res");
+
           let list = JSON.parse(localStorage.getItem("readNumList"));
-          let objStatus = list.find((item) => item.readid == readId);
-          let objIndex = list.findIndex((item) => item.readid == readId);
+          console.log(list, "listlocal");
+          let objStatus = "";
+          let objIndex = "";
+          if (list) {
+            objStatus = list.find((item) => item.readid == readId);
+            objIndex = list.findIndex((item) => item.readid == readId);
+          }
           if (res) {
             // 是否存储过文章阅读id 存储过在原基础time属性重新赋值
             if (objStatus) {

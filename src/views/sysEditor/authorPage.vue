@@ -100,6 +100,7 @@
       <!-- 编辑区 -->
       <div class="main_maven">
         <mavon-editor
+          ref="md"
           style="height: 500px"
           :ishljs="true"
           @change="$change"
@@ -159,6 +160,7 @@ export default {
         articleDiff: "",
         articleDate: "",
         articleHtmlText: "",
+        articleMdText: "",
       },
       baseText: "",
       labelData: [
@@ -185,7 +187,11 @@ export default {
         {
           labelName: "创建时间",
           propName: "articleDate",
-          formatter: 'getDateFormat',
+          formatter: "getDateFormat",
+        },
+        {
+          labelName: "文章md格式",
+          propName: "articleMdText",
         },
         {
           labelName: "文章主内容",
@@ -231,7 +237,7 @@ export default {
           },
         ],
       },
-      status: "Add",//状态是添加或修改
+      status: "Add", //状态是添加或修改
     };
   },
   //监听属性 类似于data概念
@@ -249,7 +255,8 @@ export default {
         this.ruleForm.articleDiff = newVal.articleDiff;
         this.ruleForm.articleDate = new Date(newVal.articleDate);
         this.ruleForm.articleCreatTime = newVal.articleCreatTime;
-        this.ruleForm.articleHtmlText = Base64.decode(newVal.articleHtmlText);
+        // this.ruleForm.articleHtmlText = Base64.decode(newVal.articleHtmlText);
+        this.ruleForm.articleHtmlText = Base64.decode(newVal.articleMdText);//修正
         this.ruleForm.articleNum = newVal.articleNum;
       }
     },
@@ -295,8 +302,11 @@ export default {
               articlePic: this.ruleForm.articlePic,
               articleDiff: this.ruleForm.articleDiff,
               articleHtmlText: this.baseText,
+              articleMdText: this.ruleForm.articleMdText,
               articleNum: 0, //临时阅读量参数
             };
+            console.log(submitForm, "-submitForm");
+            // return;
             this.btnloading = true;
             Fn.addarticle({ ...submitForm, ...obj }).then((res) => {
               if (res.data.message == "success") {
@@ -329,6 +339,7 @@ export default {
               articleDate: this.ruleForm.articleDate,
               articleCreatTime: this.ruleForm.articleCreatTime,
               articleHtmlText: this.ruleForm.articleHtmlText,
+              articleMdText: this.ruleForm.articleMdText,
               articleNum: this.ruleForm.articleNum,
             };
             // console.log(this.ruleForm.articleDate);
@@ -372,6 +383,7 @@ export default {
                 submitFormEditor.articleCreatTime
               );
               console.log(submitFormEditor);
+              // eslint-disable-next-line
               this.btnloading = true;
               Fn.updatearticle(submitFormEditor).then((res) => {
                 if (res.data.message == "success") {
@@ -391,11 +403,11 @@ export default {
                   });
                 }
               });
-            }else{
+            } else {
               this.$message({
-                  type:"warning",
-                  message:"当前无修改信息，请重试"
-              })
+                type: "warning",
+                message: "当前无修改信息，请重试",
+              });
             }
           }
         } else {
@@ -412,9 +424,15 @@ export default {
     $change(pos, $file) {
       // console.log(pos);
       // console.log($file);
+      // console.log("html格式", this.$refs.md.d_render);
+      // console.log("md格式", this.$refs.md.d_value);
+      //存储md格式
+      this.ruleForm.articleMdText = Base64.encode(this.$refs.md.d_value);
       this.initMaven($file);
     },
-    $save(pos,$file) {
+    $save(pos, $file) {
+      console.log("html格式", this.$refs.md.d_render);
+      console.log("md格式", this.$refs.md.d_value);
       // console.log(pos);
       console.log($file);
     },
